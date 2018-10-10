@@ -96,6 +96,33 @@ Case searchCase(int x, int y){
 }
 
 /**
+ * Retourne le numero de la team de la case
+ * Joueur 1 : 1
+ * Joueur 2 : 2
+ * Case vide : 0
+ */
+int whatTheTeam(Case c){
+	return c.val % 10;
+}
+
+/**
+ * Test la validité du déplacement
+ */
+bool testMove(Case start, Case end){
+	int sens; // sens de calcul par rapport au joueur
+
+	if(whatTheTeam(start) == 1)
+		sens = -1;
+	else
+		sens = 1;
+
+	if((end.x - start.x == sens) && (end.y - start.y == sens))
+		return true;
+	else
+		return false;
+}
+
+/**
  * Programme principale
  */
 int main( int argc, char *argv[ ] )
@@ -103,7 +130,12 @@ int main( int argc, char *argv[ ] )
 
     setBoard(board);
     showBoard(board);
-    showCase(searchCase(0, 6));
+    //showCase(searchCase(0, 6));
+
+	if(testMove(searchCase(0, 0), searchCase(1, 1)))
+		printf("Deplacement OK\n");
+	else
+		printf("Erreur\n");
 
 
     return 0;
