@@ -116,10 +116,18 @@ bool testMove(Case start, Case end){
 	else
 		sens = 1;
 
-	if((end.x - start.x == sens) && (end.y - start.y == sens))
+	if((end.x - start.x == -1) || (end.x - start.x == 1) && (end.y - start.y == sens))
 		return true;
 	else
 		return false;
+}
+
+/**
+ * Déplace un pion
+ */
+bool move(Case start, Case end){
+	board[end.x][end.y] = start.val;
+	board[start.x][start.y] = 0;
 }
 
 /**
@@ -127,16 +135,24 @@ bool testMove(Case start, Case end){
  */
 int main( int argc, char *argv[ ] )
 {
-
     setBoard(board);
+    board[2][8] = 0;
     showBoard(board);
-    //showCase(searchCase(0, 6));
-
-	if(testMove(searchCase(0, 0), searchCase(1, 1)))
-		printf("Deplacement OK\n");
-	else
+    Case start, end;
+    start = searchCase(1, 9);
+    end = searchCase(2, 8);
+    if(testMove(start, end)){
+		if(whatTheTeam(end) == 0){
+			printf("Deplacement OK\n");
+			move(start, end);
+		}else{
+			printf("Impossibe de se deplacer sur une case non vide\n");
+		}
+	}else{
 		printf("Erreur\n");
-
+	}
+	printf("\n");
+	showBoard(board);
 
     return 0;
 }
