@@ -38,6 +38,8 @@ void showBoard(int board[WIDTH][HEIGHT]){
  * Rempli le plateau
  */
 void setBoard(int board[WIDTH][HEIGHT]){
+
+	// Partie haute du plateau (Joueur 1)
 	for(int y = 0; y < 4; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
@@ -48,12 +50,14 @@ void setBoard(int board[WIDTH][HEIGHT]){
 		}
 	}
 
+	// Bande vide du milieu de plateau
 	for(int y = 4; y < 6; y++){
 		for(int x = 0; x < WIDTH; x++){
 			board[x][y] = 0;
 		}
 	}
 
+	// Partie basse du plateau (Joueur 2)
 	for(int y = 6; y < HEIGHT; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
@@ -66,6 +70,9 @@ void setBoard(int board[WIDTH][HEIGHT]){
 }
 
 
+/**
+ * Programme principale
+ */
 int main( int argc, char *argv[ ] )
 {
     int board[WIDTH][HEIGHT];
