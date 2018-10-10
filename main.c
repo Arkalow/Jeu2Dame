@@ -2,23 +2,59 @@
 #include <stdio.h>
 #include <SDL/SDL.h>
 
-#define WIDTH 10
-#define HEIGHT 10
-int board[WIDTH][HEIGHT];
 /*
 
+LE PLATEAU
+-----------------------------------------------------------------------------
 On modélise la map dans un tableau 2D.
 Les cases sont codés de la manière suivante : 
 	- 0 : Représente une case vide
-	- 100 : Représente une case occupé par un pion
 	- 10 : Représente une des pièces du joueur 1
 	- 20 : Représente une des pièces du joueur 2
 	- 1 : Représente un pion
 	- 2 : Représente une dame
-
 Ces états s'obtiennent avec des modulos.
 
+
+
+
+LES CASES
+-----------------------------------------------------------------------------
+La structure Case représente une case du plateau. Elle contient les coordonnées
+x et y ainsi que la valueeur de la case
+
+
+
+
+
+
+LES DEPLACEMENTS
+-----------------------------------------------------------------------------
+Un déplacement s'effectu de la manière suivante : 
+	- On test si les cases départ et d'arrivé sont valueide
+	- On test si le pion a le droit d'effectuer ce déplacement
+	- On test si si la case d'arrivé est libre
+Dans le cas contraire le déplacement est soit invalueide ou soit c'est une prise
+
+
+
+LES PRISES
+-----------------------------------------------------------------------------
+
+
+
+
+
+
+
 */
+
+
+
+
+#define WIDTH 10 // Largeur du plateau
+#define HEIGHT 10 // Hauteur du plateau
+int board[WIDTH][HEIGHT]; // Plateau
 
 /**
  *	Représente une case du plateau
@@ -27,7 +63,7 @@ struct Case
 {
     int x;
     int y;
-    int val;
+    int value;
 };
 
 /**
@@ -46,7 +82,7 @@ void showBoard(int board[WIDTH][HEIGHT]){
  * Affiche une case
  */
 void showCase(Case c){
-	printf("Case[%d][%d] => %d\n", c.x, c.y, c.val);
+	printf("Case[%d][%d] => %d\n", c.x, c.y, c.value);
 }
 
 /**
@@ -58,7 +94,7 @@ void setBoard(int board[WIDTH][HEIGHT]){
 	for(int y = 0; y < 4; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
-				board[x][y] = 111;
+				board[x][y] = 11;
 			}else{
 				board[x][y] = 0;
 			}
@@ -76,7 +112,7 @@ void setBoard(int board[WIDTH][HEIGHT]){
 	for(int y = 6; y < HEIGHT; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
-				board[x][y] = 121;
+				board[x][y] = 21;
 			}else{
 				board[x][y] = 0;
 			}
@@ -91,7 +127,7 @@ Case searchCase(int x, int y){
 	Case c;
 	c.x = x;
 	c.y = y;
-	c.val = board[x][y];
+	c.value = board[x][y];
 	return c;
 }
 
@@ -102,7 +138,7 @@ Case searchCase(int x, int y){
  * Case vide : 0
  */
 int whatTheTeam(Case c){
-	return c.val % 10;
+	return c.value % 10;
 }
 
 /**
@@ -126,14 +162,20 @@ bool testMove(Case start, Case end){
  * Déplace un pion
  */
 bool move(Case start, Case end){
-	board[end.x][end.y] = start.val;
+	board[end.x][end.y] = start.value;
 	board[start.x][start.y] = 0;
 }
 
-/**
- * Programme principale
- */
-int main( int argc, char *argv[ ] )
+
+
+
+
+
+
+
+// PROGRAMME PRINCIPALE
+// -------------------------------------------------------------------------------------
+int main(int argc, char *argv[])
 {
     setBoard(board);
     board[2][8] = 0;
