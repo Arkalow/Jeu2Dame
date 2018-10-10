@@ -4,7 +4,7 @@
 
 #define WIDTH 10
 #define HEIGHT 10
-
+int board[WIDTH][HEIGHT];
 /*
 
 On modélise la map dans un tableau 2D.
@@ -20,7 +20,15 @@ Ces états s'obtiennent avec des modulos.
 
 */
 
-
+/**
+ *	Représente une case du plateau
+ */
+struct Case
+{
+    int x;
+    int y;
+    int val;
+};
 
 /**
  * Affiche un rendu console du plateau
@@ -32,6 +40,13 @@ void showBoard(int board[WIDTH][HEIGHT]){
 		}
 		printf("\n");
 	}
+}
+
+/**
+ * Affiche une case
+ */
+void showCase(Case c){
+	printf("Case[%d][%d] => %d\n", c.x, c.y, c.val);
 }
 
 /**
@@ -69,14 +84,27 @@ void setBoard(int board[WIDTH][HEIGHT]){
 	}
 }
 
+/**
+ * Retourne une case contenant les coordonnées ainsi que la valeur du tableau
+ */
+Case searchCase(int x, int y){
+	Case c;
+	c.x = x;
+	c.y = y;
+	c.val = board[x][y];
+	return c;
+}
 
 /**
  * Programme principale
  */
 int main( int argc, char *argv[ ] )
 {
-    int board[WIDTH][HEIGHT];
+
     setBoard(board);
     showBoard(board);
+    showCase(searchCase(0, 6));
+
+
     return 0;
 }
