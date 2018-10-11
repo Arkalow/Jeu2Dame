@@ -51,7 +51,6 @@ LES PRISES
 
 
 
-
 #define WIDTH 10 // Largeur du plateau
 #define HEIGHT 10 // Hauteur du plateau
 int board[WIDTH][HEIGHT]; // Plateau
@@ -81,7 +80,7 @@ void showBoard(int board[WIDTH][HEIGHT]){
 /**
  * Affiche une case
  */
-void showCase(Case c){
+void showCase(struct Case c){
 	printf("Case[%d][%d] => %d\n", c.x, c.y, c.value);
 }
 
@@ -123,8 +122,8 @@ void setBoard(int board[WIDTH][HEIGHT]){
 /**
  * Retourne une case contenant les coordonnées ainsi que la valeur du tableau
  */
-Case searchCase(int x, int y){
-	Case c;
+struct Case searchCase(int x, int y){
+	struct Case c;
 	c.x = x;
 	c.y = y;
 	c.value = board[x][y];
@@ -137,14 +136,14 @@ Case searchCase(int x, int y){
  * Joueur 2 : 2
  * Case vide : 0
  */
-int whatTheTeam(Case c){
+int whatTheTeam(struct Case c){
 	return c.value % 10;
 }
 
 /**
  * Test la validité du déplacement
  */
-bool testMove(Case start, Case end){
+short testMove(struct Case start, struct Case end){
 	int sens; // sens de calcul par rapport au joueur
 
 	if(whatTheTeam(start) == 1)
@@ -153,15 +152,15 @@ bool testMove(Case start, Case end){
 		sens = 1;
 
 	if((end.x - start.x == -1) || (end.x - start.x == 1) && (end.y - start.y == sens))
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 }
 
 /**
  * Déplace un pion
  */
-bool move(Case start, Case end){
+short move(struct Case start, struct Case end){
 	board[end.x][end.y] = start.value;
 	board[start.x][start.y] = 0;
 }
@@ -180,7 +179,7 @@ int main(int argc, char *argv[])
     setBoard(board);
     board[2][8] = 0;
     showBoard(board);
-    Case start, end;
+    struct Case start, end;
     start = searchCase(1, 9);
     end = searchCase(2, 8);
     if(testMove(start, end)){
