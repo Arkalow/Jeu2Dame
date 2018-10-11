@@ -53,49 +53,51 @@ LES PRISES
 
 #define WIDTH 10 // Largeur du plateau
 #define HEIGHT 10 // Hauteur du plateau
-int board[WIDTH][HEIGHT]; // Plateau
 
 /**
- *	Représente une case du plateau
+ *	Représente un pion
  */
-struct Case
+struct Pion
 {
-    int x;
-    int y;
-    int value;
+	int x; // Position sur x
+	int y; // Position sur y
+
+    int team; // La team du pion
+	int moveList[]; // Les déplacement possible du pion
 };
+
+struct Pion * board[WIDTH][HEIGHT]; // Plateau
 
 /**
  * Affiche un rendu console du plateau
  */
-void showBoard(int board[WIDTH][HEIGHT]){
+void showBoard(){
 	for(int y = 0; y < HEIGHT; y++){
 		for(int x = 0; x < WIDTH; x++){
-			printf("%d\t", board[x][y]);
+			if(board[x][y] != NULL){
+				printf("%d\t", board[x][y]->team);
+			}else{
+				printf("\t");
+			}
 		}
 		printf("\n");
 	}
 }
 
 /**
- * Affiche une case
- */
-void showCase(struct Case c){
-	printf("Case[%d][%d] => %d\n", c.x, c.y, c.value);
-}
-
-/**
  * Rempli le plateau
  */
-void setBoard(int board[WIDTH][HEIGHT]){
+void setBoard(){
 
 	// Partie haute du plateau (Joueur 1)
 	for(int y = 0; y < 4; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
-				board[x][y] = 11;
+				board[x][y]->x = x;
+				board[x][y]->y = y;
+				board[x][y]->team = 1;
 			}else{
-				board[x][y] = 0;
+				board[x][y] = NULL;
 			}
 		}
 	}
@@ -103,7 +105,7 @@ void setBoard(int board[WIDTH][HEIGHT]){
 	// Bande vide du milieu de plateau
 	for(int y = 4; y < 6; y++){
 		for(int x = 0; x < WIDTH; x++){
-			board[x][y] = 0;
+			board[x][y] = NULL;
 		}
 	}
 
@@ -111,58 +113,14 @@ void setBoard(int board[WIDTH][HEIGHT]){
 	for(int y = 6; y < HEIGHT; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
-				board[x][y] = 21;
+				board[x][y]->x = x;
+				board[x][y]->y = y;
+				board[x][y]->team = 2;
 			}else{
-				board[x][y] = 0;
+				board[x][y] = NULL;
 			}
 		}
 	}
-}
-
-/**
- * Retourne une case contenant les coordonnées ainsi que la valeur du tableau
- */
-struct Case searchCase(int x, int y){
-	struct Case c;
-	c.x = x;
-	c.y = y;
-	c.value = board[x][y];
-	return c;
-}
-
-/**
- * Retourne le numero de la team de la case
- * Joueur 1 : 1
- * Joueur 2 : 2
- * Case vide : 0
- */
-int whatTheTeam(struct Case c){
-	return c.value % 10;
-}
-
-/**
- * Test la validité du déplacement
- */
-short testMove(struct Case start, struct Case end){
-	int sens; // sens de calcul par rapport au joueur
-
-	if(whatTheTeam(start) == 1)
-		sens = -1;
-	else
-		sens = 1;
-
-	if((end.x - start.x == -1) || (end.x - start.x == 1) && (end.y - start.y == sens))
-		return 1;
-	else
-		return 0;
-}
-
-/**
- * Déplace un pion
- */
-short move(struct Case start, struct Case end){
-	board[end.x][end.y] = start.value;
-	board[start.x][start.y] = 0;
 }
 
 
@@ -176,24 +134,8 @@ short move(struct Case start, struct Case end){
 // -------------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
-    setBoard(board);
-    board[2][8] = 0;
-    showBoard(board);
-    struct Case start, end;
-    start = searchCase(1, 9);
-    end = searchCase(2, 8);
-    if(testMove(start, end)){
-		if(whatTheTeam(end) == 0){
-			printf("Deplacement OK\n");
-			move(start, end);
-		}else{
-			printf("Impossibe de se deplacer sur une case non vide\n");
-		}
-	}else{
-		printf("Erreur\n");
-	}
-	printf("\n");
-	showBoard(board);
+	setBoard();
+	showBoard();
 
     return 0;
 }
