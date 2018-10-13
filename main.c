@@ -20,7 +20,8 @@ pour un pion dans toutes les directions.
 
 LES DEPLACEMENTS
 -----------------------------------------------------------------------------
-
+Les déplacements d'un pion sont représenté par un tableau de vecteur déplacement. Pour tester la validité
+d'un déplacement on vérifie si le déplacement est inférieur à l'un des déplacement de la liste
 
 
 
@@ -40,18 +41,78 @@ LES PRISES
 #define WIDTH 10 // Le plateau est carré, WIDTH représente la taille du côté
 
 /**
+ * Représente un vecteur
+ * Pour un déplacement par exemple
+ */
+struct Vector
+{
+	int x;
+	int y;
+};
+
+/**
  *	Représente un pion
  */
 struct Pion
 {
-	int x; // Position sur x
-	int y; // Position sur y
+	struct Vector position;
 
     int team; // La team du pion
-	int moveList[8]; // Les déplacement possible du pion
+	int nbMove; // Nombre de déplacement possible
+	struct Vector moveList[8]; // Les déplacements possible du pion
 };
 
 struct Pion * board[WIDTH][WIDTH]; // Plateau de jeu
+
+/**
+ * Créer un vecteur à partir de deux points
+ * Peut représenter un vecteur déplacement par exemple
+ */ 
+struct Vector createVector(int startX, int startY, int endX, int endY){
+	struct Vector vector;
+	
+	vector.x = endX - startX;
+	vector.y = endY - startY;
+	
+	return vector;
+}
+
+/**
+ * Affiche un vecteur
+ * Pour le debug
+ */
+void showVector(struct Vector vector){
+	printf("(%d, %d)", vector.x, vector.y);
+}
+
+/**
+ * Test le vecteur move est compris dans le vecteur reference
+ * C'est le cas dans un déplacement valide
+ */
+int testMove(struct Vector move, struct Vector reference){
+	if(reference.x > 0){ // Le vecteur référence est positif sur x
+		if(!(move.x > 0 && move.x < reference.x)){ // ! 0 < move.x < ref.x
+			return 0; // False;
+		}
+	}else{
+		printf("test");
+		if(!(move.x < 0 && move.x > reference.x)){ //  ! ref.x < move.x < 0
+			return 0; // False;
+		}
+	}
+
+	if(reference.y > 0){ // Le vecteur référence est positif sur y
+		if(!(move.y > 0 && move.y < reference.y)){ //  ! 0 < move.y < ref.y
+			return 0; // False;
+		}
+	}else{
+		if(!(move.y < 0 && move.y > reference.y)){ //  ! ref.y < move.y < 0
+			return 0; // False;
+		}
+	}
+
+	return 1; // True;
+}
 
 /**
  * Créer un pion sur le plateau au coordonnées (x, y)
@@ -63,53 +124,41 @@ struct Pion * board[WIDTH][WIDTH]; // Plateau de jeu
  */
 void createPion(int x, int y, int team, int type){
 	board[x][y] = malloc(sizeof(struct Pion));
-	board[x][y]->x = x;
-	board[x][y]->y = y;
+	board[x][y]->position.x = x;
+	board[x][y]->position.y = y;
 	board[x][y]->team = team;
 
+
 	// Si le type est une dame
-	// 	MAX  MAX MAX
-	// 	MAX   P  MAX
-	// 	MAX  MAX MAX
+	// 	MAX 0 MAX
+	// 	 0  P  0
+	// 	MAX 0 MAX
 	if(type == 1){
 
-		board[x][y]->moveList[0] = WIDTH;
-		board[x][y]->moveList[1] = WIDTH;
-		board[x][y]->moveList[2] = WIDTH;
-		board[x][y]->moveList[3] = WIDTH;
-		board[x][y]->moveList[4] = WIDTH;
-		board[x][y]->moveList[5] = WIDTH;
-		board[x][y]->moveList[6] = WIDTH;
-		board[x][y]->moveList[7] = WIDTH;
+		board[x][y]->nbMove = 4; // Une dame a 4 déplacements possible
+		board[x][y]->moveList[0] = createVector(0, 0, 10, 10); // Bas droite
+		board[x][y]->moveList[1] = createVector(0, 0, -10, -10); // Haut gauche
+		board[x][y]->moveList[2] = createVector(0, 0, -10, 10); // Bas gauche
+		board[x][y]->moveList[3] = createVector(0, 0, 10, 10); // Haut droite
 
 	}else{ // Le pion est un pion classique
+
+		board[x][y]->nbMove = 4; // Un pion classique a 2 déplacements possible
 
 		if(team == 1){
 			// Si c'est un pion joueur 1
 			// 	0 0 0
 			// 	0 P 0
 			// 	1 0 1
-			board[x][y]->moveList[0] = 0;
-			board[x][y]->moveList[1] = 0;
-			board[x][y]->moveList[2] = 0;
-			board[x][y]->moveList[3] = 0;
-			board[x][y]->moveList[4] = 0;
-			board[x][y]->moveList[5] = 1;
-			board[x][y]->moveList[6] = 0;
-			board[x][y]->moveList[7] = 1;
+			board[x][y]->moveList[0] = createVector(0, 0, 10, 10); // Bas droite
+			board[x][y]->moveList[2] = createVector(0, 0, -10, 10); // Bas gauche
 		}else{
 			// Si c'est un pion joueur 2
 			// 	1 0 1
 			// 	0 P 0
 			// 	0 0 0
-			board[x][y]->moveList[0] = 1;
-			board[x][y]->moveList[1] = 0;
-			board[x][y]->moveList[2] = 1;
-			board[x][y]->moveList[3] = 0;
-			board[x][y]->moveList[4] = 0;
-			board[x][y]->moveList[5] = 0;
-			board[x][y]->moveList[6] = 0;
-			board[x][y]->moveList[7] = 0;
+			board[x][y]->moveList[1] = createVector(0, 0, -10, -10); // Haut gauche
+			board[x][y]->moveList[3] = createVector(0, 0, 10, 10); // Haut droite
 		}
 	}
 }
@@ -118,8 +167,9 @@ void createPion(int x, int y, int team, int type){
  * Affiche un rendu console du plateau
  */
 void showBoard(){
-	printf(" -----------------------------------------");
-	printf("\n");
+	printf(" -----------------------------------------\n");
+	printf(" |              JEU DE DAMES             |\n");
+	printf(" -----------------------------------------\n");
 	for(int y = 0; y < WIDTH; y++){
 		for(int x = 0; x < WIDTH; x++){
 			printf(" | ");
@@ -133,6 +183,8 @@ void showBoard(){
 		printf(" -----------------------------------------");
 		printf("\n");
 	}
+		printf("\n");
+		printf("\n");
 }
 
 /**
@@ -170,6 +222,17 @@ void setBoard(){
 	}
 }
 
+/**
+ * Libère la mémoire allouée par le plateau
+ */
+void freeBoard(){
+	for(int y = 0; y < WIDTH; y++){
+		for(int x = 0; x < WIDTH; x++){
+			free(board[x][y]);
+		}
+	}
+}
+
 
 
 
@@ -184,5 +247,20 @@ int main(int argc, char *argv[])
 	setBoard();
 	showBoard();
 
+
+	if(testMove(createVector(0, 0, -1, -1), createVector(0, 0, 2, 2))){
+		printf(" Deplacement possible\n");
+	}else{
+		printf(" Deplacement impossible\n");
+	}
+
+	board[1][1] = NULL;
+	
+	
+	
+	
+	showBoard();
+
+	freeBoard();
     return 0;
 }
