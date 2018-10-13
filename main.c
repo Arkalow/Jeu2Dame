@@ -71,15 +71,20 @@ struct Pion * board[WIDTH][HEIGHT]; // Plateau
 /**
  * Affiche un rendu console du plateau
  */
-void showBoard(){
+void showBoard(struct Pion * board[WIDTH][HEIGHT]){
+	printf(" -----------------------------------------");
+	printf("\n");
 	for(int y = 0; y < HEIGHT; y++){
 		for(int x = 0; x < WIDTH; x++){
+			printf(" | ");
 			if(board[x][y] != NULL){
-				printf("%d\t", board[x][y]->team);
+				printf("%d", board[x][y]->team);
 			}else{
-				printf("\t");
+				printf(" ");
 			}
 		}
+		printf(" |\n");
+		printf(" -----------------------------------------");
 		printf("\n");
 	}
 }
@@ -93,6 +98,7 @@ void setBoard(){
 	for(int y = 0; y < 4; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
+				board[x][y] = malloc(sizeof(struct Pion));
 				board[x][y]->x = x;
 				board[x][y]->y = y;
 				board[x][y]->team = 1;
@@ -113,6 +119,7 @@ void setBoard(){
 	for(int y = 6; y < HEIGHT; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
+				board[x][y] = malloc(sizeof(struct Pion));
 				board[x][y]->x = x;
 				board[x][y]->y = y;
 				board[x][y]->team = 2;
@@ -135,7 +142,7 @@ void setBoard(){
 int main(int argc, char *argv[])
 {
 	setBoard();
-	showBoard();
+	showBoard(board);
 
     return 0;
 }
