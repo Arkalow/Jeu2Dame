@@ -177,8 +177,6 @@ int testMove(struct Pion pion, struct Vector c){
 int meetPion(struct Vector start, struct Vector end, struct Vector * findTarget){
 	int nbFind; // Nombre de pion trouvé sur le trajet
 	struct Vector unit = unitVector(subVector(end, start));
-	
-	finalPosition->x = start.x; finalPosition->y = start.y;
 
 	while(start.x != end.x || start.y != end.y){
 		start.x += unit.x; start.y += unit.y; // On incrémente le vecteur d'une unite
@@ -366,9 +364,9 @@ int main()
 
 	freeBoard();
 
-	struct Vector prise; struct Vector finalPosition;
+	struct Vector prise;
 	if(meetPion(createPoint(0, 0), createPoint(0, 10), &prise) == 1){
-		showVector(finalPosition);
+		showVector(prise);
 	}
 	
 	showVector(prise);
