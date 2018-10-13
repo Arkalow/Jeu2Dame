@@ -125,92 +125,6 @@ void showVector(struct Vector vector){
 }
 
 /**
- * Test si le vecteur move est compris dans le vecteur reference
- * C'est le cas d'un déplacement valide par exemple
- */
-int testVector(struct Vector move, struct Vector reference){
-	if(reference.x > 0){ // Le vecteur référence est positif sur x
-		if(!(move.x > 0 && move.x < reference.x)){ // ! 0 < move.x < ref.x
-			return 0; // False;
-		}
-	}else{
-		if(!(move.x < 0 && move.x > reference.x)){ //  ! ref.x < move.x < 0
-			return 0; // False;
-		}
-	}
-
-	if(reference.y > 0){ // Le vecteur référence est positif sur y
-		if(!(move.y > 0 && move.y < reference.y)){ //  ! 0 < move.y < ref.y
-			return 0; // False;
-		}
-	}else{
-		if(!(move.y < 0 && move.y > reference.y)){ //  ! ref.y < move.y < 0
-			return 0; // False;
-		}
-	}
-
-	return 1; // True;
-}
-
-/**
- * Test si un pion peut atteindre la case c
- */
-int testMove(struct Pion pion, struct Vector c){
-
-	struct Vector move;
-	move = subVector(pion.position, c);
-
-	// On parcourt tous les déplacements possible du pion
-	for(int i = 0; i < pion.nbMove; i++){
-		if(testVector(move, pion.moveList[i])){
-			return 1; // True 
-		}
-	}
-	return 0;
-}
-
-
-
-/**
- * Test si pendant avec le vecteur deplacement, le pion rencontrera une piece
- */
-int meetPion(struct Vector start, struct Vector end, struct Vector * findTarget){
-	int nbFind; // Nombre de pion trouvé sur le trajet
-	struct Vector unit = unitVector(subVector(end, start));
-
-	while(start.x != end.x || start.y != end.y){
-		start.x += unit.x; start.y += unit.y; // On incrémente le vecteur d'une unite
-		if(board[start.x][start.y] != NULL){
-			nbFind++;
-			*findTarget = start; // Pion trouvé
-		}
-	}
-	if(nbFind == 1){ // Une prise trouvée
-		return 1;
-	}else if(nbFind == 0){ // Aucune prise trouvé
-		return 0;
-	}else{ // Erreur plus d'une prise trouvées
-		return -1;
-	}
-}
-
-/**
- * Déplace un pion sur le plateau
- * Renvoie 0 si la case est déjà occupé
- * Sinon renvoie 1 et déplace le pion
- */
-int move(struct Vector start, struct Vector end){
-	if(board[end.x][end.y] == NULL){
-		board[end.x][end.y] = board[start.x][start.y];
-		board[start.x][start.y] = NULL;
-		return 1; // True
-	}
-	return 0; // False
-}
-
-
-
-/**
  * Créer un pion sur le plateau au coordonnées (x, y)
  * Le nom de la team est le numéro du joueur
  * Le paramètre type est le type de pion :
@@ -256,6 +170,112 @@ void createPion(int x, int y, int team, int type){
 			board[x][y]->moveList[1] = createVector(0, 0, -10, -10); // Haut gauche
 			board[x][y]->moveList[3] = createVector(0, 0, 10, 10); // Haut droite
 		}
+	}
+}
+
+/**
+ * Affiche un pion dans la console
+ * Pour les debug
+ */
+void showPion(struct Pion pion){
+	printf("Pion (%d, %d) %d\n", pion.position.x, pion.position.y, pion.team);
+}
+
+/**
+ * Test si le vecteur move est compris dans le vecteur reference
+ * C'est le cas d'un déplacement valide par exemple
+ */
+int testVector(struct Vector move, struct Vector reference){
+	if(reference.x > 0){ // Le vecteur référence est positif sur x
+		if(!(move.x > 0 && move.x < reference.x)){ // ! 0 < move.x < ref.x
+			return 0; // False;
+		}
+	}else{
+		if(!(move.x < 0 && move.x > reference.x)){ //  ! ref.x < move.x < 0
+			return 0; // False;
+		}
+	}
+
+	if(reference.y > 0){ // Le vecteur référence est positif sur y
+		if(!(move.y > 0 && move.y < reference.y)){ //  ! 0 < move.y < ref.y
+			return 0; // False;
+		}
+	}else{
+		if(!(move.y < 0 && move.y > reference.y)){ //  ! ref.y < move.y < 0
+			return 0; // False;
+		}
+	}
+
+	return 1; // True;
+}
+
+/**
+ * Test si un pion peut atteindre la case c
+ */
+int testMove(struct Pion pion, struct Vector c){
+
+	struct Vector move;
+	move = subVector(pion.position, c);
+
+	// On parcourt tous les déplacements possible du pion
+	for(int i = 0; i < pion.nbMove; i++){
+		if(testVector(move, pion.moveList[i])){
+			return 1; // True 
+		}
+	}
+	return 0;
+}
+
+/**
+ * Déplace un pion sur le plateau
+ * Renvoie 0 si la case est déjà occupé
+ * Sinon renvoie 1 et déplace le pion
+ */
+int move(struct Vector start, struct Vector end){
+	if(board[end.x][end.y] == NULL){
+		board[end.x][end.y] = board[start.x][start.y];
+		board[start.x][start.y] = NULL;
+		return 1; // True
+	}
+	return 0; // False
+}
+
+
+/**
+ * Test si pendant avec le vecteur deplacement, le pion rencontrera une piece
+ */
+int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
+	int nbPrise = 0; // Nombre de pion trouvé sur le trajet
+	struct Vector unit = unitVector(subVector(end, pion.position)); // Vecteur unité
+	struct Vector start; start = pion.position; // Position de départ (position du pion)
+	
+	while(start.x != end.x || start.y != end.y){
+		start.x += unit.x; start.y += unit.y; // On incrémente le vecteur d'une unite
+		if(board[start.x][start.y] != NULL){ // Si on tombe sur un pion
+			if(board[start.x][start.y]->team == pion.team) { return -1; } // On ne traverse pas un de ses pions
+			nbPrise++;
+			*prise = start; // Pion trouvé
+		}
+	}
+
+	if(nbPrise == 1){ // Une prise trouvée
+		return 1;
+	}else if(nbPrise == 0){ // Aucune prise trouvé
+		return 0;
+	}else{ // Erreur plus d'une prise trouvées
+		return -1;
+	}
+}
+
+/**
+ * Effectue la prise d'une piece
+ */
+int prise(struct Vector start, struct Vector end, struct Vector prise){
+	if(move(start, end)){
+		board[prise.x][prise.y] = NULL;
+		return 1;
+	}else{
+		return 0;
 	}
 }
 
@@ -362,13 +382,12 @@ int main()
 
 	showBoard();
 
-	freeBoard();
 
 	struct Vector prise;
-	if(meetPion(createPoint(0, 0), createPoint(0, 10), &prise) == 1){
+	if(testPrise(*board[0][2], createPoint(0, 7), &prise) == 1){
 		showVector(prise);
 	}
 	
-	showVector(prise);
+	freeBoard();
     return 0;
 }
