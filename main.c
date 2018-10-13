@@ -20,8 +20,9 @@ pour un pion dans toutes les directions.
 
 LES DEPLACEMENTS
 -----------------------------------------------------------------------------
-Les déplacements d'un pion sont représenté par un tableau de vecteur déplacement. Pour tester la validité
-d'un déplacement on vérifie si le déplacement est inférieur à l'un des déplacement de la liste
+Les déplacements d'un pion sont représenté par un tableau de vecteur déplacement. 
+Pour tester la validité d'un déplacement on vérifie si le vecteur déplacement est inférieur à l'un des
+vecteurs deplacements de la liste de la moveList attachée au pion.
 
 
 
@@ -34,11 +35,14 @@ LES PRISES
 
 
 
+
+
+
 */
 
 
 
-#define WIDTH 10 // Le plateau est carré, WIDTH représente la taille du côté
+#define WIDTH 10 // Le plateau est carré, WIDTH représente la taille du côté du plateau
 
 /**
  * Représente un vecteur
@@ -320,10 +324,6 @@ int main(int argc, char *argv[])
 		printf(" Deplacement impossible\n");
 	}
 
-	
-	
-	
-	
 	showBoard();
 
 	freeBoard();
