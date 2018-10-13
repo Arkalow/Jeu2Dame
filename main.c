@@ -65,6 +65,31 @@ struct Pion
 struct Pion * board[WIDTH][WIDTH]; // Plateau de jeu
 
 /**
+ * Créer un vecteur à partir de coordonées
+ * Peut représenter un point par exemple
+ */ 
+struct Vector createPoint(int x, int y){
+	struct Vector vector;
+	
+	vector.x = x;
+	vector.y = y;
+	
+	return vector;
+}
+
+/**
+ * Effectue une soustraction de deux vecteurs
+ */ 
+struct Vector subVector(struct Vector v1, struct Vector v2){
+	struct Vector vector;
+	
+	vector.x = v2.x - v1.x;
+	vector.y = v2.y - v1.y;
+	
+	return vector;
+}
+
+/**
  * Créer un vecteur à partir de deux points
  * Peut représenter un vecteur déplacement par exemple
  */ 
@@ -86,10 +111,10 @@ void showVector(struct Vector vector){
 }
 
 /**
- * Test le vecteur move est compris dans le vecteur reference
- * C'est le cas dans un déplacement valide
+ * Test si le vecteur move est compris dans le vecteur reference
+ * C'est le cas d'un déplacement valide par exemple
  */
-int testMove(struct Vector move, struct Vector reference){
+int testVector(struct Vector move, struct Vector reference){
 	if(reference.x > 0){ // Le vecteur référence est positif sur x
 		if(!(move.x > 0 && move.x < reference.x)){ // ! 0 < move.x < ref.x
 			return 0; // False;
@@ -112,6 +137,37 @@ int testMove(struct Vector move, struct Vector reference){
 	}
 
 	return 1; // True;
+}
+
+/**
+ * Test si un pion peu atteindre la case c
+ */
+int testMove(struct Pion pion, struct Vector c){
+
+	struct Vector move;
+	move = subVector(pion.position, c);
+
+	// On parcourt tous les déplacements possible du pion
+	for(int i = 0; i < pion.nbMove; i++){
+		if(testVector(move, pion.moveList[i])){
+			return 1; // True 
+		}
+	}
+	return 0;
+}
+
+/**
+ * Déplace un pion sur le plateau
+ * Renvoie 0 si la case est déjà occupé
+ * Sinon renvoie 1 et déplace le pion
+ */
+int move(struct Vector start, struct Vector end){
+	if(board[end.x][end.y] == NULL){
+		board[end.x][end.y] = board[start.x][start.y];
+		board[start.x][start.y] = NULL;
+		return 1; // True
+	}
+	return 0; // False
 }
 
 /**
@@ -245,16 +301,25 @@ void freeBoard(){
 int main(int argc, char *argv[])
 {
 	setBoard();
+
+	struct Pion * pion; pion = board[0][0]; // Pion selectionné
+	struct Vector point; point = createPoint(1, 1); // Point de destination
+
+	board[point.x][point.y] = NULL; // On vide la case destination
+	
 	showBoard();
 
-
-	if(testMove(createVector(0, 0, -1, -1), createVector(0, 0, 2, 2))){
+	if(testMove(*pion, point)){
 		printf(" Deplacement possible\n");
+		if(move(pion->position, point)){
+			printf(" Deplacement Reussi\n");
+		}else{
+			printf(" Impossible, la case de destination est deja occupee\n");
+		}
 	}else{
 		printf(" Deplacement impossible\n");
 	}
 
-	board[1][1] = NULL;
 	
 	
 	
