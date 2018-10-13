@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include <SDL/SDL.h>
 
 /*
@@ -87,8 +88,8 @@ struct Vector createPoint(int x, int y){
 struct Vector subVector(struct Vector v1, struct Vector v2){
 	struct Vector vector;
 	
-	vector.x = v2.x - v1.x;
-	vector.y = v2.y - v1.y;
+	vector.x = v1.x - v2.x;
+	vector.y = v1.y - v2.y;
 	
 	return vector;
 }
@@ -107,11 +108,20 @@ struct Vector createVector(int startX, int startY, int endX, int endY){
 }
 
 /**
+ * Calcule le vecteur unite
+ */
+struct Vector unitVector(struct Vector v){
+	if(v.x != 0){ v.x = v.x / abs(v.x); }
+	if(v.y != 0){ v.y = v.y / abs(v.y); }
+	return v;
+}
+
+/**
  * Affiche un vecteur
  * Pour le debug
  */
 void showVector(struct Vector vector){
-	printf("(%d, %d)", vector.x, vector.y);
+	printf("(%d, %d)\n", vector.x, vector.y);
 }
 
 /**
@@ -124,7 +134,6 @@ int testVector(struct Vector move, struct Vector reference){
 			return 0; // False;
 		}
 	}else{
-		printf("test");
 		if(!(move.x < 0 && move.x > reference.x)){ //  ! ref.x < move.x < 0
 			return 0; // False;
 		}
@@ -144,7 +153,7 @@ int testVector(struct Vector move, struct Vector reference){
 }
 
 /**
- * Test si un pion peu atteindre la case c
+ * Test si un pion peut atteindre la case c
  */
 int testMove(struct Pion pion, struct Vector c){
 
@@ -160,6 +169,33 @@ int testMove(struct Pion pion, struct Vector c){
 	return 0;
 }
 
+
+
+/**
+ * Test si pendant avec le vecteur deplacement, le pion rencontrera une piece
+ */
+int meetPion(struct Vector start, struct Vector end, struct Vector * findTarget){
+	int nbFind; // Nombre de pion trouvé sur le trajet
+	struct Vector unit = unitVector(subVector(end, start));
+	
+	finalPosition->x = start.x; finalPosition->y = start.y;
+
+	while(start.x != end.x || start.y != end.y){
+		start.x += unit.x; start.y += unit.y; // On incrémente le vecteur d'une unite
+		if(board[start.x][start.y] != NULL){
+			nbFind++;
+			*findTarget = start; // Pion trouvé
+		}
+	}
+	if(nbFind == 1){ // Une prise trouvée
+		return 1;
+	}else if(nbFind == 0){ // Aucune prise trouvé
+		return 0;
+	}else{ // Erreur plus d'une prise trouvées
+		return -1;
+	}
+}
+
 /**
  * Déplace un pion sur le plateau
  * Renvoie 0 si la case est déjà occupé
@@ -173,6 +209,8 @@ int move(struct Vector start, struct Vector end){
 	}
 	return 0; // False
 }
+
+
 
 /**
  * Créer un pion sur le plateau au coordonnées (x, y)
@@ -302,7 +340,7 @@ void freeBoard(){
 
 // PROGRAMME PRINCIPALE
 // -------------------------------------------------------------------------------------
-int main(int argc, char *argv[])
+int main()
 {
 	setBoard();
 
@@ -327,5 +365,12 @@ int main(int argc, char *argv[])
 	showBoard();
 
 	freeBoard();
+
+	struct Vector prise; struct Vector finalPosition;
+	if(meetPion(createPoint(0, 0), createPoint(0, 10), &prise) == 1){
+		showVector(finalPosition);
+	}
+	
+	showVector(prise);
     return 0;
 }
