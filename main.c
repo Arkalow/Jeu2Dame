@@ -6,35 +6,21 @@
 
 LE PLATEAU
 -----------------------------------------------------------------------------
-On modélise la map dans un tableau 2D.
-Les cases sont codés de la manière suivante : 
-	- 0 : Représente une case vide
-	- 10 : Représente une des pièces du joueur 1
-	- 20 : Représente une des pièces du joueur 2
-	- 1 : Représente un pion
-	- 2 : Représente une dame
-Ces états s'obtiennent avec des modulos.
+On modélise la map dans un tableau 2D. Chaque case du tableau est un pointeur de Pion
+Si le pointeur est NULL il n'y a pas de pion sur cette case.
 
-
-
-
-LES CASES
+LES PIONS
 -----------------------------------------------------------------------------
-La structure Case représente une case du plateau. Elle contient les coordonnées
-x et y ainsi que la valueeur de la case
-
-
-
+Les pions sont des structures représentant un pion en générale. On différenti les pions en
+de leurs tableau de déplacement, leurs team (numéro du joueur) et leur coordonnées sur le plateau. 
+Le tableau de déplacement est le nombre de déplacement possible 
+pour un pion dans toutes les directions.
 
 
 
 LES DEPLACEMENTS
 -----------------------------------------------------------------------------
-Un déplacement s'effectu de la manière suivante : 
-	- On test si les cases départ et d'arrivé sont valueide
-	- On test si le pion a le droit d'effectuer ce déplacement
-	- On test si si la case d'arrivé est libre
-Dans le cas contraire le déplacement est soit invalueide ou soit c'est une prise
+
 
 
 
@@ -51,8 +37,7 @@ LES PRISES
 
 
 
-#define WIDTH 10 // Largeur du plateau
-#define HEIGHT 10 // Hauteur du plateau
+#define WIDTH 10 // Le plateau est carré, WIDTH représente la taille du côté
 
 /**
  *	Représente un pion
@@ -63,18 +48,79 @@ struct Pion
 	int y; // Position sur y
 
     int team; // La team du pion
-	int moveList[]; // Les déplacement possible du pion
+	int moveList[8]; // Les déplacement possible du pion
 };
 
-struct Pion * board[WIDTH][HEIGHT]; // Plateau
+struct Pion * board[WIDTH][WIDTH]; // Plateau de jeu
+
+/**
+ * Créer un pion sur le plateau au coordonnées (x, y)
+ * Le nom de la team est le numéro du joueur
+ * Le paramètre type est le type de pion :
+ * 		- Pion classique : 0
+ * 		- Dame : 1
+ * Ces deux types pions ont des déplacements différents
+ */
+void createPion(int x, int y, int team, int type){
+	board[x][y] = malloc(sizeof(struct Pion));
+	board[x][y]->x = x;
+	board[x][y]->y = y;
+	board[x][y]->team = team;
+
+	// Si le type est une dame
+	// 	MAX  MAX MAX
+	// 	MAX   P  MAX
+	// 	MAX  MAX MAX
+	if(type == 1){
+
+		board[x][y]->moveList[0] = WIDTH;
+		board[x][y]->moveList[1] = WIDTH;
+		board[x][y]->moveList[2] = WIDTH;
+		board[x][y]->moveList[3] = WIDTH;
+		board[x][y]->moveList[4] = WIDTH;
+		board[x][y]->moveList[5] = WIDTH;
+		board[x][y]->moveList[6] = WIDTH;
+		board[x][y]->moveList[7] = WIDTH;
+
+	}else{ // Le pion est un pion classique
+
+		if(team == 1){
+			// Si c'est un pion joueur 1
+			// 	0 0 0
+			// 	0 P 0
+			// 	1 0 1
+			board[x][y]->moveList[0] = 0;
+			board[x][y]->moveList[1] = 0;
+			board[x][y]->moveList[2] = 0;
+			board[x][y]->moveList[3] = 0;
+			board[x][y]->moveList[4] = 0;
+			board[x][y]->moveList[5] = 1;
+			board[x][y]->moveList[6] = 0;
+			board[x][y]->moveList[7] = 1;
+		}else{
+			// Si c'est un pion joueur 2
+			// 	1 0 1
+			// 	0 P 0
+			// 	0 0 0
+			board[x][y]->moveList[0] = 1;
+			board[x][y]->moveList[1] = 0;
+			board[x][y]->moveList[2] = 1;
+			board[x][y]->moveList[3] = 0;
+			board[x][y]->moveList[4] = 0;
+			board[x][y]->moveList[5] = 0;
+			board[x][y]->moveList[6] = 0;
+			board[x][y]->moveList[7] = 0;
+		}
+	}
+}
 
 /**
  * Affiche un rendu console du plateau
  */
-void showBoard(struct Pion * board[WIDTH][HEIGHT]){
+void showBoard(){
 	printf(" -----------------------------------------");
 	printf("\n");
-	for(int y = 0; y < HEIGHT; y++){
+	for(int y = 0; y < WIDTH; y++){
 		for(int x = 0; x < WIDTH; x++){
 			printf(" | ");
 			if(board[x][y] != NULL){
@@ -98,10 +144,7 @@ void setBoard(){
 	for(int y = 0; y < 4; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
-				board[x][y] = malloc(sizeof(struct Pion));
-				board[x][y]->x = x;
-				board[x][y]->y = y;
-				board[x][y]->team = 1;
+				createPion(x, y, 1, 0);
 			}else{
 				board[x][y] = NULL;
 			}
@@ -116,13 +159,10 @@ void setBoard(){
 	}
 
 	// Partie basse du plateau (Joueur 2)
-	for(int y = 6; y < HEIGHT; y++){
+	for(int y = 6; y < WIDTH; y++){
 		for(int x = 0; x < WIDTH; x++){
 			if((x+y)%2 == 0){
-				board[x][y] = malloc(sizeof(struct Pion));
-				board[x][y]->x = x;
-				board[x][y]->y = y;
-				board[x][y]->team = 2;
+				createPion(x, y, 2, 0);
 			}else{
 				board[x][y] = NULL;
 			}
@@ -142,7 +182,7 @@ void setBoard(){
 int main(int argc, char *argv[])
 {
 	setBoard();
-	showBoard(board);
+	showBoard();
 
     return 0;
 }
