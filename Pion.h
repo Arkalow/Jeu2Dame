@@ -16,6 +16,7 @@ struct Pion
 	struct Vector moveList[8]; // Les déplacements possible du pion
 };
 #define WIDTH 10 // Le plateau est carré, WIDTH représente la taille du côté du plateau
+#define NB_PION 2 // Nombre de pion par joueur 
 struct Pion * board[WIDTH][WIDTH]; // Plateau de jeu
 
 /**
