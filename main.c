@@ -95,6 +95,18 @@ struct Vector subVector(struct Vector v1, struct Vector v2){
 }
 
 /**
+ * Effectue une addidtion de deux vecteurs
+ */ 
+struct Vector addVector(struct Vector v1, struct Vector v2){
+	struct Vector vector;
+	
+	vector.x = v1.x + v2.x;
+	vector.y = v1.y + v2.y;
+	
+	return vector;
+}
+
+/**
  * Créer un vecteur à partir de deux points
  * Peut représenter un vecteur déplacement par exemple
  */ 
@@ -121,7 +133,7 @@ struct Vector unitVector(struct Vector v){
  * Pour le debug
  */
 void showVector(struct Vector vector){
-	printf("(%d, %d)\n", vector.x, vector.y);
+	printf("Vector (%d, %d)\n", vector.x, vector.y);
 }
 
 /**
@@ -213,9 +225,8 @@ int testVector(struct Vector move, struct Vector reference){
  * Test si un pion peut atteindre la case c
  */
 int testMove(struct Pion pion, struct Vector c){
-
 	struct Vector move;
-	move = subVector(pion.position, c);
+	move = subVector(c, pion.position);
 
 	// On parcourt tous les déplacements possible du pion
 	for(int i = 0; i < pion.nbMove; i++){
@@ -228,16 +239,12 @@ int testMove(struct Pion pion, struct Vector c){
 
 /**
  * Déplace un pion sur le plateau
- * Renvoie 0 si la case est déjà occupé
- * Sinon renvoie 1 et déplace le pion
  */
-int move(struct Vector start, struct Vector end){
-	if(board[end.x][end.y] == NULL){
-		board[end.x][end.y] = board[start.x][start.y];
-		board[start.x][start.y] = NULL;
-		return 1; // True
-	}
-	return 0; // False
+void move(struct Pion pion, struct Vector end){
+	struct Vector start; start = pion.position;
+
+	board[end.x][end.y] = board[start.x][start.y];
+	board[start.x][start.y] = NULL;
 }
 
 
@@ -264,18 +271,6 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 		return 0;
 	}else{ // Erreur plus d'une prise trouvées
 		return -1;
-	}
-}
-
-/**
- * Effectue la prise d'une piece
- */
-int prise(struct Vector start, struct Vector end, struct Vector prise){
-	if(move(start, end)){
-		board[prise.x][prise.y] = NULL;
-		return 1;
-	}else{
-		return 0;
 	}
 }
 
@@ -349,6 +344,72 @@ void freeBoard(){
 	}
 }
 
+/**
+ * Effectu une action 
+ * move, move + prise...
+ */
+int action(struct Pion pion, struct Vector point){
+	struct Vector prise;
+	int flagPrise = 0;
+	
+	showPion(pion);
+	showVector(point);
+
+	// Test de la case destination
+	if(board[point.x][point.y] == NULL){
+		switch(testPrise(pion, point, &prise)){
+			case 1 : 
+				printf(" Prise trouvee\n");
+				flagPrise = 1;
+
+				// On parcourt tous les déplacements possible du pion
+				for(int i = 0; i < pion.nbMove; i++){
+					
+					// On increment le vecteur de 1 unite
+					pion.moveList[i] = addVector(pion.moveList[i], unitVector(pion.moveList[i])); 
+					
+				}
+
+			break;
+
+			case -1 : 
+
+				printf(" Erreur prise\n");
+				return -1; // Action annulée
+
+			break;
+
+		}
+
+		// Test de la validite du deplacement par rapport au possibilite du pion
+		if(testMove(pion, point)){
+			printf(" Deplacement possible\n");
+			move(pion, point);
+		}else{
+			printf(" Le pion ne permet pas ce type de deplacement\n");
+		}
+
+		if(flagPrise){
+
+			// On parcourt tous les déplacements possible du pion
+			for(int i = 0; i < pion.nbMove; i++){
+				// On decrement le vecteur de 1 unite
+				pion.moveList[i] = subVector(pion.moveList[i], unitVector(pion.moveList[i])); 
+			}
+
+			board[prise.x][prise.y] = NULL;
+			printf(" Prise effectue\n");
+
+		}
+
+		return 1;
+
+	}else{
+		printf(" Impossible, la case de destination est deja occupee\n");
+		return -1;
+	}
+}
+
 
 
 
@@ -362,32 +423,23 @@ int main()
 {
 	setBoard();
 
-	struct Pion * pion; pion = board[0][0]; // Pion selectionné
-	struct Vector point; point = createPoint(1, 1); // Point de destination
 
+	
+
+	struct Vector point; point = createPoint(2, 2); // Point de destination
+
+	board[1][1]->team = 2;
 	board[point.x][point.y] = NULL; // On vide la case destination
-	
 	showBoard();
 
-	if(testMove(*pion, point)){
-		printf(" Deplacement possible\n");
-		if(move(pion->position, point)){
-			printf(" Deplacement Reussi\n");
-		}else{
-			printf(" Impossible, la case de destination est deja occupee\n");
-		}
+	if(action(*board[0][0], point)){
+		printf(" Action reussi\n");
 	}else{
-		printf(" Deplacement impossible\n");
+		printf(" Echec action\n");
 	}
 
 	showBoard();
 
-
-	struct Vector prise;
-	if(testPrise(*board[0][2], createPoint(0, 7), &prise) == 1){
-		showVector(prise);
-	}
-	
 	freeBoard();
     return 0;
 }
