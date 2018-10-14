@@ -111,6 +111,7 @@ int action(struct Pion pion, struct Vector point, struct Player * player){
 			move(pion, point);
 		}else{
 			printf(" Le pion ne permet pas ce type de deplacement\n");
+			return -1;
 		}
 
 		if(flagPrise){
@@ -150,18 +151,12 @@ int main()
 	player1 = createPlayer(1);
 	player2 = createPlayer(2);
 
-	currentPlayer = &player2;
+	currentPlayer = &player1;
 
 	struct Vector start, end;
 
 	// Boucle de jeu
 	while(player1.score != NB_PION && player2.score != NB_PION){
-
-		if(currentPlayer->team == player1.team){
-		currentPlayer = &player2;
-		}else{
-			currentPlayer = &player1;
-		}
 
 		showBoard();
 		printf("Joueur %d\n", currentPlayer->team);
@@ -176,12 +171,29 @@ int main()
 		scanf("%d", &end.x);
 		printf(" => y : ");
 		scanf("%d", &end.y);
-
-		if(board[start.x][start.y] != NULL && action(*board[start.x][start.y], end, currentPlayer) == 1){
-			printf(" Action reussi\n");
+		if(board[start.x][start.y] != NULL){
+			if(action(*board[start.x][start.y], end, currentPlayer) == 1){
+				printf(" Action reussi\n");
+				if(currentPlayer->team == player1.team){
+					currentPlayer = &player2;
+				}else{
+					currentPlayer = &player1;
+				}
+			}else{
+				printf(" Echec action\n");
+			}		
 		}else{
-			printf(" Echec action\n");
-		}		
+			printf("Aucune piece n'est selectionnee");
+		}
+	}
+
+
+	
+	showBoard();
+	if(currentPlayer->team == player1.team){
+		currentPlayer = &player2;
+	}else{
+		currentPlayer = &player1;
 	}
 	printf("Player %d a gagne !\n", currentPlayer->team);
 	freeBoard();
