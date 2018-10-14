@@ -9,6 +9,7 @@
 
 #include "Vector.h"
 #include "Pion.h"
+#include "Player.h"
 
 /*
 
@@ -140,6 +141,14 @@ int action(struct Pion pion, struct Vector point){
 int main()
 {
 	setBoard();
+
+
+	struct Player player1, player2;
+	struct Player * currentPlayer;
+	player1 = createPlayer(1);
+	player2 = createPlayer(2);
+
+	currentPlayer = &player1;
 
 
 	
