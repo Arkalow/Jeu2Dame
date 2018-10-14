@@ -1,3 +1,8 @@
+/**
+ * Le module Vector contient la structure vector ainsi que toutes les fonctions qui agissent
+ * sur l'outil vector
+ */
+
 
 /**
  * Représente un vecteur

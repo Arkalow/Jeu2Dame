@@ -60,3 +60,137 @@ void createPion(int x, int y, int team, int type){
 void showPion(struct Pion pion){
 	printf("Pion (%d, %d) %d\n", pion.position.x, pion.position.y, pion.team);
 }
+
+
+
+/**
+ * Affiche un rendu console du plateau
+ */
+void showBoard(){
+	printf(" -----------------------------------------\n");
+	printf(" |              JEU DE DAMES             |\n");
+	printf(" -----------------------------------------\n");
+	for(int y = 0; y < WIDTH; y++){
+		for(int x = 0; x < WIDTH; x++){
+			printf(" | ");
+			if(board[x][y] != NULL){
+				printf("%d", board[x][y]->team);
+			}else{
+				printf(" ");
+			}
+		}
+		printf(" |\n");
+		printf(" -----------------------------------------");
+		printf("\n");
+	}
+		printf("\n");
+		printf("\n");
+}
+
+/**
+ * Rempli le plateau
+ */
+void setBoard(){
+
+	// Partie haute du plateau (Joueur 1)
+	for(int y = 0; y < 4; y++){
+		for(int x = 0; x < WIDTH; x++){
+			if((x+y)%2 == 0){
+				createPion(x, y, 1, 0);
+			}else{
+				board[x][y] = NULL;
+			}
+		}
+	}
+
+	// Bande vide du milieu de plateau
+	for(int y = 4; y < 6; y++){
+		for(int x = 0; x < WIDTH; x++){
+			board[x][y] = NULL;
+		}
+	}
+
+	// Partie basse du plateau (Joueur 2)
+	for(int y = 6; y < WIDTH; y++){
+		for(int x = 0; x < WIDTH; x++){
+			if((x+y)%2 == 0){
+				createPion(x, y, 2, 0);
+			}else{
+				board[x][y] = NULL;
+			}
+		}
+	}
+}
+
+/**
+ * Libère la mémoire allouée par le plateau
+ */
+void freeBoard(){
+	for(int y = 0; y < WIDTH; y++){
+		for(int x = 0; x < WIDTH; x++){
+			free(board[x][y]);
+		}
+	}
+}
+
+/**
+ * Test si un pion peut atteindre la case c d'après la liste de ses déplacements possible
+ */
+int testMove(struct Pion pion, struct Vector c){
+	struct Vector move;
+	move = subVector(c, pion.position);
+
+	// On parcourt tous les déplacements possible du pion
+	for(int i = 0; i < pion.nbMove; i++){
+		if(testVector(move, pion.moveList[i])){
+			return 1; // True 
+		}
+	}
+	return 0;
+}
+
+/**
+ * Déplace un pion sur le plateau
+ */
+void move(struct Pion pion, struct Vector end){
+	struct Vector start; start = pion.position;
+
+	board[end.x][end.y] = board[start.x][start.y];
+	board[start.x][start.y] = NULL;
+}
+
+
+/**
+ * Test si pendant avec le vecteur deplacement, le pion rencontrera une piece
+ * La fonction retourne :
+ * 		1 : Si une piece adverse est trouvée 
+ * 		0 : Si aucune piece n'est trouvée
+ * 		-1 : Si une piece de la même team est trouvée ou plus d'une piece est trouvé
+ * 
+ * Le principe est simple, on parcourt la trajectoire lineaire avec un pas de vecteur unité
+ * 
+ */
+int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
+	int nbPrise = 0; // Nombre de pion trouvé sur le trajet
+	struct Vector unit = unitVector(subVector(end, pion.position)); // Vecteur unité
+	struct Vector start; start = pion.position; // Position de départ (position du pion)
+	
+	// Parcourt de la trajectoire
+	while(start.x != end.x || start.y != end.y){
+		start.x += unit.x; start.y += unit.y; // On incrémente le vecteur d'une unite
+		if(board[start.x][start.y] != NULL){ // Si on tombe sur un pion
+			if(board[start.x][start.y]->team == pion.team) { return -1; } // On ne traverse pas un de ses pions
+			nbPrise++;
+			*prise = start; // Pion trouvé
+		}
+	}
+
+	if(nbPrise == 1){ // Une prise trouvée
+		return 1;
+	}else if(nbPrise == 0){ // Aucune prise trouvé
+		return 0;
+	}else{ // Erreur plus d'une prise trouvées
+		return -1;
+	}
+}
+
