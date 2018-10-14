@@ -50,7 +50,10 @@ Une action de déroule en plusieurs étapes :
 	- A la fin du tour, il ne faut pas oublier de remettre les vecteurs déplacement à leurs valeurs initiales.
 
 
-
+TOURS DE JEU
+-----------------------------------------------------------------------------
+Le jeu se déroule en tour par tour, les deux joueurs jouent chaqu'un leur tour.
+Quand un joueur effectue une prise, il peut rejouer pour faire des combos 
 
 
 
