@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <SDL/SDL.h>
+#include "Vector.h"
 
 /*
 
