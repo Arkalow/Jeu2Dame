@@ -18,19 +18,36 @@ Le tableau de déplacement est le nombre de déplacement possible
 pour un pion dans toutes les directions.
 
 
-
 LES DEPLACEMENTS
 -----------------------------------------------------------------------------
 Les déplacements d'un pion sont représenté par un tableau de vecteur déplacement. 
-Pour tester la validité d'un déplacement on vérifie si le vecteur déplacement est inférieur à l'un des
-vecteurs deplacements de la liste de la moveList attachée au pion.
-
+Pour tester la validité d'un déplacement on vérifie si le vecteur déplacement est compris à l'interieur de l'un des
+vecteurs deplacements de la moveList attachée au pion.
 
 
 LES PRISES
 -----------------------------------------------------------------------------
+Une prise s'efectue quand le pion se déplace au dessus d'un seul pion adverse. 
+Les conditons sont : 
+	- La prise doit être de seulement 1 piont
+	- La prise doit se faire par une trajectoire lineaire
+	- Un pion ne peut pas passer au dessus d'un autre pion (même dans le cas d'un déplacement)
+	- Pendant une prise, le pion augmente sa porté de 1
+	- La case destination doit être libre
 
 
+LES ACTIONS
+-----------------------------------------------------------------------------
+Un action est l'enchainement d'un déplacement et ou une prise la fonction action va mettre en relation les tests
+de déplacement ainsi que les tests de prises pour effectuer les déplacements et les prises
+Une action de déroule en plusieurs étapes : 
+
+	- On commence par parcourir la trajectoire demandé pour déterminer si les prises sont correctes.
+	- Ensuite on augmente la porté du pion pour cela on augmente tout les vecteurs deplacement du pion de 
+		1 unite vecteur. 
+	- Ensuite on effectue un déplacement classique (avec la porté augmenter)
+
+	- A la fin du tour, il ne faut pas oublier de remettre les vecteurs déplacement à leurs valeurs initiales.
 
 
 
@@ -194,26 +211,26 @@ void showPion(struct Pion pion){
 }
 
 /**
- * Test si le vecteur move est compris dans le vecteur reference
+ * Test si le vecteur test est compris dans le vecteur reference
  * C'est le cas d'un déplacement valide par exemple
  */
-int testVector(struct Vector move, struct Vector reference){
+int testVector(struct Vector test, struct Vector reference){
 	if(reference.x > 0){ // Le vecteur référence est positif sur x
-		if(!(move.x > 0 && move.x < reference.x)){ // ! 0 < move.x < ref.x
+		if(!(test.x > 0 && test.x < reference.x)){ // ! 0 < test.x < ref.x
 			return 0; // False;
 		}
 	}else{
-		if(!(move.x < 0 && move.x > reference.x)){ //  ! ref.x < move.x < 0
+		if(!(test.x < 0 && test.x > reference.x)){ //  ! ref.x < test.x < 0
 			return 0; // False;
 		}
 	}
 
 	if(reference.y > 0){ // Le vecteur référence est positif sur y
-		if(!(move.y > 0 && move.y < reference.y)){ //  ! 0 < move.y < ref.y
+		if(!(test.y > 0 && test.y < reference.y)){ //  ! 0 < test.y < ref.y
 			return 0; // False;
 		}
 	}else{
-		if(!(move.y < 0 && move.y > reference.y)){ //  ! ref.y < move.y < 0
+		if(!(test.y < 0 && test.y > reference.y)){ //  ! ref.y < test.y < 0
 			return 0; // False;
 		}
 	}
@@ -222,7 +239,7 @@ int testVector(struct Vector move, struct Vector reference){
 }
 
 /**
- * Test si un pion peut atteindre la case c
+ * Test si un pion peut atteindre la case c d'après la liste de ses déplacements possible
  */
 int testMove(struct Pion pion, struct Vector c){
 	struct Vector move;
@@ -250,12 +267,20 @@ void move(struct Pion pion, struct Vector end){
 
 /**
  * Test si pendant avec le vecteur deplacement, le pion rencontrera une piece
+ * La fonction retourne :
+ * 		1 : Si une piece adverse est trouvée 
+ * 		0 : Si aucune piece n'est trouvée
+ * 		-1 : Si une piece de la même team est trouvée ou plus d'une piece est trouvé
+ * 
+ * Le principe est simple, on parcourt la trajectoire lineaire avec un pas de vecteur unité
+ * 
  */
 int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 	int nbPrise = 0; // Nombre de pion trouvé sur le trajet
 	struct Vector unit = unitVector(subVector(end, pion.position)); // Vecteur unité
 	struct Vector start; start = pion.position; // Position de départ (position du pion)
 	
+	// Parcourt de la trajectoire
 	while(start.x != end.x || start.y != end.y){
 		start.x += unit.x; start.y += unit.y; // On incrémente le vecteur d'une unite
 		if(board[start.x][start.y] != NULL){ // Si on tombe sur un pion
@@ -347,6 +372,8 @@ void freeBoard(){
 /**
  * Effectu une action 
  * move, move + prise...
+ * La fonction retourne -1 en cas d'echec ex: saut au dessus de plusieurs prises
+ * Sinon retourne 1 en cas de succès
  */
 int action(struct Pion pion, struct Vector point){
 	struct Vector prise;
@@ -428,7 +455,7 @@ int main()
 
 	struct Vector point; point = createPoint(2, 2); // Point de destination
 
-	board[1][1]->team = 2;
+	board[1][1]->team = 2; // On ajoute une prise
 	board[point.x][point.y] = NULL; // On vide la case destination
 	showBoard();
 
