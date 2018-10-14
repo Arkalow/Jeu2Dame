@@ -41,3 +41,10 @@ struct Vector unitVector(struct Vector v);
  * Pour le debug
  */
 void showVector(struct Vector vector);
+
+
+/**
+ * Test si le vecteur test est compris dans le vecteur reference
+ * C'est le cas d'un déplacement valide par exemple
+ */
+int testVector(struct Vector test, struct Vector reference);
