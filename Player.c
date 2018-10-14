@@ -11,7 +11,7 @@
 struct Player createPlayer(int team){
     struct Player player;
     player.team = team;
-    player.nbCatchedPion = 0;
+    player.score = 0;
     return player;
 }
 

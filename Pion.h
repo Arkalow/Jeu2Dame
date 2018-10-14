@@ -47,6 +47,11 @@ void showBoard();
 void setBoard();
 
 /**
+ * Rempli le plateau pour les tests
+ */
+void setTestBoard();
+
+/**
  * Libère la mémoire allouée par le plateau
  */
 void freeBoard();

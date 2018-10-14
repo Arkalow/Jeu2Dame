@@ -140,7 +140,8 @@ int action(struct Pion pion, struct Vector point){
 // -------------------------------------------------------------------------------------
 int main()
 {
-	setBoard();
+	//setBoard();
+	setTestBoard();
 
 
 	struct Player player1, player2;
@@ -150,8 +151,11 @@ int main()
 
 	currentPlayer = &player1;
 
+	//printf
 
-	
+	showBoard();
+	freeBoard();
+	return 0;
 
 	struct Vector point; point = createPoint(2, 2); // Point de destination
 

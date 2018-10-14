@@ -8,8 +8,7 @@
  */
 struct Player{
     int team;
-    struct Pion catchedPions[20];
-    int nbCatchedPion;
+    int score; // Nombre de pion adverse attrapé
 };
 
 /**
