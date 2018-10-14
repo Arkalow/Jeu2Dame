@@ -9,6 +9,7 @@
 
 #include "Vector.h"
 #include "Pion.h"
+#include "Player.h"
 
 /*
 
@@ -71,7 +72,7 @@ Quand un joueur effectue une prise, il peut rejouer pour faire des combos
  * La fonction retourne -1 en cas d'echec ex: saut au dessus de plusieurs prises
  * Sinon retourne 1 en cas de succès
  */
-int action(struct Pion pion, struct Vector point){
+int action(struct Pion pion, struct Vector point, struct Player * player){
 	struct Vector prise;
 	int flagPrise = 0;
 	
@@ -110,6 +111,7 @@ int action(struct Pion pion, struct Vector point){
 			move(pion, point);
 		}else{
 			printf(" Le pion ne permet pas ce type de deplacement\n");
+			return -1;
 		}
 
 		if(flagPrise){
@@ -121,6 +123,7 @@ int action(struct Pion pion, struct Vector point){
 			}
 
 			board[prise.x][prise.y] = NULL;
+			player->score++;
 			printf(" Prise effectue\n");
 
 		}
@@ -139,11 +142,63 @@ int action(struct Pion pion, struct Vector point){
 // -------------------------------------------------------------------------------------
 int main()
 {
-	setBoard();
+	//setBoard();
+	setTestBoard();
+
+
+	struct Player player1, player2;
+	struct Player * currentPlayer;
+	player1 = createPlayer(1);
+	player2 = createPlayer(2);
+
+	currentPlayer = &player1;
+
+	struct Vector start, end;
+
+	// Boucle de jeu
+	while(player1.score != NB_PION && player2.score != NB_PION){
+
+		showBoard();
+		printf("Joueur %d\n", currentPlayer->team);
+		printf(" Start : \n");
+		printf(" => x : ");
+		scanf("%d", &start.x);
+		printf(" => y : ");
+		scanf("%d", &start.y);
+
+		printf(" End : \n");
+		printf(" => x : ");
+		scanf("%d", &end.x);
+		printf(" => y : ");
+		scanf("%d", &end.y);
+		if(board[start.x][start.y] != NULL){
+			if(action(*board[start.x][start.y], end, currentPlayer) == 1){
+				printf(" Action reussi\n");
+				if(currentPlayer->team == player1.team){
+					currentPlayer = &player2;
+				}else{
+					currentPlayer = &player1;
+				}
+			}else{
+				printf(" Echec action\n");
+			}		
+		}else{
+			printf("Aucune piece n'est selectionnee");
+		}
+	}
 
 
 	
-
+	showBoard();
+	if(currentPlayer->team == player1.team){
+		currentPlayer = &player2;
+	}else{
+		currentPlayer = &player1;
+	}
+	printf("Player %d a gagne !\n", currentPlayer->team);
+	freeBoard();
+	return 0;
+/*
 	struct Vector point; point = createPoint(2, 2); // Point de destination
 
 	board[1][1]->team = 2; // On ajoute une prise
@@ -159,5 +214,5 @@ int main()
 	showBoard();
 
 	freeBoard();
-    return 0;
+    return 0;*/
 }
