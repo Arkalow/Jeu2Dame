@@ -17,6 +17,7 @@ void createPion(int x, int y, int team, int type){
 	board[x][y]->position.x = x;
 	board[x][y]->position.y = y;
 	board[x][y]->team = team;
+	board[x][y]->type = type;
 
 
 	// Si le type est une dame
@@ -209,6 +210,25 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 		return 0;
 	}else{ // Erreur plus d'une prise trouvées
 		return -1;
+	}
+}
+
+/**
+ * Récupère l'adresse d'un pion dans le plateau
+ * Si les coordonées sont valide => retourne 1 et met l'adresse du pion dans pion
+ * Sinon => retourne -1
+ */
+int searchBoard(struct Vector point, struct Pion ** pion){
+	if(point.x < WIDTH && point.x >= 0 && point.y >= 0 && point.y < WIDTH){
+		*pion = board[point.x][point.y];
+		if(*pion != NULL){
+			return 1; // Vrai
+		}else{
+			return 0; // Faux
+		}
+	}else{
+		*pion = NULL;
+		return -1; // Erreur
 	}
 }
 

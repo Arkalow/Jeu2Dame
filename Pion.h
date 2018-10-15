@@ -13,6 +13,7 @@ struct Pion
 
     int team; // La team du pion
 	int nbMove; // Nombre de déplacement possible
+	int type; // type de pion
 	struct Vector moveList[8]; // Les déplacements possible du pion
 };
 #define WIDTH 10 // Le plateau est carré, WIDTH représente la taille du côté du plateau
@@ -80,3 +81,10 @@ void move(struct Pion pion, struct Vector end);
  * 
  */
 int testPrise(struct Pion pion, struct Vector end, struct Vector * prise);
+
+/**
+ * Récupère l'adresse d'un pion dans le plateau
+ * Si les coordonées sont valide => retourne 1 et met l'adresse du pion dans pion
+ * Sinon => retourne -1
+ */
+int searchBoard(struct Vector point, struct Pion ** pion);
