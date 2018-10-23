@@ -4,6 +4,11 @@
  * Ce module contient aussi le code du plateau de jeu
  */ 
 
+#define RED     "\033[1;31m" 
+#define WHITE   "\033[0;m" 
+#define GREEN   "\033[1;32m" 
+#define BLUE    "\033[1;34m" 
+
 /**
  *	Représente un pion
  */

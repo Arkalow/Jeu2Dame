@@ -106,7 +106,19 @@ void showBoard(){
 		for(int x = 0; x < WIDTH; x++){
 			printf(" | ");
 			if(board[x][y] != NULL){
-				printf("%d", board[x][y]->team);
+				if(board[x][y]->team == 1){
+					if(board[x][y]->type == 1){
+						printf(RED"D"WHITE);
+					}else{
+						printf(RED"P"WHITE);
+					}
+				}else{
+					if(board[x][y]->type == 1){
+						printf(BLUE"D"WHITE);
+					}else{
+						printf(BLUE"P"WHITE);
+					}
+				}
 			}else{
 				printf(" ");
 			}
