@@ -31,6 +31,18 @@ struct Pion * board[WIDTH][WIDTH]; // Plateau de jeu
 void createPion(int x, int y, int team, int type);
 
 /**
+ * Test si le pion est à la bonne position pour se transformer en dame
+ * Renvoi 1 si Oui sinon renvoi 0;
+ */
+int testTranfo(struct Pion pion);
+
+/**
+ * Transforme un pion en dame
+ * On change tout simplement son type et sa moveList
+ */
+void tranfoDame(struct Pion * pion);
+
+/**
  * Affiche un pion dans la console
  * Pour les debug
  */
@@ -68,7 +80,7 @@ int testMove(struct Pion pion, struct Vector c);
 /**
  * Déplace un pion sur le plateau
  */
-void move(struct Pion pion, struct Vector end);
+void move(struct Pion * pion, struct Vector end);
 
 /**
  * Test si pendant avec le vecteur deplacement, le pion rencontrera une piece
