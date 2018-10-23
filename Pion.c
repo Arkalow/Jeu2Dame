@@ -99,10 +99,13 @@ void showPion(struct Pion pion){
  * Affiche un rendu console du plateau
  */
 void showBoard(){
-	printf(" -----------------------------------------\n");
-	printf(" |              JEU DE DAMES             |\n");
-	printf(" -----------------------------------------\n");
+	printf("   -----------------------------------------\n");
+	printf("   |              JEU DE DAMES             |\n");
+	printf("   -----------------------------------------\n\n");
+	printf("     0   1   2   3   4   5   6   7   8   9  \n");
+	printf("   -----------------------------------------\n");
 	for(int y = 0; y < WIDTH; y++){
+		printf(" %d", y);
 		for(int x = 0; x < WIDTH; x++){
 			printf(" | ");
 			if(board[x][y] != NULL){
@@ -124,7 +127,7 @@ void showBoard(){
 			}
 		}
 		printf(" |\n");
-		printf(" -----------------------------------------");
+		printf("   -----------------------------------------");
 		printf("\n");
 	}
 		printf("\n");
