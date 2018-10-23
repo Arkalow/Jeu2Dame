@@ -34,24 +34,49 @@ void createPion(int x, int y, int team, int type){
 
 	}else{ // Le pion est un pion classique
 
-		board[x][y]->nbMove = 4; // Un pion classique a 2 déplacements possible
+		board[x][y]->nbMove = 2; // Un pion classique a 2 déplacements possible
 
 		if(team == 1){
 			// Si c'est un pion joueur 1
 			// 	0 0 0
 			// 	0 P 0
 			// 	1 0 1
-			board[x][y]->moveList[0] = createVector(0, 0, 10, 10); // Bas droite
-			board[x][y]->moveList[2] = createVector(0, 0, -10, 10); // Bas gauche
+			board[x][y]->moveList[0] = createVector(0, 0, 1, 1); // Bas droite
+			board[x][y]->moveList[1] = createVector(0, 0, -1, 1); // Bas gauche
 		}else{
 			// Si c'est un pion joueur 2
 			// 	1 0 1
 			// 	0 P 0
 			// 	0 0 0
-			board[x][y]->moveList[1] = createVector(0, 0, -10, -10); // Haut gauche
-			board[x][y]->moveList[3] = createVector(0, 0, 10, 10); // Haut droite
+			board[x][y]->moveList[0] = createVector(0, 0, -1, -1); // Haut gauche
+			board[x][y]->moveList[1] = createVector(0, 0, 1, -1); // Haut droite
 		}
 	}
+}
+
+/**
+ * Test si le pion est à la bonne position pour se transformer en dame
+ */
+int testTranfo(struct Pion pion){
+	if(pion.type != 0) return 0; // Ce n'est pas un pion 
+
+	if(pion.team == 2 && pion.position.y == 0) return 1;
+	else if(pion.team == 1 && pion.position.y == WIDTH) return 1;
+	
+	return 0;
+}
+
+/**
+ * Transforme un pion en dame
+ * On change tout simplement son type et sa moveList
+ */
+void tranfoDame(struct Pion * pion){
+	pion->type = 1;
+	pion->nbMove = 4; // Une dame a 4 déplacements possible
+	pion->moveList[0] = createVector(0, 0, 10, 10); // Bas droite
+	pion->moveList[1] = createVector(0, 0, -10, -10); // Haut gauche
+	pion->moveList[2] = createVector(0, 0, -10, 10); // Bas gauche
+	pion->moveList[3] = createVector(0, 0, 10, 10); // Haut droite
 }
 
 /**
@@ -59,7 +84,13 @@ void createPion(int x, int y, int team, int type){
  * Pour les debug
  */
 void showPion(struct Pion pion){
-	printf("Pion (%d, %d) %d\n", pion.position.x, pion.position.y, pion.team);
+	printf("Pion (%d, %d) \n team %d\n", pion.position.x, pion.position.y, pion.team);
+	printf(" Type %d\n", pion.type);
+	printf("Deplacement : \n");
+	for(int i = 0; i < pion.nbMove; i++){
+		printf("  ");
+		showVector(pion.moveList[i]);
+	}
 }
 
 
@@ -161,7 +192,7 @@ int testMove(struct Pion pion, struct Vector c){
 
 	// On parcourt tous les déplacements possible du pion
 	for(int i = 0; i < pion.nbMove; i++){
-		if(testVector(move, pion.moveList[i])){
+		if(testVector(move, pion.moveList[i]) == 1){
 			return 1; // True 
 		}
 	}
@@ -171,8 +202,11 @@ int testMove(struct Pion pion, struct Vector c){
 /**
  * Déplace un pion sur le plateau
  */
-void move(struct Pion pion, struct Vector end){
-	struct Vector start; start = pion.position;
+void move(struct Pion * pion, struct Vector end){
+	struct Vector start; start = pion->position;
+
+	pion->position.x = end.x;
+	pion->position.y = end.y;
 
 	board[end.x][end.y] = board[start.x][start.y];
 	board[start.x][start.y] = NULL;
@@ -193,14 +227,25 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 	int nbPrise = 0; // Nombre de pion trouvé sur le trajet
 	struct Vector unit = unitVector(subVector(end, pion.position)); // Vecteur unité
 	struct Vector start; start = pion.position; // Position de départ (position du pion)
-	
+
 	// Parcourt de la trajectoire
 	while(start.x != end.x || start.y != end.y){
+
 		start.x += unit.x; start.y += unit.y; // On incrémente le vecteur d'une unite
-		if(board[start.x][start.y] != NULL){ // Si on tombe sur un pion
-			if(board[start.x][start.y]->team == pion.team) { return -1; } // On ne traverse pas un de ses pions
-			nbPrise++;
-			*prise = start; // Pion trouvé
+
+		// Si on tombe sur un pion
+		if(board[start.x][start.y] != NULL){ 
+
+			// On traverse un de ses pionss
+			if(board[start.x][start.y]->team == pion.team) { 
+
+				return -1; 
+
+			}else{ // On ne traverse pas un de ses pions mais un pion adverse
+				nbPrise++;
+				*prise = start; // Pion trouvé
+			}
+			
 		}
 	}
 
@@ -220,6 +265,7 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
  */
 int searchBoard(struct Vector point, struct Pion ** pion){
 	if(point.x < WIDTH && point.x >= 0 && point.y >= 0 && point.y < WIDTH){
+
 		*pion = board[point.x][point.y];
 		if(*pion != NULL){
 			return 1; // Vrai

@@ -31,6 +31,7 @@ LES DEPLACEMENTS
 Les déplacements d'un pion sont représenté par un tableau de vecteur déplacement. 
 Pour tester la validité d'un déplacement on vérifie si le vecteur déplacement est compris à l'interieur de l'un des
 vecteurs deplacements de la moveList attachée au pion.
+Si un pion arrive au bout de la map (chez l'adversaire) ce dernier se transforme en dame
 
 
 LES PRISES
@@ -72,11 +73,11 @@ Quand un joueur effectue une prise, il peut rejouer pour faire des combos
  * La fonction retourne -1 en cas d'echec ex: saut au dessus de plusieurs prises
  * Sinon retourne 1 en cas de succès
  */
-int action(struct Pion pion, struct Vector point, struct Player * player){
+int action(struct Pion * pion, struct Vector point, struct Player * player){
 	struct Vector prise;
 	int flagPrise = 0;
 	
-	showPion(pion);
+	showPion(*pion);
 	showVector(point);
 
 	struct Pion * end;
@@ -84,19 +85,18 @@ int action(struct Pion pion, struct Vector point, struct Player * player){
 	switch(searchBoard(point, &end)){
 		case 0 : 
 
-			switch(testPrise(pion, point, &prise)){
+			switch(testPrise(*pion, point, &prise)){
 				case 1 : 
 					printf(" Prise trouvee\n");
 					flagPrise = 1;
 
 					// On parcourt tous les déplacements possible du pion
-					for(int i = 0; i < pion.nbMove; i++){
+					for(int i = 0; i < pion->nbMove; i++){
 						
 						// On increment le vecteur de 1 unite
-						pion.moveList[i] = addVector(pion.moveList[i], unitVector(pion.moveList[i])); 
+						pion->moveList[i] = addVector(pion->moveList[i], unitVector(pion->moveList[i])); 
 						
 					}
-
 				break;
 
 				case -1 : 
@@ -109,9 +109,10 @@ int action(struct Pion pion, struct Vector point, struct Player * player){
 			}
 
 			// Test de la validite du deplacement par rapport au possibilite du pion
-			if(testMove(pion, point)){
+			if(testMove(*pion, point)){
 				printf(" Deplacement possible\n");
 				move(pion, point);
+
 			}else{
 				printf(" Le pion ne permet pas ce type de deplacement\n");
 				return -1;
@@ -120,9 +121,9 @@ int action(struct Pion pion, struct Vector point, struct Player * player){
 			if(flagPrise){
 
 				// On parcourt tous les déplacements possible du pion
-				for(int i = 0; i < pion.nbMove; i++){
+				for(int i = 0; i < pion->nbMove; i++){
 					// On decrement le vecteur de 1 unite
-					pion.moveList[i] = subVector(pion.moveList[i], unitVector(pion.moveList[i])); 
+					pion->moveList[i] = subVector(pion->moveList[i], unitVector(pion->moveList[i])); 
 				}
 
 				board[prise.x][prise.y] = NULL;
@@ -181,6 +182,7 @@ int main()
 		printf(" => y : ");
 		scanf("%d", &end.y);
 		
+
 		switch(searchBoard(start, &pionStart)){
 
 			case 0 : // Case déjà occupée 
@@ -188,14 +190,19 @@ int main()
 			break;
 
 			case 1 : // Case contient un pion
-
-				if(action(*pionStart, end, currentPlayer) == 1){
+				if(action(pionStart, end, currentPlayer) == 1){
 					printf(" Action reussi\n");
 					if(currentPlayer->team == player1.team){
 						currentPlayer = &player2;
 					}else{
 						currentPlayer = &player1;
 					}
+
+					if(testTranfo(*pionStart) == 1){
+						printf("Tranformation !!!!\n");
+						tranfoDame(pionStart);
+					}
+					
 				}else{
 					printf(" Echec action\n");
 				}
@@ -219,21 +226,4 @@ int main()
 	printf("Player %d a gagne !\n", currentPlayer->team);
 	freeBoard();
 	return 0;
-/*
-	struct Vector point; point = createPoint(2, 2); // Point de destination
-
-	board[1][1]->team = 2; // On ajoute une prise
-	board[point.x][point.y] = NULL; // On vide la case destination
-	showBoard();
-
-	if(action(*board[0][0], point)){
-		printf(" Action reussi\n");
-	}else{
-		printf(" Echec action\n");
-	}
-
-	showBoard();
-
-	freeBoard();
-    return 0;*/
 }

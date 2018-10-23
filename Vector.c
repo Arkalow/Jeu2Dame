@@ -75,22 +75,24 @@ void showVector(struct Vector vector){
  * C'est le cas d'un déplacement valide par exemple
  */
 int testVector(struct Vector test, struct Vector reference){
+
 	if(reference.x > 0){ // Le vecteur référence est positif sur x
-		if(!(test.x > 0 && test.x < reference.x)){ // ! 0 < test.x < ref.x
+		if(test.x <= 0 || test.x > reference.x){ // ! 0 < test.x < ref.x
 			return 0; // False;
 		}
-	}else{
-		if(!(test.x < 0 && test.x > reference.x)){ //  ! ref.x < test.x < 0
+	}else if(reference.x < 0){
+		if(test.x >= 0 || test.x < reference.x){ //  ! ref.x < test.x < 0
 			return 0; // False;
 		}
 	}
 
+	
 	if(reference.y > 0){ // Le vecteur référence est positif sur y
-		if(!(test.y > 0 && test.y < reference.y)){ //  ! 0 < test.y < ref.y
+		if(test.y <= 0 || test.y > reference.y){ //  ! 0 < test.y < ref.y
 			return 0; // False;
 		}
-	}else{
-		if(!(test.y < 0 && test.y > reference.y)){ //  ! ref.y < test.y < 0
+	}else if(reference.y < 0){
+		if(test.y >= 0 || test.y < reference.y){ //  ! ref.y < test.y < 0
 			return 0; // False;
 		}
 	}
