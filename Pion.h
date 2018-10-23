@@ -4,6 +4,11 @@
  * Ce module contient aussi le code du plateau de jeu
  */ 
 
+#define RED     "\033[1;31m" 
+#define WHITE   "\033[0;m" 
+#define GREEN   "\033[1;32m" 
+#define BLUE    "\033[1;34m" 
+
 /**
  *	Représente un pion
  */
@@ -13,6 +18,7 @@ struct Pion
 
     int team; // La team du pion
 	int nbMove; // Nombre de déplacement possible
+	int type; // type de pion
 	struct Vector moveList[8]; // Les déplacements possible du pion
 };
 #define WIDTH 10 // Le plateau est carré, WIDTH représente la taille du côté du plateau
@@ -28,6 +34,18 @@ struct Pion * board[WIDTH][WIDTH]; // Plateau de jeu
  * Ces deux types pions ont des déplacements différents
  */
 void createPion(int x, int y, int team, int type);
+
+/**
+ * Test si le pion est à la bonne position pour se transformer en dame
+ * Renvoi 1 si Oui sinon renvoi 0;
+ */
+int testTranfo(struct Pion pion);
+
+/**
+ * Transforme un pion en dame
+ * On change tout simplement son type et sa moveList
+ */
+void tranfoDame(struct Pion * pion);
 
 /**
  * Affiche un pion dans la console
@@ -67,7 +85,7 @@ int testMove(struct Pion pion, struct Vector c);
 /**
  * Déplace un pion sur le plateau
  */
-void move(struct Pion pion, struct Vector end);
+void move(struct Pion * pion, struct Vector end);
 
 /**
  * Test si pendant avec le vecteur deplacement, le pion rencontrera une piece
@@ -80,3 +98,10 @@ void move(struct Pion pion, struct Vector end);
  * 
  */
 int testPrise(struct Pion pion, struct Vector end, struct Vector * prise);
+
+/**
+ * Récupère l'adresse d'un pion dans le plateau
+ * Si les coordonées sont valide => retourne 1 et met l'adresse du pion dans pion
+ * Sinon => retourne -1
+ */
+int searchBoard(struct Vector point, struct Pion ** pion);
