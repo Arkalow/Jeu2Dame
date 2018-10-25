@@ -71,78 +71,74 @@ Quand un joueur effectue une prise, il peut rejouer pour faire des combos
  * Effectue une action 
  * move, move + prise...
  * La fonction retourne -1 en cas d'echec ex: saut au dessus de plusieurs prises
+ * Sinon si le tour fait partie d'un combo on retourne 2
  * Sinon retourne 1 en cas de succès
  */
 int action(struct Pion * pion, struct Vector point, struct Player * player){
 	struct Vector prise;
-	int flagPrise = 0;
 	
+	printf("Pion selectionne : \n");
 	showPion(*pion);
+	printf("Destination : ");
 	showVector(point);
 
 	struct Pion * end;
+	
 	// Test de la case destination
-	switch(searchBoard(point, &end)){
-		case 0 : 
-
-			switch(testPrise(*pion, point, &prise)){
-				case 1 : 
-					printf(" Prise trouvee\n");
-					flagPrise = 1;
-
-					// On parcourt tous les déplacements possible du pion
-					for(int i = 0; i < pion->nbMove; i++){
-						
-						// On increment le vecteur de 1 unite
-						pion->moveList[i] = addVector(pion->moveList[i], unitVector(pion->moveList[i])); 
-						
-					}
-				break;
-
-				case -1 : 
-
-					printf(" Erreur prise\n");
-					return -1; // Action annulée
-
-				break;
-
-			}
-
-			// Test de la validite du deplacement par rapport au possibilite du pion
-			if(testMove(*pion, point)){
-				printf(" Deplacement possible\n");
-				move(pion, point);
-
-			}else{
-				printf(" Le pion ne permet pas ce type de deplacement\n");
-				return -1;
-			}
-
-			if(flagPrise){
-
-				// On parcourt tous les déplacements possible du pion
-				for(int i = 0; i < pion->nbMove; i++){
-					// On decrement le vecteur de 1 unite
-					pion->moveList[i] = subVector(pion->moveList[i], unitVector(pion->moveList[i])); 
-				}
-
-				board[prise.x][prise.y] = NULL;
-				player->score++;
-				printf(" Prise effectue\n");
-
-			}
-
-			return 1;
-		break;
-		case 1 : // Case déjà occupée 
-			printf(" Impossible, la case de destination est deja occupee\n");
-			return -1;
-		break;
-		case -1 : // Case hors limite
-			printf(" Case hors limite\n");
-			return -1;
-		break; 
+	int resultSearchBoard = searchBoard(point, &end);
+	int resultTestPrise;
+	if(resultSearchBoard == 1){ // Case déjà occupée 
+		printf(" Impossible, la case de destination est deja occupee\n");
+		return -1;
 	}
+	
+	if(resultSearchBoard == -1){ // Case hors limite
+		printf(" Case hors limite\n");
+		return -1;
+	}
+
+	incrementMoveList(pion);
+
+	// Test de la validite du deplacement par rapport au possibilite du pion
+	if(testMove(*pion, point)){
+
+		// S'il y une prise
+		resultTestPrise = testPrise(*pion, point, &prise);
+
+		// S'il y a une prise
+		if(resultTestPrise == 1){
+
+			printf(" Prise trouvee\n");
+			board[prise.x][prise.y] = NULL;
+			player->score++;
+			printf(" Prise effectue\n");
+
+			printf(" Deplacement\n");
+			move(pion, point);
+
+		}else if(resultTestPrise == -1){
+			printf(" Erreur prise\n");
+			return -1; // Action annulée
+		}
+
+
+	}else{
+
+		decrementMoveList(pion);
+
+		if(testMove(*pion, point)){
+
+			printf(" Deplacement possible\n");
+			move(pion, point);
+
+		}else{
+			printf(" Le pion ne permet pas ce type de deplacement\n");
+			return -1;
+		}
+	}
+	
+	return 2;
+
 }
 
 
@@ -164,55 +160,79 @@ int main()
 
 	struct Vector start, end;
 	struct Pion * pionStart;
+	int resultAction;
 
+	showBoard();
 	// Boucle de jeu
 	while(player1.score != NB_PION && player2.score != NB_PION){
-
-		showBoard();
+		printf("Score : \n \tPlayer1 : %d\n\tPlayer2 : %d\n", player1.score, player2.score);
 		printf("Joueur %d\n", currentPlayer->team);
 		printf(" Start : \n");
 		printf(" => x : ");
 		scanf("%d", &start.x);
 		printf(" => y : ");
 		scanf("%d", &start.y);
-
-		printf(" End : \n");
-		printf(" => x : ");
-		scanf("%d", &end.x);
-		printf(" => y : ");
-		scanf("%d", &end.y);
 		
+		int resultSearchBoard = searchBoard(start, &pionStart);
 
-		switch(searchBoard(start, &pionStart)){
-
-			case 0 : // Case déjà occupée 
-				printf("Aucune piece n'est selectionnee\n");
-			break;
-
-			case 1 : // Case contient un pion
-				if(action(pionStart, end, currentPlayer) == 1){
-					printf(" Action reussi\n");
-					if(currentPlayer->team == player1.team){
-						currentPlayer = &player2;
-					}else{
-						currentPlayer = &player1;
-					}
-
-					if(testTranfo(*pionStart) == 1){
-						printf("Tranformation !!!!\n");
-						tranfoDame(pionStart);
-					}
-					
-				}else{
-					printf(" Echec action\n");
-				}
-
-			break;
-
-			case -1 : // Case hors limite
-				printf(" Case hors limite\n");
-			break;
+		if(resultSearchBoard == 0){ // Case déjà occupée 
+			printf("Aucune piece n'est selectionnee\n");
+			continue;
 		}
+
+		if(resultSearchBoard == -1){ // Case hors limite
+			printf(" Case hors limite\n");
+			continue;
+		}
+
+		// Case contient un pion
+
+		do{
+
+			// A FAIRE : 
+			// La fin du Do se fera quand il n'y a plus de prise pour continuer le combo
+			// Ajouter un test de prise sur tous les possibilités de déplacement du pion selectionné
+
+
+			printf(" End : \n");
+			printf(" => x : ");
+			scanf("%d", &end.x);
+			printf(" => y : ");
+			scanf("%d", &end.y);
+
+			resultAction = action(pionStart, end, currentPlayer);
+
+			if(resultAction == -1){
+				printf(" Echec action\n");
+				continue;
+			}
+
+			printf(" Action reussi\n");
+
+			// Changement de joueur
+			if(resultAction == 1){
+				if(currentPlayer->team == player1.team){
+					currentPlayer = &player2;
+				}else{
+					currentPlayer = &player1;
+				}
+			}
+
+			// Transformation
+			if(testTranfo(*pionStart) == 1){
+				printf("Tranformation !!!!\n");
+				tranfoDame(pionStart);
+			}
+
+			// Si le nombre de prise disponible autour du pion est 0
+			// Alors ont sort de la boucle
+			if(testAllPrise(*pionStart) == 0){
+				break;
+			}
+
+			showBoard();
+		}while(resultAction == 2);
+
 	}
 
 
