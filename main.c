@@ -64,6 +64,13 @@ TOURS DE JEU
 Le jeu se déroule en tour par tour, les deux joueurs jouent chaqu'un leur tour.
 Quand un joueur effectue une prise, il peut rejouer pour faire des combos 
 
+MODE COMBO
+-----------------------------------------------------------------------------
+Si le joueur effectue une prise alors il passe en mode combo. Avec le pion selectionné, il 
+peut effectuer autant de prise d'affiler.
+Ce mode combo est représenté ici par une variable flag qui prend la valeur 1 au moment où
+le joueur effectue une prise et reviens à 0 à la fin du tour
+
 */
 
 
@@ -195,6 +202,7 @@ int main()
 	struct Vector start, end;
 	struct Pion * pionStart;
 	int resultAction;
+	int comboMode = 0; // Si le joueur effectue une prise, il rentre en mode combo
 
 	// Boucle de jeu
 	while(player1.score != NB_PION && player2.score != NB_PION){
@@ -206,6 +214,8 @@ int main()
 		scanf("%d", &start.x);
 		printf(" => y : ");
 		scanf("%d", &start.y);
+
+		comboMode = 0; // Réinitialisation du mode Combo
 
 		int resultSearchBoard = searchBoard(start, &pionStart);
 
@@ -223,7 +233,7 @@ int main()
 		do{
 			// Si le nombre de prise disponible autour du pion est 0
 			// Alors ont sort de la boucle marque la fin du tour
-			if(testAllPrise(*pionStart) == 0){
+			if(comboMode == 1 && testAllPrise(*pionStart) == 0){
 				printf(" Plus de prise disponible pour se tours\n");
 				break;
 			}
@@ -238,10 +248,13 @@ int main()
 
 			resultAction = action(pionStart, end, currentPlayer);
 
+			// L'action n'a pas aboutie
 			if(resultAction == -1){
 				printf(" Echec action\n");
 				continue;
+			// L'action est une prise
 			}else if(resultAction == 2){
+				comboMode = 1;
 				printf(" Continue action\n");
 				continue;
 			}
@@ -257,7 +270,7 @@ int main()
 				}
 			}
 
-			// Transformation
+			// Transformation du pion en dame
 			if(testTranfo(*pionStart) == 1){
 				printf("Tranformation !!!!\n");
 				tranfoDame(pionStart);
