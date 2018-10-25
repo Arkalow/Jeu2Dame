@@ -243,7 +243,14 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 	struct Vector unit = unitVector(subVector(end, pion.position)); // Vecteur unité
 	struct Vector start; start = pion.position; // Position de départ (position du pion)
 
-	end = subVector(end, unitVector(end));
+	//end = subVector(end, unitVector(end));
+
+	// Gestion des déplacements hors plateau
+	if(end.x >= WIDTH) end.x = WIDTH-1;
+	if(end.y >= WIDTH) end.y = WIDTH-1;
+	if(end.x < 0) end.x = 0;
+	if(end.y < 0) end.y = 0;
+
 
 	// Parcourt de la trajectoire
 	while(start.x != end.x || start.y != end.y){
