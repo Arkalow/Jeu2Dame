@@ -100,8 +100,23 @@ void move(struct Pion * pion, struct Vector end);
 int testPrise(struct Pion pion, struct Vector end, struct Vector * prise);
 
 /**
+ * Test pour tous les déplacement possible du pion si il existe au moins 1 prise
+ */ 
+int testAllPrise(struct Pion pion);
+
+/**
  * Récupère l'adresse d'un pion dans le plateau
  * Si les coordonées sont valide => retourne 1 et met l'adresse du pion dans pion
  * Sinon => retourne -1
  */
 int searchBoard(struct Vector point, struct Pion ** pion);
+
+/**
+ * Incremente la liste des deplacement du pion de une unite vecteur
+ */
+void incrementMoveList(struct Pion * pion);
+
+/**
+ * Decrement la liste des deplacement du pion de une unite vecteur
+ */
+void decrementMoveList(struct Pion * pion);

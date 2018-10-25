@@ -180,9 +180,11 @@ void setTestBoard(){
 		}
 	}
 
+	// Team 1
 	createPion(0, 0, 1, 0);
-	createPion(2, 0, 1, 0);
+	createPion(3, 0, 1, 0);
 
+	// Team 2
 	createPion(1, 1, 2, 0);
 	createPion(3, 3, 2, 0);
 }
@@ -243,6 +245,15 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 	struct Vector unit = unitVector(subVector(end, pion.position)); // Vecteur unité
 	struct Vector start; start = pion.position; // Position de départ (position du pion)
 
+	//end = subVector(end, unitVector(end));
+
+	// Gestion des déplacements hors plateau
+	if(end.x >= WIDTH) end.x = WIDTH-1;
+	if(end.y >= WIDTH) end.y = WIDTH-1;
+	if(end.x < 0) end.x = 0;
+	if(end.y < 0) end.y = 0;
+
+
 	// Parcourt de la trajectoire
 	while(start.x != end.x || start.y != end.y){
 
@@ -253,7 +264,6 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 
 			// On traverse un de ses pionss
 			if(board[start.x][start.y]->team == pion.team) { 
-
 				return -1; 
 
 			}else{ // On ne traverse pas un de ses pions mais un pion adverse
@@ -274,6 +284,19 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 }
 
 /**
+ * Test pour tous les déplacement possible du pion si il existe au moins 1 prise
+ */ 
+int testAllPrise(struct Pion pion){
+	struct Vector prise;
+	for(int i = 0; i < pion.nbMove; i++){
+		if(testPrise(pion, addVector(pion.position, pion.moveList[i]), &prise) == 1){
+			return 1;
+		}
+	}
+	return 0;
+}
+
+/**
  * Récupère l'adresse d'un pion dans le plateau
  * Si les coordonées sont valide => retourne 1 et met l'adresse du pion dans pion
  * Sinon => retourne -1
@@ -290,6 +313,32 @@ int searchBoard(struct Vector point, struct Pion ** pion){
 	}else{
 		*pion = NULL;
 		return -1; // Erreur
+	}
+}
+
+/**
+ * Incremente la liste des deplacement du pion de une unite vecteur
+ */
+void incrementMoveList(struct Pion * pion){
+	// On parcourt tous les déplacements possible du pion
+	for(int i = 0; i < pion->nbMove; i++){
+		
+		// On increment le vecteur de 1 unite
+		pion->moveList[i] = addVector(pion->moveList[i], unitVector(pion->moveList[i])); 
+		
+	}
+}
+
+/**
+ * Decrement la liste des deplacement du pion de une unite vecteur
+ */
+void decrementMoveList(struct Pion * pion){
+	// On parcourt tous les déplacements possible du pion
+	for(int i = 0; i < pion->nbMove; i++){
+
+		// On decrement le vecteur de 1 unite
+		pion->moveList[i] = subVector(pion->moveList[i], unitVector(pion->moveList[i])); 
+		
 	}
 }
 
