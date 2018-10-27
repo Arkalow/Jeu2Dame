@@ -1,26 +1,30 @@
-#include <stdlib.h>
+#include <SDL2/SDL.h>
 #include <stdio.h>
-#include <SDL/SDL.h>
+#include <stdlib.h>
 
-int main( int argc, char *argv[ ] )
+int main(int argc, char *argv[])
 {
-    SDL_Surface *screen;
-    if( SDL_Init( SDL_INIT_VIDEO ) == -1 )
+    SDL_Window *window = NULL;
+
+    if(0 != SDL_Init(SDL_INIT_VIDEO))
     {
-        printf( "Can't init SDL:  %s\n", SDL_GetError( ) );
+        fprintf(stderr, "Erreur SDL_Init : %s", SDL_GetError());
         return EXIT_FAILURE;
     }
 
-    atexit( SDL_Quit ); 
-    screen = SDL_SetVideoMode( 640, 480, 16, SDL_HWSURFACE );
-
-    if( screen == NULL )
+    // Creation de la fenetre
+    window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                              640, 480, SDL_WINDOW_SHOWN);
+    if(NULL == window)
     {
-        printf( "Can't set video mode: %s\n", SDL_GetError( ) );
+        fprintf(stderr, "Erreur SDL_CreateWindow : %s", SDL_GetError());
         return EXIT_FAILURE;
-    }   
+    }
 
-    SDL_Delay( 3000 );
+    // User Code...
+    SDL_Delay(3000);
 
-    return EXIT_SUCCESS;
+
+    SDL_Quit();
+return EXIT_SUCCESS;
 }
