@@ -43,7 +43,18 @@ int main(int argc, char *argv[])
         goto Quit;
     }
 
+
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    SDL_RenderDrawLine(renderer, 100, 100, 540, 380);
+
+    // Renderer Update
     SDL_RenderPresent(renderer);
+
+
+
+
     SDL_Delay(3000);
 
     statut = EXIT_SUCCESS;
