@@ -5,23 +5,39 @@
 /**
  * Load a picture and return the Texture
  */
-SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
+SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Point point)
 {
+    // On place le curseur au coordonnees
+    SDL_Rect dst = {point.x, point.y, 0, 0};
+
     SDL_Surface *tmp = NULL; 
     SDL_Texture *texture = NULL;
     tmp = SDL_LoadBMP(path);
     if(NULL == tmp)
     {
-        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
+        fprintf(stderr, "Erreur SDL_LoadBMP : %s\n", SDL_GetError());
         return NULL;
     }
+
+    // Surface
     texture = SDL_CreateTextureFromSurface(renderer, tmp);
+    // Libere l'espace aloué par la surface
     SDL_FreeSurface(tmp);
+
     if(NULL == texture)
     {
-        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
+        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
         return NULL;
     }
+
+    // On recupere les dimensions de l'image
+    // A terme on rajoutera la taille en parametre et on redimensionnera en fonction
+    SDL_QueryTexture(texture, NULL, NULL, &dst.w, &dst.h);
+
+    // On affiche la texture sur le renderer
+    SDL_RenderCopy(renderer, texture, NULL, &dst);
+    SDL_DestroyTexture(texture);
+    
     return texture;
 }
 
@@ -75,15 +91,13 @@ int main(int argc, char *argv[])
 
     // Ajout image
     SDL_Texture *texture = NULL;
-    texture = loadImage("images/iop.bmp", renderer);
+    SDL_Point point;
+    point.x = 100; point.y = 100;
+    texture = loadImage("images/iop.bmp", renderer, point);
     if(NULL == texture)
     {
         goto Quit;
     }
-    
-
-    SDL_RenderCopy(renderer, texture, NULL, NULL); /* On copie tmp sur texture */
-    SDL_DestroyTexture(texture);
 
     // Renderer Update
     SDL_RenderPresent(renderer);
