@@ -186,7 +186,7 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 
 // PROGRAMME PRINCIPALE
 // -------------------------------------------------------------------------------------
-int main()
+int console()
 {
 	//setBoard();
 	setTestBoard();

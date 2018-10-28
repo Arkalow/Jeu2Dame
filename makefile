@@ -1,5 +1,8 @@
-exe: Vector.o main.o Pion.o Player.o
-	gcc Vector.o main.o Pion.o Player.o -o exe -lm -Wall
+exe: gui.o Vector.o main.o Pion.o Player.o
+	gcc Vector.o main.o Pion.o Player.o gui.o -o exe `sdl2-config --cflags --libs` -lm -Wall
+
+gui.o: gui.c
+	gcc -c gui.c -Wall
 
 main.o: Pion.h Vector.h main.c
 	gcc -c main.c -Wall
