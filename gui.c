@@ -119,8 +119,15 @@ int main(int argc, char *argv[])
 
     // Renderer Update
     SDL_RenderPresent(renderer);
-
-    SDL_Delay(7000);
+    SDL_Event event;
+    SDL_bool quit = SDL_FALSE;
+    while(!quit)
+    {
+        while(SDL_PollEvent(&event))
+            if(event.type == SDL_QUIT)
+                quit = SDL_TRUE;
+        SDL_Delay(30);
+    }
 
     statut = EXIT_SUCCESS;
 
