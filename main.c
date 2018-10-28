@@ -2,6 +2,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * Load a picture and return the Texture
+ */
+SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
+{
+    SDL_Surface *tmp = NULL; 
+    SDL_Texture *texture = NULL;
+    tmp = SDL_LoadBMP(path);
+    if(NULL == tmp)
+    {
+        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
+        return NULL;
+    }
+    texture = SDL_CreateTextureFromSurface(renderer, tmp);
+    SDL_FreeSurface(tmp);
+    if(NULL == texture)
+    {
+        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
+        return NULL;
+    }
+    return texture;
+}
 
 int main(int argc, char *argv[])
 {
@@ -13,33 +35,33 @@ int main(int argc, char *argv[])
     /* Initialisation, création de la fenêtre et du renderer. */
     if(0 != SDL_Init(SDL_INIT_VIDEO))
     {
-        fprintf(stderr, "Erreur SDL_Init : %s", SDL_GetError());
+        fprintf(stderr, "Erreur SDL_Init : %s\n", SDL_GetError());
         goto Quit;
     }
     window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               640, 480, SDL_WINDOW_SHOWN);
     if(NULL == window)
     {
-        fprintf(stderr, "Erreur SDL_CreateWindow : %s", SDL_GetError());
+        fprintf(stderr, "Erreur SDL_CreateWindow : %s\n", SDL_GetError());
         goto Quit;
     }
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if(NULL == renderer)
     {
-        fprintf(stderr, "Erreur SDL_CreateRenderer : %s", SDL_GetError());
+        fprintf(stderr, "Erreur SDL_CreateRenderer : %s\n", SDL_GetError());
         goto Quit;
     }
 
     /* C’est à partir de maintenant que ça se passe. */
     if(0 != SDL_SetRenderDrawColor(renderer, orange.r, orange.g, orange.b, orange.a))
     {
-        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s", SDL_GetError());
+        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
         goto Quit;
     }
 
     if(0 != SDL_RenderClear(renderer))
     {
-        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s", SDL_GetError());
+        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
         goto Quit;
     }
 
@@ -49,13 +71,32 @@ int main(int argc, char *argv[])
 
     SDL_RenderDrawLine(renderer, 100, 100, 540, 380);
 
+    SDL_Surface *tmp = NULL; 
+    SDL_Texture *texture = NULL;
+    tmp = SDL_LoadBMP("images/iop.bmp");
+    if(NULL == tmp)
+    {
+        fprintf(stderr, "Erreur SDL_LoadBMP : %s\n", SDL_GetError());
+        goto Quit;
+    }
+    texture = SDL_CreateTextureFromSurface(renderer, tmp);
+    SDL_FreeSurface(tmp); /* On libère la surface, on n’en a plus besoin */
+    if(NULL == texture)
+    {
+        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
+        goto Quit;
+    }
+
+    SDL_RenderCopy(renderer, texture, NULL, NULL); /* On copie tmp sur texture */
+    SDL_DestroyTexture(texture);
+
     // Renderer Update
     SDL_RenderPresent(renderer);
 
 
 
 
-    SDL_Delay(3000);
+    SDL_Delay(7000);
 
     statut = EXIT_SUCCESS;
 
