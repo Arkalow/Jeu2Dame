@@ -3,6 +3,56 @@
 #include <stdlib.h>
 
 /**
+ * Creer une fenetre et renvoie le renderer
+ * On recupere aussi l'adresse du pointeur de la fenetre
+ */
+SDL_Renderer * createWindow(int height, int width, SDL_Window **window)
+{
+    *window = NULL;
+    SDL_Renderer *renderer = NULL;
+    SDL_Color orange = {255, 127, 40, 255};
+
+    /* Initialisation, création de la fenêtre et du renderer. */
+    if(0 != SDL_Init(SDL_INIT_VIDEO))
+    {
+        fprintf(stderr, "Erreur SDL_Init : %s\n", SDL_GetError());
+        return NULL;
+    }
+    *window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                              height, width, SDL_WINDOW_SHOWN);
+    if(NULL == *window)
+    {
+        fprintf(stderr, "Erreur SDL_CreateWindow : %s\n", SDL_GetError());
+        return NULL;
+    }
+    renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
+    if(NULL == renderer)
+    {
+        fprintf(stderr, "Erreur SDL_CreateRenderer : %s\n", SDL_GetError());
+        return NULL;
+    }
+
+    /* C’est à partir de maintenant que ça se passe. */
+    if(0 != SDL_SetRenderDrawColor(renderer, orange.r, orange.g, orange.b, orange.a))
+    {
+        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
+        return NULL;
+    }
+
+    if(0 != SDL_RenderClear(renderer))
+    {
+        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
+        return NULL;
+    }
+
+
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    return renderer;
+}
+
+/**
  * Load a picture and return the Texture
  */
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Point point)
@@ -43,50 +93,17 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Point poin
 
 int main(int argc, char *argv[])
 {
+    int statut = EXIT_FAILURE;
+
+
+    // Creation de la fenetre
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-    int statut = EXIT_FAILURE;
-    SDL_Color orange = {255, 127, 40, 255};
-
-    /* Initialisation, création de la fenêtre et du renderer. */
-    if(0 != SDL_Init(SDL_INIT_VIDEO))
+    renderer = createWindow(640, 480, &window);
+    if(renderer == NULL)
     {
-        fprintf(stderr, "Erreur SDL_Init : %s\n", SDL_GetError());
         goto Quit;
     }
-    window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                              640, 480, SDL_WINDOW_SHOWN);
-    if(NULL == window)
-    {
-        fprintf(stderr, "Erreur SDL_CreateWindow : %s\n", SDL_GetError());
-        goto Quit;
-    }
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if(NULL == renderer)
-    {
-        fprintf(stderr, "Erreur SDL_CreateRenderer : %s\n", SDL_GetError());
-        goto Quit;
-    }
-
-    /* C’est à partir de maintenant que ça se passe. */
-    if(0 != SDL_SetRenderDrawColor(renderer, orange.r, orange.g, orange.b, orange.a))
-    {
-        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
-        goto Quit;
-    }
-
-    if(0 != SDL_RenderClear(renderer))
-    {
-        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
-        goto Quit;
-    }
-
-
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-    //SDL_RenderDrawLine(renderer, 100, 100, 540, 380);
-
 
 
     // Ajout image
@@ -99,11 +116,9 @@ int main(int argc, char *argv[])
         goto Quit;
     }
 
+
     // Renderer Update
     SDL_RenderPresent(renderer);
-
-
-
 
     SDL_Delay(7000);
 
