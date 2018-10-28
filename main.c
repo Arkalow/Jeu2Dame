@@ -69,23 +69,18 @@ int main(int argc, char *argv[])
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-    SDL_RenderDrawLine(renderer, 100, 100, 540, 380);
+    //SDL_RenderDrawLine(renderer, 100, 100, 540, 380);
 
-    SDL_Surface *tmp = NULL; 
+
+
+    // Ajout image
     SDL_Texture *texture = NULL;
-    tmp = SDL_LoadBMP("images/iop.bmp");
-    if(NULL == tmp)
-    {
-        fprintf(stderr, "Erreur SDL_LoadBMP : %s\n", SDL_GetError());
-        goto Quit;
-    }
-    texture = SDL_CreateTextureFromSurface(renderer, tmp);
-    SDL_FreeSurface(tmp); /* On libère la surface, on n’en a plus besoin */
+    texture = loadImage("images/iop.bmp", renderer);
     if(NULL == texture)
     {
-        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
         goto Quit;
     }
+    
 
     SDL_RenderCopy(renderer, texture, NULL, NULL); /* On copie tmp sur texture */
     SDL_DestroyTexture(texture);
