@@ -91,6 +91,42 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Point poin
     return texture;
 }
 
+/**
+ * 1. Fonction qui detecte les evenements
+ * 2. Agit en fonction 
+ * 3. Et retourne
+ *      - Si evenement : Retourne le code de l'evenement SQL
+ *      - Si pas d'evenement : Retourne 0
+ *      - Erreur : -1
+ */
+int input(SDL_Event event){
+   switch(event.type){
+
+        case SDL_MOUSEBUTTONUP:
+            // Detection left-click
+            if(event.button.button == SDL_BUTTON_LEFT)
+            {
+                // mouse position => event.button.x & event.button.y
+                printf("Click !\n");
+                printf("x = : %d\ty : %d\n", event.button.x, event.button.y);
+            }
+
+            return SDL_MOUSEBUTTONUP;
+
+        break;
+
+        case SDL_QUIT:
+
+            printf("Close window\n");
+            return SDL_QUIT;
+
+        break;
+
+   }
+   // Nothing
+   return 0;
+}
+
 int main(int argc, char *argv[])
 {
     int statut = EXIT_FAILURE;
@@ -119,8 +155,18 @@ int main(int argc, char *argv[])
 
     // Renderer Update
     SDL_RenderPresent(renderer);
+    SDL_Event event;
+    SDL_bool quit = SDL_FALSE;
 
-    SDL_Delay(7000);
+    while(!quit)
+    {
+        while(SDL_PollEvent(&event))
+        {
+            if(input(event) == SDL_QUIT)
+                quit = SDL_TRUE;
+        }
+        SDL_Delay(30);
+    }
 
     statut = EXIT_SUCCESS;
 
