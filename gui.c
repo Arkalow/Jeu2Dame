@@ -101,15 +101,26 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Point poin
  */
 int input(SDL_Event event){
    switch(event.type){
+
         case SDL_MOUSEBUTTONUP:
-            printf("click !\n");
+            if(event.button.button == SDL_BUTTON_LEFT)
+            {
+                printf("Click !\n");
+                printf("x = : %d\ty : %d\n", event.button.x, event.button.y);
+            }
+
+
             return SDL_MOUSEBUTTONUP;
+
         break;
 
         case SDL_QUIT:
+
             printf("Close window\n");
             return SDL_QUIT;
+
         break;
+
    }
    // Nothing
    return 0;
