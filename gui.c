@@ -103,12 +103,13 @@ int input(SDL_Event event){
    switch(event.type){
 
         case SDL_MOUSEBUTTONUP:
+            // Detection left-click
             if(event.button.button == SDL_BUTTON_LEFT)
             {
+                // mouse position => event.button.x & event.button.y
                 printf("Click !\n");
                 printf("x = : %d\ty : %d\n", event.button.x, event.button.y);
             }
-
 
             return SDL_MOUSEBUTTONUP;
 
