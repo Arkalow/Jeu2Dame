@@ -4,10 +4,11 @@
 
 /**
  * Creer une fenetre et renvoie le renderer
+ * On recupere aussi l'adresse du pointeur de la fenetre
  */
-SDL_Renderer * createWindow(int height, int width, SDL_Window *window)
+SDL_Renderer * createWindow(int height, int width, SDL_Window **window)
 {
-    window = NULL;
+    *window = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Color orange = {255, 127, 40, 255};
 
@@ -17,14 +18,14 @@ SDL_Renderer * createWindow(int height, int width, SDL_Window *window)
         fprintf(stderr, "Erreur SDL_Init : %s\n", SDL_GetError());
         return NULL;
     }
-    window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+    *window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               height, width, SDL_WINDOW_SHOWN);
-    if(NULL == window)
+    if(NULL == *window)
     {
         fprintf(stderr, "Erreur SDL_CreateWindow : %s\n", SDL_GetError());
         return NULL;
     }
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
     if(NULL == renderer)
     {
         fprintf(stderr, "Erreur SDL_CreateRenderer : %s\n", SDL_GetError());
@@ -98,7 +99,7 @@ int main(int argc, char *argv[])
     // Creation de la fenetre
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-    renderer = createWindow(640, 480, window);
+    renderer = createWindow(640, 480, &window);
     if(renderer == NULL)
     {
         goto Quit;
@@ -114,12 +115,6 @@ int main(int argc, char *argv[])
     {
         goto Quit;
     }
-
-
-
-
-
-
 
 
     // Renderer Update
