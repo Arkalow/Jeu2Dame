@@ -1,3 +1,5 @@
+#define caseWidth 32
+
 /**
  * Creer une fenetre et renvoie le renderer
  * On recupere aussi l'adresse du pointeur de la fenetre

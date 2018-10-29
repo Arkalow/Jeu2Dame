@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include "gui.h"
 
+SDL_Rect SDLboard = { caseWidth, caseWidth, caseWidth + 10 * caseWidth, caseWidth + 10 * caseWidth };
+
+
 /**
  * Creer une fenetre et renvoie le renderer
  * On recupere aussi l'adresse du pointeur de la fenetre
@@ -108,6 +111,11 @@ int input(SDL_Event event)
                 // mouse position => event.button.x & event.button.y
                 printf("Click !\n");
                 printf("x = : %d\ty : %d\n", event.button.x, event.button.y);
+                SDL_Point mousePosition = {event.button.x, event.button.y };
+                if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE){
+                    printf("Click sur le plateau de jeu\n");
+                }
+
             }
 
             return SDL_MOUSEBUTTONUP;
@@ -149,7 +157,7 @@ int gui()
     {
         goto Quit;
     }
-
+    
 
     // Renderer Update
     SDL_RenderPresent(renderer);
