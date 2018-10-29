@@ -7,7 +7,7 @@ SDL_Renderer * createWindow(int height, int width, SDL_Window **window);
 /**
  * Load a picture and return the Texture
  */
-SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Point point);
+SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Rect frame);
 
 /**
  * 1. Fonction qui detecte les evenements

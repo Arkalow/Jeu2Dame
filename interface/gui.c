@@ -56,11 +56,8 @@ SDL_Renderer * createWindow(int height, int width, SDL_Window **window)
 /**
  * Load a picture and return the Texture
  */
-SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Point point)
+SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Rect frame)
 {
-    // On place le curseur au coordonnees
-    SDL_Rect dst = {point.x, point.y, 0, 0};
-
     SDL_Surface *tmp = NULL; 
     SDL_Texture *texture = NULL;
     tmp = SDL_LoadBMP(path);
@@ -83,10 +80,10 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Point poin
 
     // On recupere les dimensions de l'image
     // A terme on rajoutera la taille en parametre et on redimensionnera en fonction
-    SDL_QueryTexture(texture, NULL, NULL, &dst.w, &dst.h);
+    //SDL_QueryTexture(texture, NULL, NULL, &dst.w, &dst.h);
 
     // On affiche la texture sur le renderer
-    SDL_RenderCopy(renderer, texture, NULL, &dst);
+    SDL_RenderCopy(renderer, texture, NULL, &frame);
     SDL_DestroyTexture(texture);
     
     return texture;
@@ -100,7 +97,8 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer, SDL_Point poin
  *      - Si pas d'evenement : Retourne 0
  *      - Erreur : -1
  */
-int input(SDL_Event event){
+int input(SDL_Event event)
+{
    switch(event.type){
 
         case SDL_MOUSEBUTTONUP:
@@ -145,9 +143,8 @@ int gui()
 
     // Ajout image
     SDL_Texture *texture = NULL;
-    SDL_Point point;
-    point.x = 100; point.y = 100;
-    texture = loadImage("images/iop.bmp", renderer, point);
+    SDL_Rect frame = { 100, 100, 32, 32 };
+    texture = loadImage("images/circle-red.bmp", renderer, frame);
     if(NULL == texture)
     {
         goto Quit;

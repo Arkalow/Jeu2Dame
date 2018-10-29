@@ -78,6 +78,6 @@ le joueur effectue une prise et reviens à 0 à la fin du tour
 // PROGRAMME PRINCIPALE
 // -------------------------------------------------------------------------------------
 int main(){
-	console(); // Lancement du jeu en console (Operationnel)
+	//console(); // Lancement du jeu en console (Operationnel)
 	gui(); // Lancement jeu en SDL2
 }
