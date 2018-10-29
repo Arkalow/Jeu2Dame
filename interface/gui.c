@@ -111,7 +111,9 @@ int input(SDL_Event event)
                 // mouse position => event.button.x & event.button.y
                 printf("Click !\n");
                 printf("x = : %d\ty : %d\n", event.button.x, event.button.y);
+
                 SDL_Point mousePosition = {event.button.x, event.button.y };
+                // Test si le click est dans le plateau
                 if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE){
                     printf("Click sur le plateau de jeu\n");
                 }
