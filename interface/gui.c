@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "gui.h"
 
 /**
  * Creer une fenetre et renvoie le renderer
@@ -127,7 +128,7 @@ int input(SDL_Event event){
    return 0;
 }
 
-int main(int argc, char *argv[])
+int gui()
 {
     int statut = EXIT_FAILURE;
 
