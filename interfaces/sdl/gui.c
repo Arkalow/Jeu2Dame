@@ -15,8 +15,6 @@
  */
 SDL_Renderer * createWindow(int height, int width)
 {
-    SDL_Color orange = {255, 127, 40, 255};
-
     /* Initialisation, création de la fenêtre et du renderer. */
     if(0 != SDL_Init(SDL_INIT_VIDEO))
     {
@@ -37,7 +35,6 @@ SDL_Renderer * createWindow(int height, int width)
         return NULL;
     }
 
-    /* C’est à partir de maintenant que ça se passe. */
     if(0 != SDL_SetRenderDrawColor(renderer, orange.r, orange.g, orange.b, orange.a))
     {
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
@@ -49,10 +46,6 @@ SDL_Renderer * createWindow(int height, int width)
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
         return NULL;
     }
-
-
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     return renderer;
 }
@@ -112,7 +105,7 @@ int input(SDL_Event event)
                 SDL_Point mousePosition = {event.button.x, event.button.y };
                 // Test si le click est dans le plateau
                 if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE){
-                    printf("Click sur le plateau de jeu\n");
+                    printf("Click sur le plateau de jeu\n");                  
                 }
 
             }
@@ -142,6 +135,7 @@ int gui()
     renderer = NULL;
     texturePionPlayer1 = NULL; // Texture des pions du joueur 1
     texturePionPlayer2 = NULL; // Texture des pions du joueur 2
+    orange.r = 255; orange.g = 127; orange.b = 40; orange.a = 255;
 
     SDLboard.x = positionBoard.x; SDLboard.y = positionBoard.y; // On place le plateau au bonne coordonnées
 
@@ -159,10 +153,11 @@ int gui()
     loadTextures();
 
     setBoard();
-    showSdlBoard();
+    if(EXIT_FAILURE == showSdlBoard()){
+        printf("Erreur affichage\n");
+        return EXIT_FAILURE;
+    }
 
-    // Renderer Update
-    SDL_RenderPresent(renderer);
     SDL_Event event;
     SDL_bool quit = SDL_FALSE;
 

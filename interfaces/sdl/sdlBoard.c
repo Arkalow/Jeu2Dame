@@ -11,7 +11,20 @@
 /**
  * Affiche un rendu console du plateau
  */
-void showSdlBoard(){
+int showSdlBoard(){
+
+    if(0 != SDL_SetRenderDrawColor(renderer, orange.r, orange.g, orange.b, orange.a))
+    {
+        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
+        return EXIT_FAILURE;
+    }
+
+    if(0 != SDL_RenderClear(renderer))
+    {
+        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
+        return EXIT_FAILURE;
+    }
+
 	printf("Affichage en mode graphique !!!\n");
     SDL_Rect frame = { positionBoard.x, positionBoard.y, 32, 32 };
     
@@ -46,6 +59,10 @@ void showSdlBoard(){
         frame.y += caseWidth;
         frame.x = positionBoard.x;
 	}
+    // Renderer Update
+    SDL_RenderPresent(renderer);
+
+    return EXIT_SUCCESS;
 }
 
 /**

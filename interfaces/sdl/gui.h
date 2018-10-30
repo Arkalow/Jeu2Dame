@@ -8,6 +8,7 @@ SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Texture *texturePionPlayer1; // Texture des pions du joueur 1
 SDL_Texture *texturePionPlayer2; // Texture des pions du joueur 2
+SDL_Color orange; // Couleur orange
 
 /**
  * Creer une fenetre et renvoie le renderer

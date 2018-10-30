@@ -6,7 +6,7 @@
 /**
  * Affiche un rendu console du plateau
  */
-void showSdlBoard();
+int showSdlBoard();
 
 /**
  * Charge les textures du jeu
