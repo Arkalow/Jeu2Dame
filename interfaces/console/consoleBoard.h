@@ -10,14 +10,4 @@
 /**
  * Affiche un rendu console du plateau
  */
-void showBoard();
-
-/**
- * Rempli le plateau
- */
-void setBoard();
-
-/**
- * Rempli le plateau pour les tests
- */
-void setTestBoard();
+void showConsoleBoard();

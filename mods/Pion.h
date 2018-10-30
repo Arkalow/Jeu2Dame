@@ -96,3 +96,14 @@ void incrementMoveList(struct Pion * pion);
  * Decrement la liste des deplacement du pion de une unite vecteur
  */
 void decrementMoveList(struct Pion * pion);
+
+
+/**
+ * Rempli le plateau
+ */
+void setBoard();
+
+/**
+ * Rempli le plateau pour les tests
+ */
+void setTestBoard();

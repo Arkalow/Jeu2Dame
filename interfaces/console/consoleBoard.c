@@ -10,7 +10,7 @@
 /**
  * Affiche un rendu console du plateau
  */
-void showBoard(){
+void showConsoleBoard(){
 	printf("   -----------------------------------------\n");
 	printf("   |              JEU DE DAMES             |\n");
 	printf("   -----------------------------------------\n\n");
@@ -44,59 +44,4 @@ void showBoard(){
 	}
 		printf("\n");
 		printf("\n");
-}
-
-/**
- * Rempli le plateau
- */
-void setBoard(){
-
-	// Partie haute du plateau (Joueur 1)
-	for(int y = 0; y < 4; y++){
-		for(int x = 0; x < WIDTH; x++){
-			if((x+y)%2 == 0){
-				createPion(x, y, 1, 0);
-			}else{
-				board[x][y] = NULL;
-			}
-		}
-	}
-
-	// Bande vide du milieu de plateau
-	for(int y = 4; y < 6; y++){
-		for(int x = 0; x < WIDTH; x++){
-			board[x][y] = NULL;
-		}
-	}
-
-	// Partie basse du plateau (Joueur 2)
-	for(int y = 6; y < WIDTH; y++){
-		for(int x = 0; x < WIDTH; x++){
-			if((x+y)%2 == 0){
-				createPion(x, y, 2, 0);
-			}else{
-				board[x][y] = NULL;
-			}
-		}
-	}
-}
-
-/**
- * Rempli le plateau pour les tests
- */
-void setTestBoard(){
-
-	for(int y = 0; y < WIDTH; y++){
-		for(int x = 0; x < WIDTH; x++){
-			board[x][y] = NULL;
-		}
-	}
-
-	// Team 1
-	createPion(0, 0, 1, 0);
-	createPion(3, 0, 1, 0);
-
-	// Team 2
-	createPion(1, 1, 2, 0);
-	createPion(3, 3, 2, 0);
 }
