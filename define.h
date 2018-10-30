@@ -1,2 +1,2 @@
-#define WIDTH 10 // Le plateau est carré, WIDTH représente la taille du côté du plateau
+#define WIDTH 10 // Le plateau est un carré de côté égal à WIDTH
 struct Pion * board[WIDTH][WIDTH]; // Plateau de jeu
