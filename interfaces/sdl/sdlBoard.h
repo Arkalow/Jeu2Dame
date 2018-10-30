@@ -18,3 +18,8 @@ int loadTextures();
  * Change la couleur du cuseur
  */
 int changeColor(SDL_Color color);
+
+/**
+ * Convertie les coordonnées graphique en positions sur la grille
+ */
+struct Vector convertPosition(SDL_Point point);

@@ -20,7 +20,7 @@ int showSdlBoard(){
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
         return EXIT_FAILURE;
     }
-    
+
     changeColor(black);
 
 	printf("Affichage en mode graphique !!!\n");
@@ -106,8 +106,18 @@ int changeColor(SDL_Color color){
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
         return EXIT_FAILURE;
     }
-
-
-
+    
     return EXIT_SUCCESS;
+}
+
+/**
+ * Convertie les coordonnées graphique en positions sur la grille
+ */
+struct Vector convertPosition(SDL_Point point){
+    struct Vector vector;
+    vector = createPoint(
+        (point.x - positionBoard.x)/caseWidth,
+        (point.y - positionBoard.y)/caseWidth
+    );
+    return vector;
 }

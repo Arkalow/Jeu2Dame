@@ -93,7 +93,8 @@ int input(SDL_Event event)
                 SDL_Point mousePosition = {event.button.x, event.button.y };
                 // Test si le click est dans le plateau
                 if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE){
-                    printf("Click sur le plateau de jeu\n");                  
+                    printf("Click sur le plateau de jeu\n");
+                    showVector(convertPosition(mousePosition));          
                 }
 
             }
@@ -118,7 +119,7 @@ int gui()
 {
     positionBoard.x = caseWidth; positionBoard.y = caseWidth;
     SDLboard.x = 0; SDLboard.y = 0; 
-    SDLboard.h = caseWidth + 10 * caseWidth; SDLboard.w = caseWidth + 10 * caseWidth;
+    SDLboard.h = caseWidth + 9 * caseWidth; SDLboard.w = caseWidth + 9 * caseWidth;
     window = NULL;
     renderer = NULL;
     texturePionPlayer1 = NULL; // Texture des pions du joueur 1
