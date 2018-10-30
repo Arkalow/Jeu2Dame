@@ -1,6 +1,12 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "../../define.h"
+#include "../../mods/Vector.h"
+#include "../../mods/Pion.h"
+#include "../../mods/Player.h"
+#include "sdlBoard.h"
 #include "gui.h"
 
 SDL_Rect SDLboard = { caseWidth, caseWidth, caseWidth + 10 * caseWidth, caseWidth + 10 * caseWidth };
@@ -159,7 +165,9 @@ int gui()
     {
         goto Quit;
     }
-    
+
+    setBoard();
+    showSdlBoard();
 
     // Renderer Update
     SDL_RenderPresent(renderer);

@@ -137,7 +137,7 @@ int console()
 
 	// Boucle de jeu
 	while(player1.score != NB_PION && player2.score != NB_PION){
-		showBoard();
+		showConsoleBoard();
 		printf("Score : \n  Player1 : %d\n  Player2 : %d\n", player1.score, player2.score);
 		printf("Joueur %d\n", currentPlayer->team);
 		printf(" Start : \n");
@@ -169,7 +169,7 @@ int console()
 				break;
 			}
 
-			showBoard();
+			showConsoleBoard();
 
 			printf(" End : \n");
 			printf(" => x : ");
@@ -214,7 +214,7 @@ int console()
 
 
 	
-	showBoard();
+	showConsoleBoard();
 	if(currentPlayer->team == player1.team){
 		currentPlayer = &player2;
 	}else{

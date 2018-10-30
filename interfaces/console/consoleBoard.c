@@ -10,7 +10,7 @@
 /**
  * Affiche un rendu console du plateau
  */
-void showBoard(){
+void showConsoleBoard(){
 	printf("   -----------------------------------------\n");
 	printf("   |              JEU DE DAMES             |\n");
 	printf("   -----------------------------------------\n\n");

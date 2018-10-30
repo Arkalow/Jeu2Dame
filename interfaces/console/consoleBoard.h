@@ -10,4 +10,4 @@
 /**
  * Affiche un rendu console du plateau
  */
-void showBoard();
+void showConsoleBoard();

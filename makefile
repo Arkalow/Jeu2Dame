@@ -4,7 +4,7 @@ exe: console.o gui.o Vector.o main.o Pion.o Player.o consoleBoard.o sdlBoard.o
 main.o: interfaces/console/console.c interfaces/sdl/gui.c main.c
 	gcc -c main.c -Wall
 
-gui.o: interfaces/sdl/gui.h interfaces/sdl/gui.c
+gui.o: interfaces/sdl/gui.h interfaces/sdl/gui.c interfaces/sdl/sdlBoard.h
 	gcc -c interfaces/sdl/gui.c -Wall
 
 console.o: interfaces/console/console.h interfaces/console/console.c interfaces/console/consoleBoard.h
