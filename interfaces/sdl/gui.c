@@ -156,28 +156,7 @@ int gui()
         goto Quit;
     }
 
-
-    // Ajout des textures des pions du joueur 1
-    texturePionPlayer1 = NULL;
-    texturePionPlayer1 = loadImage("images/circle-red.bmp", renderer);
-    
-    if(NULL == texturePionPlayer1)
-    {
-        printf("Impossible de charger la texture du joueur 1");
-        goto Quit;
-    }
-
-
-
-    // Ajout des textures des pions du joueur 2
-    texturePionPlayer2 = NULL;
-    texturePionPlayer2 = loadImage("images/circle-blue.bmp", renderer);
-    
-    if(NULL == texturePionPlayer2)
-    {
-        printf("Impossible de charger la texture du joueur 1");
-        goto Quit;
-    }
+    loadTextures();
 
     setBoard();
     showSdlBoard();
@@ -200,14 +179,12 @@ int gui()
     statut = EXIT_SUCCESS;
 
 Quit:
-    if(NULL != renderer)
-        SDL_DestroyRenderer(renderer);
-    if(NULL != window)
-        SDL_DestroyWindow(window);
-    if(NULL != texturePionPlayer1)
-        SDL_DestroyTexture(texturePionPlayer1);
-    if(NULL != texturePionPlayer2)
-        SDL_DestroyTexture(texturePionPlayer2);
+
+    if(NULL != renderer) SDL_DestroyRenderer(renderer);
+    if(NULL != window) SDL_DestroyWindow(window);
+    if(NULL != texturePionPlayer1) SDL_DestroyTexture(texturePionPlayer1);
+    if(NULL != texturePionPlayer2) SDL_DestroyTexture(texturePionPlayer2);
+
     SDL_Quit();
     return statut;
 }
