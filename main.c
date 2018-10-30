@@ -11,8 +11,8 @@
 #include "mods/Vector.h"
 #include "mods/Pion.h"
 #include "mods/Player.h"
-#include "interface/gui.h"
-#include "interface/console.h"
+#include "interface/sdl/gui.h"
+#include "interface/console/console.h"
 
 /*
 

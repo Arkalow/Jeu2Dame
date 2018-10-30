@@ -1,3 +1,6 @@
+/**
+ * Gere la partie rendu sur l'interface graphique en SDL
+ */
 #define caseWidth 32
 
 /**

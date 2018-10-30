@@ -1,13 +1,7 @@
 /**
  * Le module pion comprends la structure pion ainsi que toutes les fonctions qui agissent 
  * sur un pion.
- * Ce module contient aussi le code du plateau de jeu
  */ 
-
-#define RED     "\033[1;31m" 
-#define WHITE   "\033[0;m" 
-#define GREEN   "\033[1;32m" 
-#define BLUE    "\033[1;34m" 
 
 /**
  *	Représente un pion
@@ -54,29 +48,10 @@ void tranfoDame(struct Pion * pion);
  */
 void showPion(struct Pion pion);
 
-
-
-/**
- * Affiche un rendu console du plateau
- */
-void showBoard();
-
-/**
- * Rempli le plateau
- */
-void setBoard();
-
-/**
- * Rempli le plateau pour les tests
- */
-void setTestBoard();
-
 /**
  * Libère la mémoire allouée par le plateau
  */
 void freeBoard();
-
-
 
 /**
  * Test si un pion peut atteindre la case c d'après la liste de ses déplacements possible
