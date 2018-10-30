@@ -13,3 +13,8 @@ int showSdlBoard();
  * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
  */
 int loadTextures();
+
+/**
+ * Change la couleur du cuseur
+ */
+int changeColor(SDL_Color color);

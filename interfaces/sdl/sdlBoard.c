@@ -13,23 +13,23 @@
  */
 int showSdlBoard(){
 
-    if(0 != SDL_SetRenderDrawColor(renderer, orange.r, orange.g, orange.b, orange.a))
-    {
-        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
-        return EXIT_FAILURE;
-    }
-
+    // Affichage du background
+    changeColor(orange);
     if(0 != SDL_RenderClear(renderer))
     {
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
         return EXIT_FAILURE;
     }
+    
+    changeColor(black);
 
 	printf("Affichage en mode graphique !!!\n");
     SDL_Rect frame = { positionBoard.x, positionBoard.y, 32, 32 };
     
     for(int y = 0; y < WIDTH; y++){
 		for(int x = 0; x < WIDTH; x++){
+
+            SDL_RenderDrawRect(renderer, &frame);
 			if(board[x][y] != NULL){
 				if(board[x][y]->team == 1){
                     // Joueur 1
@@ -59,6 +59,7 @@ int showSdlBoard(){
         frame.y += caseWidth;
         frame.x = positionBoard.x;
 	}
+
     // Renderer Update
     SDL_RenderPresent(renderer);
 
@@ -91,6 +92,22 @@ int loadTextures(){
         printf("Impossible de charger la texture du joueur 1");
         return EXIT_FAILURE;
     }
+
+    return EXIT_SUCCESS;
+}
+
+/**
+ * Change la couleur du cuseur
+ */
+int changeColor(SDL_Color color){
+
+    if(0 != SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a))
+    {
+        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
+        return EXIT_FAILURE;
+    }
+
+
 
     return EXIT_SUCCESS;
 }

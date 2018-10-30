@@ -35,18 +35,6 @@ SDL_Renderer * createWindow(int height, int width)
         return NULL;
     }
 
-    if(0 != SDL_SetRenderDrawColor(renderer, orange.r, orange.g, orange.b, orange.a))
-    {
-        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
-        return NULL;
-    }
-
-    if(0 != SDL_RenderClear(renderer))
-    {
-        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
-        return NULL;
-    }
-
     return renderer;
 }
 
@@ -136,6 +124,7 @@ int gui()
     texturePionPlayer1 = NULL; // Texture des pions du joueur 1
     texturePionPlayer2 = NULL; // Texture des pions du joueur 2
     orange.r = 255; orange.g = 127; orange.b = 40; orange.a = 255;
+    black.r = 0; black.g = 0; black.b = 0; black.a = 255;
 
     SDLboard.x = positionBoard.x; SDLboard.y = positionBoard.y; // On place le plateau au bonne coordonnées
 
