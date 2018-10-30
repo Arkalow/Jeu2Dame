@@ -7,11 +7,12 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 
+#include "define.h"
 #include "mods/Vector.h"
 #include "mods/Pion.h"
 #include "mods/Player.h"
-#include "interface/gui.h"
-#include "interface/console.h"
+#include "interfaces/sdl/gui.h"
+#include "interfaces/console/console.h"
 
 /*
 
