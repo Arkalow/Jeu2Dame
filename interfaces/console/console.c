@@ -119,8 +119,8 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 
 int console()
 {
-	//setBoard();
-	setTestBoard();
+	setBoard();
+	//setTestBoard();
 
 
 	struct Player player1, player2;

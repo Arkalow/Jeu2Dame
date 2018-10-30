@@ -13,12 +13,39 @@
  */
 void showSdlBoard(){
 	printf("Affichage en mode graphique !!!\n");
-    SDL_Rect frame = { 100, 100, 32, 32 };
+    SDL_Rect frame = { positionBoard.x, positionBoard.y, 32, 32 };
     
-    // On affiche la texture sur le renderer
-    SDL_RenderCopy(renderer, texturePionPlayer1, NULL, &frame);
-    frame.x = 200; frame.y = 200;
-    SDL_RenderCopy(renderer, texturePionPlayer2, NULL, &frame);
+    for(int y = 0; y < WIDTH; y++){
+		for(int x = 0; x < WIDTH; x++){
+			if(board[x][y] != NULL){
+				if(board[x][y]->team == 1){
+                    // Joueur 1
+					if(board[x][y]->type == 1){
+						// Dame du joueur 1
+                        SDL_RenderCopy(renderer, texturePionPlayer1, NULL, &frame);
+					}else{
+						// Pion du joueur 1
+                        SDL_RenderCopy(renderer, texturePionPlayer1, NULL, &frame);
+					}
+				}else{
+                    // Joueur 2
+					if(board[x][y]->type == 1){
+						// Dame du joueur 2
+                        SDL_RenderCopy(renderer, texturePionPlayer2, NULL, &frame);
+					}else{
+						// Pion du joueur 2
+                        SDL_RenderCopy(renderer, texturePionPlayer2, NULL, &frame);
+					}
+				}
+			}else{
+                // Case vide
+				
+			}
+                frame.x += caseWidth;
+		}
+        frame.y += caseWidth;
+        frame.x = positionBoard.x;
+	}
 }
 
 /**

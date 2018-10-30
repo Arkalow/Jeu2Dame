@@ -135,7 +135,7 @@ int input(SDL_Event event)
 
 int gui()
 {
-    positionBoard.x = 4 * caseWidth; positionBoard.y = 0;
+    positionBoard.x = caseWidth; positionBoard.y = caseWidth;
     SDLboard.x = 0; SDLboard.y = 0; 
     SDLboard.h = caseWidth + 10 * caseWidth; SDLboard.w = caseWidth + 10 * caseWidth;
     window = NULL;
@@ -150,7 +150,7 @@ int gui()
     // Creation de la fenetre
     window = NULL;
     renderer = NULL;
-    renderer = createWindow(640, 480);
+    renderer = createWindow(caseWidth * 12, caseWidth * 12);
     if(renderer == NULL)
     {
         goto Quit;
