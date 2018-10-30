@@ -7,5 +7,6 @@
         "sdl.h": "c",
         "pion.h": "c",
         "consoleboard.h": "c"
-    }
+    },
+    "C_Cpp.dimInactiveRegions": false
 }
