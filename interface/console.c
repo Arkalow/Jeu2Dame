@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "../define.h"
 #include "../mods/Vector.h"
 #include "../mods/Pion.h"
 #include "../mods/Player.h"

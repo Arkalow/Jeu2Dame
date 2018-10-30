@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
+#include "../define.h"
 #include "Vector.h"
 #include "Pion.h"
 

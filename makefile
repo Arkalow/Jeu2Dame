@@ -13,7 +13,7 @@ console.o: interface/console.h interface/console.c
 Vector.o: mods/Vector.h mods/Vector.c
 	gcc -c mods/Vector.c -Wall 
 
-Pion.o: mods/Pion.h mods/Pion.c
+Pion.o: mods/Pion.h mods/Pion.c define.h
 	gcc -c mods/Pion.c -Wall
 
 Player.o: mods/Player.h mods/Player.c
