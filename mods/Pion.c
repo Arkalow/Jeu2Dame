@@ -20,6 +20,7 @@ void createPion(int x, int y, int team, int type){
 	board[x][y]->position.y = y;
 	board[x][y]->team = team;
 	board[x][y]->type = type;
+	board[x][y]->selected = 0; // Pion non selectionné
 
 
 	// Si le type est une dame

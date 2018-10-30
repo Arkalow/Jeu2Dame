@@ -20,6 +20,8 @@ struct Pion
 	int nbMove; // Nombre de déplacement possible
 	int type; // type de pion
 	struct Vector moveList[8]; // Les déplacements possible du pion
+
+	int selected; // Indique si le pion est selectionné
 };
 
 #define NB_PION 2 // Nombre de pion par joueur 
