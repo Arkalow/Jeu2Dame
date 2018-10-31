@@ -93,9 +93,17 @@ int input(SDL_Event event)
                 SDL_Point mousePosition = {event.button.x, event.button.y };
                 
                 // Test si le click est dans le plateau
-                if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE){
+                if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE && gameStarted == 1){
                     //printf("Click sur le plateau de jeu\n");
-                    showVector(convertPosition(mousePosition));          
+                    showVector(convertPosition(mousePosition));
+
+                    if(pionStart == NULL){
+                        // On selectionne un pion
+                        printf("On selectionne le pion de depart\n");
+
+                    }else{
+                        printf("On selectionne la destination\n");
+                    }
                 }
 
             }
@@ -116,13 +124,38 @@ int input(SDL_Event event)
    return 0;
 }
 
+/**
+ * Boucle de jeu
+ */
+int game(struct Player * player1, struct Player * player2){
+    gameStarted = 1; // Flag jeu lancé
+
+    currentPlayer = player1;
+
+    SDL_Event event;
+
+    // Boucle de jeu
+	while(player1->score != NB_PION && player2->score != NB_PION)
+    {
+        // Lecture d'un evenement
+        while(SDL_PollEvent(&event))
+        {
+            if(input(event) == SDL_QUIT)
+                return SDL_QUIT;
+        }
+        SDL_Delay(30);
+    }
+
+    gameStarted = 0;
+    return 0;
+}
+
+
 int gui()
 {
     positionBoard.x = caseWidth; positionBoard.y = caseWidth;
     SDLboard.x = 0; SDLboard.y = 0; 
     SDLboard.h = caseWidth + 9 * caseWidth; SDLboard.w = caseWidth + 9 * caseWidth;
-    window = NULL;
-    renderer = NULL;
     texturePionPlayer1 = NULL; // Texture des pions du joueur 1
     texturePionPlayer2 = NULL; // Texture des pions du joueur 2
     orange.r = 255; orange.g = 127; orange.b = 40; orange.a = 255;
@@ -149,18 +182,15 @@ int gui()
         return EXIT_FAILURE;
     }
 
-    SDL_Event event;
-    SDL_bool quit = SDL_FALSE;
 
-    while(!quit)
-    {
-        while(SDL_PollEvent(&event))
-        {
-            if(input(event) == SDL_QUIT)
-                quit = SDL_TRUE;
-        }
-        SDL_Delay(30);
-    }
+
+
+	struct Player player1, player2;
+	player1 = createPlayer(1);
+	player2 = createPlayer(2);
+
+    game(&player1, &player2);
+    
 
     statut = EXIT_SUCCESS;
 
