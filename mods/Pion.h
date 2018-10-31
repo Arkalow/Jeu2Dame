@@ -18,8 +18,6 @@ struct Pion
 	int selected; // Indique si le pion est selectionné
 };
 
-#define NB_PION 2 // Nombre de pion par joueur 
-
 /**
  * Créer un pion sur le plateau au coordonnées (x, y)
  * Le nom de la team est le numéro du joueur

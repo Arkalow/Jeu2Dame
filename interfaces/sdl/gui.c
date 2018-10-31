@@ -103,7 +103,6 @@ void clickOnBoard(struct Vector clickPosition){
         pionStart = NULL;
         comboMode = 0;
     }else{
-
         printf("On selectionne la destination\n");
         int resultAction = action(pionStart, clickPosition, currentPlayer);
 
@@ -133,6 +132,23 @@ void clickOnBoard(struct Vector clickPosition){
             pionStart->selected = 0;
             pionStart = NULL;
         }
+
+        // Si le nombre de prise disponible autour du pion est 0
+        // Alors ont sort de la boucle marque la fin du tour
+        if(comboMode == 1 && testAllPrise(*pionStart) == 0){
+            printf(" Plus de prise disponible pour se tours\n");
+            pionStart->selected = 0;
+            pionStart = NULL;
+            comboMode = 0;
+            // Changement de joueur
+            if(currentPlayer->team == player1.team){
+                currentPlayer = &player2;
+            }else{
+                currentPlayer = &player1;
+            }
+            return;
+        }
+
     }
 }
 
@@ -188,8 +204,18 @@ int input(SDL_Event event)
  */
 int game(){
     gameStarted = 1; // Flag jeu lancé
+    setTestBoard();
 
+    if(EXIT_FAILURE == showSdlBoard()){
+        printf("Erreur affichage\n");
+        return EXIT_FAILURE;
+    }
+
+
+	player2 = createPlayer(2);
+	player1 = createPlayer(1);
     currentPlayer = &player1;
+
 
     SDL_Event event;
 
@@ -204,6 +230,14 @@ int game(){
         }
         SDL_Delay(30);
     }
+    // Changement de joueur
+    if(currentPlayer->team == player1.team){
+        currentPlayer = &player2;
+    }else{
+        currentPlayer = &player1;
+    }
+	printf("Player %d a gagne !\n", currentPlayer->team);
+	freeBoard();
 
     gameStarted = 0;
     return 0;
@@ -235,15 +269,6 @@ int gui()
     }
 
     loadTextures();
-
-    setBoard();
-    if(EXIT_FAILURE == showSdlBoard()){
-        printf("Erreur affichage\n");
-        return EXIT_FAILURE;
-    }
-
-	player1 = createPlayer(1);
-	player2 = createPlayer(2);
 
     game();
     
