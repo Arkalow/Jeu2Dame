@@ -71,6 +71,69 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
 }
 
 /**
+ * Gere les actions du tour quand on click sur le plateau
+ */
+void clickOnBoard(struct Vector clickPosition){
+    if(pionStart == NULL){
+        // On selectionne un pion
+        printf("On selectionne le pion de depart\n");
+        int resultSearchBoard = searchBoard(clickPosition, &pionStart);
+
+        if(resultSearchBoard == 0){ // Case déjà occupée 
+            printf("Aucune piece n'est selectionnee\n");
+            pionStart = NULL;
+        }else if(resultSearchBoard == -1){ // Case hors limite
+            printf(" Case hors limite\n");
+            pionStart = NULL;
+        }else if(pionStart->team != currentPlayer->team){ // Le pion n'appartient pas au joueur
+            printf(" Ce pion n'appartient pas au joueur\n");
+            pionStart = NULL;
+        }else{
+            printf("Pion selectionne\n");
+            comboMode = 0; // Réinitialisation du mode Combo
+        }
+
+
+    }else if(pionStart != NULL && equalVector(pionStart->position, clickPosition) && comboMode == 0){
+        // L'user re-click sur le pion selectionne
+        // On desactive alors le pion
+        printf("Desactivation du pion selectionne\n");
+        pionStart = NULL;
+        comboMode = 0;
+    }else{
+
+        printf("On selectionne la destination\n");
+        int resultAction = action(pionStart, clickPosition, currentPlayer);
+
+        // L'action n'a pas aboutie
+        if(resultAction == -1){
+            printf(" Echec action\n");
+
+        // L'action est une prise
+        }else if(resultAction == 2){
+            comboMode = 1;
+            printf(" Continue action\n");
+
+        }else{
+            printf(" Action reussi\n");
+
+            // Changement de joueur
+            if(currentPlayer->team == player1.team){
+                currentPlayer = &player2;
+            }else{
+                currentPlayer = &player1;
+            }
+            // Transformation du pion en dame
+            if(testTranfo(*pionStart) == 1){
+                printf("Tranformation !!!!\n");
+                tranfoDame(pionStart);
+            }
+            pionStart = NULL;
+        }
+    }
+}
+
+/**
  * 1. Fonction qui detecte les evenements
  * 2. Agit en fonction 
  * 3. Et retourne
@@ -94,72 +157,13 @@ int input(SDL_Event event)
                 
                 // Test si le click est dans le plateau
                 if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE && gameStarted == 1){
-                    //printf("Click sur le plateau de jeu\n");
                     struct Vector clickPosition = convertPosition(mousePosition);
                     showVector(clickPosition);
-                    if(pionStart == NULL){
-                        // On selectionne un pion
-                        printf("On selectionne le pion de depart\n");
-                        int resultSearchBoard = searchBoard(clickPosition, &pionStart);
-
-                        if(resultSearchBoard == 0){ // Case déjà occupée 
-                            printf("Aucune piece n'est selectionnee\n");
-                            pionStart = NULL;
-                        }else if(resultSearchBoard == -1){ // Case hors limite
-                            printf(" Case hors limite\n");
-                            pionStart = NULL;
-                        }else if(pionStart->team != currentPlayer->team){ // Le pion n'appartient pas au joueur
-                            printf(" Ce pion n'appartient pas au joueur\n");
-                            pionStart = NULL;
-                        }else{
-                            printf("Pion selectionne\n");
-                            comboMode = 0; // Réinitialisation du mode Combo
-                        }
-
-
-                    }else if(pionStart != NULL && equalVector(pionStart->position, clickPosition) && comboMode == 0){
-                        // L'user re-click sur le pion selectionne
-                        // On desactive alors le pion
-                        printf("Desactivation du pion selectionne\n");
-                        pionStart = NULL;
-                        comboMode = 0;
-                    }else{
-
-                        printf("On selectionne la destination\n");
-                        int resultAction = action(pionStart, clickPosition, currentPlayer);
-
-                        // L'action n'a pas aboutie
-                        if(resultAction == -1){
-                            printf(" Echec action\n");
-
-                        // L'action est une prise
-                        }else if(resultAction == 2){
-                            comboMode = 1;
-                            printf(" Continue action\n");
-
-                        }else{
-                            printf(" Action reussi\n");
-
-                            // Changement de joueur
-                            if(currentPlayer->team == player1.team){
-                                currentPlayer = &player2;
-                            }else{
-                                currentPlayer = &player1;
-                            }
-                            // Transformation du pion en dame
-                            if(testTranfo(*pionStart) == 1){
-                                printf("Tranformation !!!!\n");
-                                tranfoDame(pionStart);
-                            }
-                            pionStart = NULL;
-                        }
-
-
-                    }
+                    clickOnBoard(clickPosition);   
+                    showSdlBoard();
                 }
 
             }
-            showSdlBoard();
             return SDL_MOUSEBUTTONUP;
 
         break;
