@@ -91,6 +91,7 @@ void clickOnBoard(struct Vector clickPosition){
         }else{
             printf("Pion selectionne\n");
             comboMode = 0; // Réinitialisation du mode Combo
+            pionStart->selected = 1;
         }
 
 
@@ -98,6 +99,7 @@ void clickOnBoard(struct Vector clickPosition){
         // L'user re-click sur le pion selectionne
         // On desactive alors le pion
         printf("Desactivation du pion selectionne\n");
+        pionStart->selected = 0;
         pionStart = NULL;
         comboMode = 0;
     }else{
@@ -128,6 +130,7 @@ void clickOnBoard(struct Vector clickPosition){
                 printf("Tranformation !!!!\n");
                 tranfoDame(pionStart);
             }
+            pionStart->selected = 0;
             pionStart = NULL;
         }
     }
@@ -157,7 +160,7 @@ int input(SDL_Event event)
                 
                 // Test si le click est dans le plateau
                 if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE && gameStarted == 1){
-                    struct Vector clickPosition = convertPosition(mousePosition);
+                    struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
                     showVector(clickPosition);
                     clickOnBoard(clickPosition);   
                     showSdlBoard();
@@ -216,6 +219,7 @@ int gui()
     texturePionPlayer2 = NULL; // Texture des pions du joueur 2
     orange.r = 255; orange.g = 127; orange.b = 40; orange.a = 255;
     black.r = 0; black.g = 0; black.b = 0; black.a = 255;
+    blue.r = 0; blue.g = 0; blue.b = 255; blue.a = 255;
 
     SDLboard.x = positionBoard.x; SDLboard.y = positionBoard.y; // On place le plateau au bonne coordonnées
 

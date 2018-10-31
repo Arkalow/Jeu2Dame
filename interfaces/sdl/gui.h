@@ -18,6 +18,7 @@ int comboMode; // Mode Combo
 
 SDL_Color orange; // Couleur orange
 SDL_Color black; // Couleur black
+SDL_Color blue; // Couleur black
 
 /**
  * Creer une fenetre et renvoie le renderer

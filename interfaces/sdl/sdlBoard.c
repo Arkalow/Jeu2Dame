@@ -10,6 +10,16 @@
 #include "sdlBoard.h"
 
 /**
+ * Met en lumière une case du plateau
+ */
+void highlight(struct Vector vector){
+    SDL_Point point = convertPositionVectorToSdl(vector);
+    printf("x : %d, y : %d\n", point.x, point.y);
+    SDL_Rect frame = { point.x, point.y, caseWidth, caseWidth };
+    SDL_RenderFillRect(renderer, &frame); 
+}
+
+/**
  * Affiche un rendu console du plateau
  */
 int showSdlBoard(){
@@ -25,13 +35,18 @@ int showSdlBoard(){
     changeColor(black);
 
 	printf("Affichage en mode graphique !!!\n");
-    SDL_Rect frame = { positionBoard.x, positionBoard.y, 32, 32 };
+    SDL_Rect frame = { positionBoard.x, positionBoard.y, caseWidth, caseWidth };
     
     for(int y = 0; y < WIDTH; y++){
 		for(int x = 0; x < WIDTH; x++){
 
             SDL_RenderDrawRect(renderer, &frame);
 			if(board[x][y] != NULL){
+                if(board[x][y]->selected == 1) {
+                    changeColor(blue);
+                    highlight(board[x][y]->position);
+                    changeColor(black);
+                }
 				if(board[x][y]->team == 1){
                     // Joueur 1
 					if(board[x][y]->type == 1){
@@ -114,11 +129,21 @@ int changeColor(SDL_Color color){
 /**
  * Convertie les coordonnées graphique en positions sur la grille
  */
-struct Vector convertPosition(SDL_Point point){
+struct Vector convertPositionSdlToVector(SDL_Point point){
     struct Vector vector;
     vector = createPoint(
         (point.x - positionBoard.x)/caseWidth,
         (point.y - positionBoard.y)/caseWidth
     );
     return vector;
+}
+
+/**
+ * Convertie les positions sur le plateau en coordonnees
+ */
+SDL_Point convertPositionVectorToSdl(struct Vector vector){
+    SDL_Point point;
+    point.x = positionBoard.x + vector.x * caseWidth;
+    point.y = positionBoard.y + vector.y * caseWidth;
+    return point;
 }

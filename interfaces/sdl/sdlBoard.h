@@ -4,6 +4,11 @@
  */
 
 /**
+ * Met en lumière une case du plateau
+ */
+void highlight(struct Vector vector);
+
+/**
  * Affiche un rendu console du plateau
  */
 int showSdlBoard();
@@ -22,4 +27,9 @@ int changeColor(SDL_Color color);
 /**
  * Convertie les coordonnées graphique en positions sur la grille
  */
-struct Vector convertPosition(SDL_Point point);
+struct Vector convertPositionSdlToVector(SDL_Point point);
+
+/**
+ * Convertie les positions sur le plateau en coordonnees
+ */
+SDL_Point convertPositionVectorToSdl(struct Vector vector);
