@@ -41,6 +41,14 @@ struct Vector addVector(struct Vector v1, struct Vector v2){
 }
 
 /**
+ * Test si deux vecteur sont egaux
+ */
+int equalVector(struct Vector v1, struct Vector v2){
+	if(v1.x == v2.x && v1.y == v1.y) return 1;
+	else return 0;
+}
+
+/**
  * Créer un vecteur à partir de deux points
  * Peut représenter un vecteur déplacement par exemple
  */ 
