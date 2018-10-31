@@ -31,6 +31,11 @@ struct Vector subVector(struct Vector v1, struct Vector v2);
 struct Vector addVector(struct Vector v1, struct Vector v2);
 
 /**
+ * Test si deux vecteur sont egaux
+ */
+int equalVector(struct Vector v1, struct Vector v2);
+
+/**
  * Créer un vecteur à partir de deux points
  * Peut représenter un vecteur déplacement par exemple
  */ 

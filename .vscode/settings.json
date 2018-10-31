@@ -3,6 +3,10 @@
         "cmath": "c",
         "cstdlib": "c",
         "stdio.h": "c",
-        "vector.h": "c"
-    }
+        "vector.h": "c",
+        "sdl.h": "c",
+        "pion.h": "c",
+        "consoleboard.h": "c"
+    },
+    "C_Cpp.dimInactiveRegions": false
 }
