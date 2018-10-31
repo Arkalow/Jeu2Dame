@@ -104,8 +104,13 @@ int input(SDL_Event event)
 
                         if(resultSearchBoard == 0){ // Case déjà occupée 
                             printf("Aucune piece n'est selectionnee\n");
+                            pionStart = NULL;
                         }else if(resultSearchBoard == -1){ // Case hors limite
                             printf(" Case hors limite\n");
+                            pionStart = NULL;
+                        }else if(pionStart->team != currentPlayer->team){ // Le pion n'appartient pas au joueur
+                            printf(" Ce pion n'appartient pas au joueur\n");
+                            pionStart = NULL;
                         }else{
                             printf("Pion selectionne\n");
                             comboMode = 0; // Réinitialisation du mode Combo
