@@ -46,10 +46,18 @@ int console()
 			printf("Aucune piece n'est selectionnee\n");
 			continue;
 		}
+
 		if(resultSearchBoard == -1){ // Case hors limite
 			printf(" Case hors limite\n");
 			continue;
 		}
+
+		if(pionStart->team != currentPlayer->team){ // Le pion n'appartient pas au joueur
+			printf(" Ce pion n'appartient pas au joueur\n");
+			continue;
+		}
+
+
 
 		// Case contient un pion
 

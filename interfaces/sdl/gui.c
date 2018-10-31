@@ -71,6 +71,69 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
 }
 
 /**
+ * Gere les actions du tour quand on click sur le plateau
+ */
+void clickOnBoard(struct Vector clickPosition){
+    if(pionStart == NULL){
+        // On selectionne un pion
+        printf("On selectionne le pion de depart\n");
+        int resultSearchBoard = searchBoard(clickPosition, &pionStart);
+
+        if(resultSearchBoard == 0){ // Case déjà occupée 
+            printf("Aucune piece n'est selectionnee\n");
+            pionStart = NULL;
+        }else if(resultSearchBoard == -1){ // Case hors limite
+            printf(" Case hors limite\n");
+            pionStart = NULL;
+        }else if(pionStart->team != currentPlayer->team){ // Le pion n'appartient pas au joueur
+            printf(" Ce pion n'appartient pas au joueur\n");
+            pionStart = NULL;
+        }else{
+            printf("Pion selectionne\n");
+            comboMode = 0; // Réinitialisation du mode Combo
+        }
+
+
+    }else if(pionStart != NULL && equalVector(pionStart->position, clickPosition) && comboMode == 0){
+        // L'user re-click sur le pion selectionne
+        // On desactive alors le pion
+        printf("Desactivation du pion selectionne\n");
+        pionStart = NULL;
+        comboMode = 0;
+    }else{
+
+        printf("On selectionne la destination\n");
+        int resultAction = action(pionStart, clickPosition, currentPlayer);
+
+        // L'action n'a pas aboutie
+        if(resultAction == -1){
+            printf(" Echec action\n");
+
+        // L'action est une prise
+        }else if(resultAction == 2){
+            comboMode = 1;
+            printf(" Continue action\n");
+
+        }else{
+            printf(" Action reussi\n");
+
+            // Changement de joueur
+            if(currentPlayer->team == player1.team){
+                currentPlayer = &player2;
+            }else{
+                currentPlayer = &player1;
+            }
+            // Transformation du pion en dame
+            if(testTranfo(*pionStart) == 1){
+                printf("Tranformation !!!!\n");
+                tranfoDame(pionStart);
+            }
+            pionStart = NULL;
+        }
+    }
+}
+
+/**
  * 1. Fonction qui detecte les evenements
  * 2. Agit en fonction 
  * 3. Et retourne
@@ -93,13 +156,14 @@ int input(SDL_Event event)
                 SDL_Point mousePosition = {event.button.x, event.button.y };
                 
                 // Test si le click est dans le plateau
-                if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE){
-                    //printf("Click sur le plateau de jeu\n");
-                    showVector(convertPosition(mousePosition));          
+                if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE && gameStarted == 1){
+                    struct Vector clickPosition = convertPosition(mousePosition);
+                    showVector(clickPosition);
+                    clickOnBoard(clickPosition);   
+                    showSdlBoard();
                 }
 
             }
-
             return SDL_MOUSEBUTTONUP;
 
         break;
@@ -116,13 +180,38 @@ int input(SDL_Event event)
    return 0;
 }
 
+/**
+ * Boucle de jeu
+ */
+int game(){
+    gameStarted = 1; // Flag jeu lancé
+
+    currentPlayer = &player1;
+
+    SDL_Event event;
+
+    // Boucle de jeu
+	while(player1.score != NB_PION && player2.score != NB_PION)
+    {
+        // Lecture d'un evenement
+        while(SDL_PollEvent(&event))
+        {
+            if(input(event) == SDL_QUIT)
+                return SDL_QUIT;
+        }
+        SDL_Delay(30);
+    }
+
+    gameStarted = 0;
+    return 0;
+}
+
+
 int gui()
 {
     positionBoard.x = caseWidth; positionBoard.y = caseWidth;
     SDLboard.x = 0; SDLboard.y = 0; 
     SDLboard.h = caseWidth + 9 * caseWidth; SDLboard.w = caseWidth + 9 * caseWidth;
-    window = NULL;
-    renderer = NULL;
     texturePionPlayer1 = NULL; // Texture des pions du joueur 1
     texturePionPlayer2 = NULL; // Texture des pions du joueur 2
     orange.r = 255; orange.g = 127; orange.b = 40; orange.a = 255;
@@ -149,18 +238,11 @@ int gui()
         return EXIT_FAILURE;
     }
 
-    SDL_Event event;
-    SDL_bool quit = SDL_FALSE;
+	player1 = createPlayer(1);
+	player2 = createPlayer(2);
 
-    while(!quit)
-    {
-        while(SDL_PollEvent(&event))
-        {
-            if(input(event) == SDL_QUIT)
-                quit = SDL_TRUE;
-        }
-        SDL_Delay(30);
-    }
+    game();
+    
 
     statut = EXIT_SUCCESS;
 

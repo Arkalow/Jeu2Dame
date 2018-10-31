@@ -1,5 +1,5 @@
-exe: console.o gui.o Vector.o main.o Pion.o Player.o consoleBoard.o sdlBoard.o
-	gcc console.o gui.o Vector.o main.o Pion.o Player.o consoleBoard.o sdlBoard.o -o exe `sdl2-config --cflags --libs` -lm -Wall
+exe: Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o main.o
+	gcc Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o main.o -o exe `sdl2-config --cflags --libs` -lm -Wall
 
 main.o: main.c
 	gcc -c main.c -Wall

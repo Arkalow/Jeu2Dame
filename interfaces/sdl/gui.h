@@ -8,6 +8,14 @@ SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Texture *texturePionPlayer1; // Texture des pions du joueur 1
 SDL_Texture *texturePionPlayer2; // Texture des pions du joueur 2
+
+struct Player player1;
+struct Player player2;
+int gameStarted; // Flag jeu start 
+struct Player * currentPlayer; // Joeur en cours
+struct Pion * pionStart; // Pion selectionné
+int comboMode; // Mode Combo
+
 SDL_Color orange; // Couleur orange
 SDL_Color black; // Couleur black
 
@@ -31,5 +39,12 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
  *      - Erreur : -1
  */
 int input(SDL_Event event);
+
+/**
+ * Boucle de jeu
+ * Renvoie 0 si tout se passe bien
+ * Si le joueur quitte le jeu prematurement renvoie SDL_QUIT
+ */
+int game();
 
 int gui();
