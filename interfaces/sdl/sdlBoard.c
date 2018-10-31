@@ -4,6 +4,7 @@
 
 #include "../../define.h"
 #include "../../mods/Vector.h"
+#include "../../mods/Player.h"
 #include "../../mods/Pion.h"
 #include "gui.h"
 #include "sdlBoard.h"
