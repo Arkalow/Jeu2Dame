@@ -84,6 +84,7 @@ void showVector(struct Vector vector){
  */
 int testVector(struct Vector test, struct Vector reference){
 
+
 	if(reference.x > 0){ // Le vecteur référence est positif sur x
 		if(test.x <= 0 || test.x > reference.x){ // ! 0 < test.x < ref.x
 			return 0; // False;
@@ -105,5 +106,22 @@ int testVector(struct Vector test, struct Vector reference){
 		}
 	}
 
+	// Le problème est que sur l'axe des x le vecteur correspond.
+	// Sur l'axe des y aussi mais les 2 en même temps non
+	// La solution est de comparer les coeff directeur
+	if(coeffDirector(createPoint(0, 0), test) != coeffDirector(createPoint(0, 0), reference)){
+		return 0; // False;
+	}
+
+
+
 	return 1; // True;
+}
+
+
+/**
+ * Calcul le coeff directeur de la droite passant par ces deux points
+ */
+int coeffDirector(struct Vector p1, struct Vector p2){
+	return (p2.x - p1.x) / (p2.y - p1.y);
 }

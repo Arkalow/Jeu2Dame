@@ -58,3 +58,8 @@ void showVector(struct Vector vector);
  * C'est le cas d'un déplacement valide par exemple
  */
 int testVector(struct Vector test, struct Vector reference);
+
+/**
+ * Calcul le coeff directeur de la droite passant par ces deux points
+ */
+int coeffDirector(struct Vector p1, struct Vector p2);
