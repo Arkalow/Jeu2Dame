@@ -73,7 +73,8 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
 /**
  * Gere les actions du tour quand on click sur le plateau
  */
-void clickOnBoard(struct Vector clickPosition){
+void clickOnBoard(struct Vector clickPosition)
+{
     if(pionStart == NULL){
         // On selectionne un pion
         printf("On selectionne le pion de depart\n");
@@ -202,7 +203,8 @@ int input(SDL_Event event)
 /**
  * Boucle de jeu
  */
-int game(){
+int game()
+{
     gameStarted = 1; // Flag jeu lancé
     setTestBoard();
 
@@ -246,7 +248,8 @@ int game(){
 
 int gui()
 {
-    positionBoard.x = caseWidth; positionBoard.y = caseWidth;
+    positionBoard.x = caseWidth; 
+    positionBoard.y = caseWidth * 4;
     SDLboard.x = 0; SDLboard.y = 0; 
     SDLboard.h = caseWidth + 9 * caseWidth; SDLboard.w = caseWidth + 9 * caseWidth;
     texturePionPlayer1 = NULL; // Texture des pions du joueur 1
@@ -262,7 +265,7 @@ int gui()
     // Creation de la fenetre
     window = NULL;
     renderer = NULL;
-    renderer = createWindow(caseWidth * 12, caseWidth * 12);
+    renderer = createWindow(caseWidth * 12, caseWidth * 12 + caseWidth * 3);
     if(renderer == NULL)
     {
         goto Quit;
@@ -285,3 +288,5 @@ Quit:
     SDL_Quit();
     return statut;
 }
+
+
