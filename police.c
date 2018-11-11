@@ -35,28 +35,38 @@ int main (int argc, char** argv)
     //fond = IMG_Load("moraira.jpg");
  
     /* Chargement de la police */
-    police = TTF_OpenFont("/Library/Fonts/Arial.ttf", 65);
+    if((police = TTF_OpenFont("./police/game_over.ttf", 12)) == NULL){
+        printf("TTF_OpenFont: %s\n", TTF_GetError());
+        goto Quit;
+    }
     /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
-    texte = TTF_RenderText_Blended(police, "Salut", couleurNoire);
- 
+    if((texte = TTF_RenderText_Blended(police, "Salut", couleurNoire)) == NULL){
+        printf("Erreur ecriture\n");
+        goto Quit;
+    }
+    
     while (continuer)
     {
-    SDL_WaitEvent(&event);
-    switch(event.type)
-    {
-        case SDL_QUIT:
-        continuer = 0;
-        break;
-    }
+        SDL_WaitEvent(&event);
+        switch(event.type)
+        {
+            case SDL_QUIT:
+                continuer = 0;
+            break;
+        }
+
         SDL_FillRect(pSurf, NULL, SDL_MapRGB(pSurf->format, 255, 255, 255));
         position.x = 0;
         position.y = 0;
-//        SDL_BlitSurface(fond, NULL, pSurf, &position); /* Blit du fond */
-//        position.x = 60;
-//        position.y = 370;
+        //SDL_BlitSurface(fond, NULL, pSurf, &position); /* Blit du fond */
+        //position.x = 60;
+        //position.y = 370;
         SDL_BlitSurface(texte, NULL, pSurf, &position); /* Blit du texte */
         SDL_UpdateWindowSurface(ecran);
-        }
+    }
+goto Quit;
+
+Quit:
     TTF_CloseFont(police);
     TTF_Quit();
  
