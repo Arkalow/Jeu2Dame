@@ -35,12 +35,12 @@ int main (int argc, char** argv)
     //fond = IMG_Load("moraira.jpg");
  
     /* Chargement de la police */
-    if((police = TTF_OpenFont("./police/game_over.ttf", 12)) == NULL){
+    if((police = TTF_OpenFont("./police/game_over.ttf", 62)) == NULL){
         printf("TTF_OpenFont: %s\n", TTF_GetError());
         goto Quit;
     }
     /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
-    if((texte = TTF_RenderText_Blended(police, "Salut", couleurNoire)) == NULL){
+    if((texte = TTF_RenderText_Blended(police, "J'attends...", couleurNoire)) == NULL){
         printf("Erreur ecriture\n");
         goto Quit;
     }
@@ -63,6 +63,12 @@ int main (int argc, char** argv)
         //position.y = 370;
         SDL_BlitSurface(texte, NULL, pSurf, &position); /* Blit du texte */
         SDL_UpdateWindowSurface(ecran);
+
+        /* Changement de texte */
+        if((texte = TTF_RenderText_Blended(police, "Bonjour tout le monde !", couleurNoire)) == NULL){
+            printf("Erreur ecriture\n");
+            goto Quit;
+        }
     }
 goto Quit;
 
