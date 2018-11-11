@@ -12,6 +12,23 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 
+/**
+ * Fonction qui ecrit un texte a l'ecran
+ * string est la valeur à afficher
+ * font est la police du texte (à importer au prealable)
+ * color du texte
+ * position du texte
+ */
+SDL_Surface * write(char * string, SDL_Surface * text, TTF_Font * font, SDL_Color color, SDL_Rect position, SDL_Surface *pSurf){
+    /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
+    if((text = TTF_RenderText_Blended(font, string, color)) == NULL){
+        printf("Erreur ecriture\n");
+        return NULL;
+    }
+    SDL_BlitSurface(text, NULL, pSurf, &position); /* Blit du texte */
+    return text;
+}
+
 int main (int argc, char** argv)
 {
  
@@ -20,7 +37,7 @@ int main (int argc, char** argv)
     SDL_Rect position;
     SDL_Event event;
     TTF_Font *police = NULL;
-    SDL_Color couleurNoire = {0, 0, 0};
+    SDL_Color couleurNoire = {255, 255, 255, 255};
     int continuer = 1;
  
     SDL_Init(SDL_INIT_VIDEO);
@@ -39,37 +56,36 @@ int main (int argc, char** argv)
         printf("TTF_OpenFont: %s\n", TTF_GetError());
         goto Quit;
     }
+
+    position.x = 0;
+    position.y = 0;
+
     /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
-    if((texte = TTF_RenderText_Blended(police, "J'attends...", couleurNoire)) == NULL){
+    if((texte = write("Wait...", texte, police, couleurNoire, position, pSurf)) == NULL){
         printf("Erreur ecriture\n");
         goto Quit;
     }
     
-    while (continuer)
-    {
-        SDL_WaitEvent(&event);
-        switch(event.type)
-        {
-            case SDL_QUIT:
-                continuer = 0;
-            break;
-        }
+    SDL_UpdateWindowSurface(ecran);
+    SDL_Delay(3000);
 
-        SDL_FillRect(pSurf, NULL, SDL_MapRGB(pSurf->format, 255, 255, 255));
-        position.x = 0;
-        position.y = 0;
-        //SDL_BlitSurface(fond, NULL, pSurf, &position); /* Blit du fond */
-        //position.x = 60;
-        //position.y = 370;
-        SDL_BlitSurface(texte, NULL, pSurf, &position); /* Blit du texte */
-        SDL_UpdateWindowSurface(ecran);
 
-        /* Changement de texte */
-        if((texte = TTF_RenderText_Blended(police, "Bonjour tout le monde !", couleurNoire)) == NULL){
-            printf("Erreur ecriture\n");
-            goto Quit;
-        }
+
+
+    position.x = 100;
+    position.y = 100;
+
+    /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
+    if((texte = write("Ok c'est bon", texte, police, couleurNoire, position, pSurf)) == NULL){
+        printf("Erreur ecriture\n");
+        goto Quit;
     }
+    
+    SDL_UpdateWindowSurface(ecran);
+    SDL_Delay(3000);
+
+
+
 goto Quit;
 
 Quit:
