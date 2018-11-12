@@ -75,39 +75,42 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
 /**
  * Fonction qui ecrit un texte a l'ecran
  * string est la valeur à afficher
+ * position du texte
  * font est la police du texte (à importer au prealable)
  * color du texte
- * position du texte
  */
-SDL_Surface * write(char * string, SDL_Surface * text, TTF_Font * font, SDL_Color color, SDL_Rect position, SDL_Surface *pSurf){
+SDL_Surface * write(char * string, SDL_Surface * text,  SDL_Point position, TTF_Font * font, SDL_Color color)
+{
     /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
     if((text = TTF_RenderText_Blended(font, string, color)) == NULL){
         printf("Erreur ecriture\n");
         return NULL;
     }
+
+    // On créer le text (Surface)
     SDL_BlitSurface(text, NULL, pSurf, &position); /* Blit du texte */
     printf("Ecrit %s\n", string);
 
-    SDL_Texture *texture;
 
-    // Surface
+    // On convertie le text (surface) en texture
+    SDL_Texture *texture;
     texture = SDL_CreateTextureFromSurface(renderer, text);
 
     if(NULL == texture)
     {
         fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
     }
+
+    // On copie la texture sur le renderer
     SDL_RenderCopy(renderer, texture, NULL, &position);
-
-
-
     return text;
 }
 
 /**
  * Affiche le font d'ecran
  */
-int showSdlBackground(){
+int showSdlBackground()
+{
     // Affichage du background
     changeColor(orange);
     if(0 != SDL_RenderClear(renderer))
@@ -227,14 +230,20 @@ int input(SDL_Event event)
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
                     showVector(clickPosition);
                     clickOnBoard(clickPosition);
+
+                    /** AFFICHAGE **/
+                    // Affichage background
                     showSdlBackground();
-                    SDL_Rect positionText = { caseWidth, caseWidth, caseWidth, 255 };
-
-                    /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
-                    text = write("Wait...", text, police, black, positionText, pSurf);
+                    // Position du text
+                    SDL_Point positionText = { caseWidth, caseWidth };
+                    // affichage text
+                    text = write("Wait...", text, positionText, police, black);
+                    // Affichage plateau
                     showSdlBoard();
+                    // Renderer Update
+                    SDL_RenderPresent(renderer);
                 }
-
+                
             }
 
             return SDL_MOUSEBUTTONUP;
@@ -266,6 +275,8 @@ int game()
         printf("Erreur affichage\n");
         return EXIT_FAILURE;
     }
+    // Renderer Update
+    SDL_RenderPresent(renderer);
 
 
 	player2 = createPlayer(2);
@@ -325,17 +336,9 @@ int gui()
     {
         goto Quit;
     }
-    TTF_Init();
 
-    police = NULL;
-    text = NULL; //*fond = NULL;
-    pSurf = SDL_GetWindowSurface(window);
-    /* Chargement de la police */
-    if((police = TTF_OpenFont("./police/game_over.ttf", 62)) == NULL){
-        printf("TTF_OpenFont: %s\n", TTF_GetError());
-        goto Quit;
-    }
-
+    
+    if(loadPolices() == EXIT_FAILURE) goto Quit;
     loadTextures();
 
     game();

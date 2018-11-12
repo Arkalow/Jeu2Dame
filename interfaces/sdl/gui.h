@@ -42,7 +42,7 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
  * color du texte
  * position du texte
  */
-SDL_Surface * write(char * string, SDL_Surface * text, TTF_Font * font, SDL_Color color, SDL_Rect position, SDL_Surface *pSurf);
+SDL_Surface * write(char * string, SDL_Surface * text,  SDL_Point position, TTF_Font * font, SDL_Color color);
 
 /**
  * 1. Fonction qui detecte les evenements

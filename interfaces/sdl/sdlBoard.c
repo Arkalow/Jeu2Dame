@@ -69,8 +69,6 @@ int showSdlBoard(){
         frame.y += caseWidth;
         frame.x = positionBoard.x;
 	}
-    // Renderer Update
-    SDL_RenderPresent(renderer);
 
     return EXIT_SUCCESS;
 }
@@ -79,7 +77,8 @@ int showSdlBoard(){
  * Charge les textures du jeu
  * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
  */
-int loadTextures(){
+int loadTextures()
+{
     
     // Ajout des textures des pions du joueur 1
     texturePionPlayer1 = NULL;
@@ -102,6 +101,24 @@ int loadTextures(){
         return EXIT_FAILURE;
     }
 
+    return EXIT_SUCCESS;
+}
+
+/**
+ * Charge les polices du jeu
+ * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
+ */
+int loadPolices()
+{
+    TTF_Init();
+    police = NULL;
+    text = NULL; //*fond = NULL;
+    pSurf = SDL_GetWindowSurface(window);
+    /* Chargement de la police */
+    if((police = TTF_OpenFont("./police/game_over.ttf", 62)) == NULL){
+        printf("TTF_OpenFont: %s\n", TTF_GetError());
+        return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }
 

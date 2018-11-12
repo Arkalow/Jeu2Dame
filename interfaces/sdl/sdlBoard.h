@@ -20,6 +20,12 @@ int showSdlBoard();
 int loadTextures();
 
 /**
+ * Charge les polices du jeu
+ * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
+ */
+int loadPolices();
+
+/**
  * Change la couleur du cuseur
  */
 int changeColor(SDL_Color color);
