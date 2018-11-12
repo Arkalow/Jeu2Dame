@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 
 #include "../../define.h"
@@ -14,7 +16,6 @@
  */
 void highlight(struct Vector vector){
     SDL_Point point = convertPositionVectorToSdl(vector);
-    printf("x : %d, y : %d\n", point.x, point.y);
     SDL_Rect frame = { point.x, point.y, caseWidth, caseWidth };
     SDL_RenderFillRect(renderer, &frame); 
 }
@@ -24,17 +25,8 @@ void highlight(struct Vector vector){
  */
 int showSdlBoard(){
 
-    // Affichage du background
-    changeColor(orange);
-    if(0 != SDL_RenderClear(renderer))
-    {
-        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
-        return EXIT_FAILURE;
-    }
-
     changeColor(black);
 
-	printf("Affichage en mode graphique !!!\n");
     SDL_Rect frame = { positionBoard.x, positionBoard.y, caseWidth, caseWidth };
     
     for(int y = 0; y < WIDTH; y++){
@@ -76,9 +68,6 @@ int showSdlBoard(){
         frame.x = positionBoard.x;
 	}
 
-    // Renderer Update
-    SDL_RenderPresent(renderer);
-
     return EXIT_SUCCESS;
 }
 
@@ -86,7 +75,8 @@ int showSdlBoard(){
  * Charge les textures du jeu
  * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
  */
-int loadTextures(){
+int loadTextures()
+{
     
     // Ajout des textures des pions du joueur 1
     texturePionPlayer1 = NULL;
@@ -109,6 +99,24 @@ int loadTextures(){
         return EXIT_FAILURE;
     }
 
+    return EXIT_SUCCESS;
+}
+
+/**
+ * Charge les polices du jeu
+ * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
+ */
+int loadPolices()
+{
+    TTF_Init();
+    police = NULL;
+    text = NULL; //*fond = NULL;
+    pSurf = SDL_GetWindowSurface(window);
+    /* Chargement de la police */
+    if((police = TTF_OpenFont("./police/game_over.ttf", 62)) == NULL){
+        printf("TTF_OpenFont: %s\n", TTF_GetError());
+        return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }
 

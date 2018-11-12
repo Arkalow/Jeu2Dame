@@ -74,8 +74,8 @@ struct Vector unitVector(struct Vector v){
  * Affiche un vecteur
  * Pour le debug
  */
-void showVector(struct Vector vector){
-	printf("Vector (%d, %d)\n", vector.x, vector.y);
+void showVector(char * title, struct Vector vector){
+	printf("Vector : %s (%d, %d)\n", title, vector.x, vector.y);
 }
 
 /**

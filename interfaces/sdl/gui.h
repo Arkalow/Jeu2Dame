@@ -12,13 +12,19 @@ SDL_Texture *texturePionPlayer2; // Texture des pions du joueur 2
 struct Player player1;
 struct Player player2;
 int gameStarted; // Flag jeu start 
-struct Player * currentPlayer; // Joeur en cours
+struct Player * currentPlayer; // Joueur en cours
 struct Pion * pionStart; // Pion selectionné
 int comboMode; // Mode Combo
 
 SDL_Color orange; // Couleur orange
 SDL_Color black; // Couleur black
 SDL_Color blue; // Couleur black
+
+TTF_Font *police;
+SDL_Surface *text;
+SDL_Surface *pSurf;
+SDL_Point positionText;
+char * infoMessage;
 
 /**
  * Creer une fenetre et renvoie le renderer
@@ -30,6 +36,15 @@ SDL_Renderer * createWindow(int height, int width);
  * Load a picture and return the Texture
  */
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
+
+/**
+ * Fonction qui ecrit un texte a l'ecran
+ * string est la valeur à afficher
+ * font est la police du texte (à importer au prealable)
+ * color du texte
+ * position du texte
+ */
+SDL_Surface * write(char * string, SDL_Surface * text,  SDL_Point position, TTF_Font * font, SDL_Color color);
 
 /**
  * 1. Fonction qui detecte les evenements
