@@ -170,7 +170,6 @@ void clickOnBoard(struct Vector clickPosition)
     }else if(pionStart != NULL && equalVector(pionStart->position, clickPosition) && comboMode == 0){
         // L'user re-click sur le pion selectionne
         // On desactive alors le pion
-        printf("Desactivation du pion selectionne\n");
         pionStart->selected = 0;
         pionStart = NULL;
         comboMode = 0;
@@ -217,6 +216,7 @@ void clickOnBoard(struct Vector clickPosition)
                 }else{
                     currentPlayer = &player1;
                 }
+                infoMessage = "Selectionnez un pion";
                 return;
             }
 
@@ -238,6 +238,7 @@ void clickOnBoard(struct Vector clickPosition)
 
             pionStart->selected = 0; // Deselection du pion
             pionStart = NULL;
+            infoMessage = "Selectionnez un pion";
         }
 
     }
@@ -321,10 +322,8 @@ int game()
     currentPlayer = &player1;
     showSdlPlayer();
     // Affichage du message d'indication
-    write("Selectionnez une piece", text, positionText, police, black);
+    write("Selectionnez un pion", text, positionText, police, black);
     
-    // affichage text
-    infoMessage = "Selectionnez un pion";
     if(EXIT_FAILURE == showSdlBoard()){
         printf("Erreur affichage\n");
         return EXIT_FAILURE;

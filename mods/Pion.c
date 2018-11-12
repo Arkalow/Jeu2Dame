@@ -151,7 +151,7 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 	int nbPrise = 0; // Nombre de pion trouvé sur le trajet
 	struct Vector start; start = pion.position; // Position de départ (position du pion)
 	struct Vector unit = unitVector(subVector(end, pion.position)); // Vecteur unité
-	showVector("OLD Target", end);
+
 	// Gestion des déplacements hors plateau
 	while(end.x >= WIDTH || end.y >= WIDTH){
 		end = subVector(end, unit);
@@ -173,9 +173,6 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 				return -1; 
 
 			}else{ // On ne traverse pas un de ses pions mais un pion adverse
-				printf("Prise trouvee : \n");
-				showPion(*board[start.x][start.y]);
-				showVector("Avec", end);
 				nbPrise++;
 				*prise = start; // Pion trouvé
 			}
