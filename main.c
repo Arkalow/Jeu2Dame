@@ -81,9 +81,14 @@ le joueur effectue une prise et reviens à 0 à la fin du tour
 /**
  * Effectue une action 
  * move, move + prise...
- * La fonction retourne -1 en cas d'echec ex: saut au dessus de plusieurs prises
- * Sinon si le tour fait partie d'un combo on retourne 2
- * Sinon retourne 1 en cas de succès
+ * La fonction retourne :
+ * 		- 0 : succès
+ * 		- 1 : combo
+ * 		- -1 : pas de prise
+ * 		- -2 : hors limite
+ * 		- -3 : case de destination déjà occupée
+ * 		- -4 : Erreur prise (plusieurs prises sur le chemin)
+ * 		- -5 : Déplacement impossible
  */
 int action(struct Pion * pion, struct Vector point, struct Player * player){
 	struct Vector prise;
@@ -100,12 +105,12 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 	int resultTestPrise;
 	if(resultSearchBoard == 1){ // Case déjà occupée 
 		printf(" Impossible, la case de destination est deja occupee\n");
-		return -1;
+		return -3;
 	}
 	
 	if(resultSearchBoard == -1){ // Case hors limite
 		printf(" Case hors limite\n");
-		return -1;
+		return -3;
 	}
 
 
@@ -119,7 +124,7 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 		if(resultTestPrise == -1){
 			printf(" Erreur prise\n");
 			
-			return -1; // Action annulée
+			return -4; // Plusieurs prises
 		}
 
 		// Déplacement du pion
@@ -128,15 +133,15 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 
 		// Pas de prise
 		if(resultTestPrise == 0){
-			return 1;
+			return 0; // move sans prise
 		}
 
-		// On est dans le cas restant, un prise est trouvée
+		// On est dans le cas restant, une prise est trouvée
 		printf(" Prise trouvee\n");
 		board[prise.x][prise.y] = NULL;
 		player->score++;
 		printf(" Prise effectue\n");
-		return 2;
+		return 1; // combo
 
 	}else{
 		// Test de la validite du deplacement par rapport au possibilite du pion 
@@ -155,14 +160,14 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 			if(resultTestPrise == -1){
 				printf(" Erreur prise\n");
 				decrementMoveList(pion);
-				return -1; // Action annulée
+				return -4; // Action annulée
 			}
 
 			// Aucune prise sur le chemin
 			if(resultTestPrise == 0){
 				printf(" Deplacement impossible\n");
 				decrementMoveList(pion);
-				return -1; // Action annulée
+				return -5; // Action annulée
 			}
 
 			// Il y a une seule prise sur le chemin
@@ -174,14 +179,14 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 			player->score++;
 			printf(" Prise effectue\n");
 			decrementMoveList(pion);
-			return 2;
+			return 1;
 
 		}else{
 
 			// Déplacement impossible
 			printf(" Le pion ne permet pas ce type de deplacement\n");
 			decrementMoveList(pion);
-			return -1;
+			return -5;
 		}
 	}
 }

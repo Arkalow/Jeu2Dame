@@ -178,17 +178,35 @@ void clickOnBoard(struct Vector clickPosition)
         comboMode = 0;
     }else{
         printf("On selectionne la destination\n");
-        int resultAction = action(pionStart, clickPosition, currentPlayer);
 
+
+        /**
+         * La fonction retourne :
+         * 		- 0 : succès
+         * 		- 1 : combo
+         * 		- -1 : pas de prise
+         * 		- -2 : hors limite
+         * 		- -3 : case de destination déjà occupée
+         * 		- -4 : Erreur prise (plusieurs prises sur le chemin)
+         * 		- -5 : Déplacement impossible
+         */
+        int resultAction = action(pionStart, clickPosition, currentPlayer);
         // L'action n'a pas aboutie
         if(resultAction == -1){
-            printf(" Echec action\n");
+            infoMessage = "Erreur, pas de prise";
+        }else if(resultAction == -2){
+            infoMessage = "Erreur, hors limite";
+        }else if(resultAction == -3){
+            infoMessage = "Erreur, deja occupee";
+        }else if(resultAction == -4){
+            infoMessage = "Erreur, prise";
+        }else if(resultAction == -5){
+            infoMessage = "Erreur, deplacement impossible";
 
         // L'action est une prise
-        }else if(resultAction == 2){
+        }else if(resultAction == 1){
             comboMode = 1;
             printf(" Continue action\n");
-
             // Si le nombre de prise disponible autour du pion est 0
             // Alors ont sort de la boucle marque la fin du tour
             if(comboMode == 1 && testAllPrise(*pionStart) == 0){
