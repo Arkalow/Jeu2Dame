@@ -50,7 +50,7 @@ struct Vector unitVector(struct Vector v);
  * Affiche un vecteur
  * Pour le debug
  */
-void showVector(struct Vector vector);
+void showVector(char * title, struct Vector vector);
 
 
 /**

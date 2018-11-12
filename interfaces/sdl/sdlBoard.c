@@ -16,7 +16,6 @@
  */
 void highlight(struct Vector vector){
     SDL_Point point = convertPositionVectorToSdl(vector);
-    printf("x : %d, y : %d\n", point.x, point.y);
     SDL_Rect frame = { point.x, point.y, caseWidth, caseWidth };
     SDL_RenderFillRect(renderer, &frame); 
 }
@@ -28,7 +27,6 @@ int showSdlBoard(){
 
     changeColor(black);
 
-	printf("Affichage en mode graphique !!!\n");
     SDL_Rect frame = { positionBoard.x, positionBoard.y, caseWidth, caseWidth };
     
     for(int y = 0; y < WIDTH; y++){

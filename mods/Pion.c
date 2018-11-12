@@ -33,7 +33,7 @@ void createPion(int x, int y, int team, int type){
 		board[x][y]->moveList[0] = createVector(0, 0, 10, 10); // Bas droite
 		board[x][y]->moveList[1] = createVector(0, 0, -10, -10); // Haut gauche
 		board[x][y]->moveList[2] = createVector(0, 0, -10, 10); // Bas gauche
-		board[x][y]->moveList[3] = createVector(0, 0, 10, 10); // Haut droite
+		board[x][y]->moveList[3] = createVector(0, 0, 10, -10); // Haut droite
 
 	}else{ // Le pion est un pion classique
 
@@ -79,7 +79,7 @@ void tranfoDame(struct Pion * pion){
 	pion->moveList[0] = createVector(0, 0, 10, 10); // Bas droite
 	pion->moveList[1] = createVector(0, 0, -10, -10); // Haut gauche
 	pion->moveList[2] = createVector(0, 0, -10, 10); // Bas gauche
-	pion->moveList[3] = createVector(0, 0, 10, 10); // Haut droite
+	pion->moveList[3] = createVector(0, 0, 10, -10); // Haut droite
 }
 
 /**
@@ -88,11 +88,11 @@ void tranfoDame(struct Pion * pion){
  */
 void showPion(struct Pion pion){
 	printf("Pion (%d, %d) \n team %d\n", pion.position.x, pion.position.y, pion.team);
-	printf(" Type %d\n", pion.type);
-	printf("Deplacement : \n");
+	printf("\tType %d\n", pion.type);
+	printf("\tDeplacement : \n");
 	for(int i = 0; i < pion.nbMove; i++){
-		printf("  ");
-		showVector(pion.moveList[i]);
+		printf("\t\t");
+		showVector("", pion.moveList[i]);
 	}
 }
 
@@ -149,31 +149,33 @@ void move(struct Pion * pion, struct Vector end){
  */
 int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 	int nbPrise = 0; // Nombre de pion trouvé sur le trajet
-	struct Vector unit = unitVector(subVector(end, pion.position)); // Vecteur unité
 	struct Vector start; start = pion.position; // Position de départ (position du pion)
-
-	//end = subVector(end, unitVector(end));
-
+	struct Vector unit = unitVector(subVector(end, pion.position)); // Vecteur unité
+	showVector("OLD Target", end);
 	// Gestion des déplacements hors plateau
-	if(end.x >= WIDTH) end.x = WIDTH-1;
-	if(end.y >= WIDTH) end.y = WIDTH-1;
-	if(end.x < 0) end.x = 0;
-	if(end.y < 0) end.y = 0;
-
-
+	while(end.x >= WIDTH || end.y >= WIDTH){
+		end = subVector(end, unit);
+	}
+	while(end.x < 0 || end.y < 0){
+		end = subVector(end, unit);
+	}
+	showVector("Target", end);
 	// Parcourt de la trajectoire
 	while(start.x != end.x || start.y != end.y){
 
-		start.x += unit.x; start.y += unit.y; // On incrémente le vecteur d'une unite
+		start = addVector(start, unit); // On incrémente le vecteur d'une unite
 
 		// Si on tombe sur un pion
 		if(board[start.x][start.y] != NULL){ 
 
-			// On traverse un de ses pionss
+			// On traverse un de ses pions
 			if(board[start.x][start.y]->team == pion.team) { 
 				return -1; 
 
 			}else{ // On ne traverse pas un de ses pions mais un pion adverse
+				printf("Prise trouvee : \n");
+				showPion(*board[start.x][start.y]);
+				showVector("Avec", end);
 				nbPrise++;
 				*prise = start; // Pion trouvé
 			}

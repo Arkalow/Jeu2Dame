@@ -89,7 +89,6 @@ SDL_Surface * write(char * string, SDL_Surface * text,  SDL_Point position, TTF_
 
     // On créer le text (Surface)
     SDL_BlitSurface(text, NULL, pSurf, &position); /* Blit du texte */
-    printf("Ecrit %s\n", string);
 
 
     // On convertie le text (surface) en texture
@@ -140,7 +139,6 @@ void clickOnBoard(struct Vector clickPosition)
     // Position du text
     if(pionStart == NULL){
         // On selectionne un pion
-        printf("On selectionne le pion de depart\n");
         int resultSearchBoard = searchBoard(clickPosition, &pionStart);
 
         if(resultSearchBoard == 0){ // Case déjà occupée 
@@ -151,10 +149,10 @@ void clickOnBoard(struct Vector clickPosition)
             
             pionStart = NULL;
         }else if(resultSearchBoard == -1){ // Case hors limite
-            printf(" Case hors limite\n");
+            printf("Case hors limite\n");
             pionStart = NULL;
         }else if(pionStart->team != currentPlayer->team){ // Le pion n'appartient pas au joueur
-            printf(" Ce pion n'appartient pas au joueur\n");
+            printf("Ce pion n'appartient pas au joueur\n");
             
             // affichage text
             infoMessage = "Ce pion n'appartient pas au joueur";
@@ -177,7 +175,6 @@ void clickOnBoard(struct Vector clickPosition)
         pionStart = NULL;
         comboMode = 0;
     }else{
-        printf("On selectionne la destination\n");
 
 
         /**
@@ -206,11 +203,11 @@ void clickOnBoard(struct Vector clickPosition)
         // L'action est une prise
         }else if(resultAction == 1){
             comboMode = 1;
-            printf(" Continue action\n");
+            printf("Continue action\n");
             // Si le nombre de prise disponible autour du pion est 0
             // Alors ont sort de la boucle marque la fin du tour
             if(comboMode == 1 && testAllPrise(*pionStart) == 0){
-                printf(" Plus de prise disponible pour ce tours\n");
+                printf("Plus de prise disponible pour ce tours\n");
                 pionStart->selected = 0;
                 pionStart = NULL;
                 comboMode = 0;
@@ -224,7 +221,7 @@ void clickOnBoard(struct Vector clickPosition)
             }
 
         }else{
-            printf(" Action reussi\n");
+            printf("Action reussi\n");
 
             // Transformation du pion en dame
             if(testTranfo(*pionStart) == 1){
@@ -271,7 +268,7 @@ int input(SDL_Event event)
                 // Test si le click est dans le plateau
                 if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE && gameStarted == 1){
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
-                    showVector(clickPosition);
+                    showVector("Selection", clickPosition);
 
                     // Affichage background
                     showSdlBackground();
