@@ -26,50 +26,7 @@ void highlight(struct Vector vector){
  */
 int showSdlBoard(){
 
-    // Affichage du background
-    changeColor(orange);
-    if(0 != SDL_RenderClear(renderer))
-    {
-        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
-        return EXIT_FAILURE;
-    }
-
     changeColor(black);
-
-
-    SDL_Surface *texte = NULL; //*fond = NULL;
-    SDL_Rect position;
-    TTF_Font *police = NULL;
-    SDL_Color couleurNoire = {255, 255, 255, 255};
-
-    SDL_Surface *pSurf = SDL_GetWindowSurface(window);
- 
-    //fond = IMG_Load("moraira.jpg");
- 
-    /* Chargement de la police */
-    if((police = TTF_OpenFont("./police/game_over.ttf", 62)) == NULL){
-        printf("TTF_OpenFont: %s\n", TTF_GetError());
-    }
-
-    position.x = 0;
-    position.y = 0;
-
-    /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
-    if((texte = write("Wait...", texte, police, couleurNoire, position, pSurf)) == NULL){
-        printf("Erreur ecriture\n");
-    }
-
-     // Surface
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, texte);
-
-    if(NULL == texture)
-    {
-        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
-    }
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
-
-
-
 
 	printf("Affichage en mode graphique !!!\n");
     SDL_Rect frame = { positionBoard.x, positionBoard.y, caseWidth, caseWidth };
@@ -114,7 +71,6 @@ int showSdlBoard(){
 	}
     // Renderer Update
     SDL_RenderPresent(renderer);
-
 
     return EXIT_SUCCESS;
 }

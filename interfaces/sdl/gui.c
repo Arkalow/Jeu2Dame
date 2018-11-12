@@ -87,7 +87,34 @@ SDL_Surface * write(char * string, SDL_Surface * text, TTF_Font * font, SDL_Colo
     }
     SDL_BlitSurface(text, NULL, pSurf, &position); /* Blit du texte */
     printf("Ecrit %s\n", string);
+
+    SDL_Texture *texture;
+
+    // Surface
+    texture = SDL_CreateTextureFromSurface(renderer, text);
+
+    if(NULL == texture)
+    {
+        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
+    }
+    SDL_RenderCopy(renderer, texture, NULL, &position);
+
+
+
     return text;
+}
+
+/**
+ * Affiche le font d'ecran
+ */
+int showSdlBackground(){
+    // Affichage du background
+    changeColor(orange);
+    if(0 != SDL_RenderClear(renderer))
+    {
+        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
+        return EXIT_FAILURE;
+    }
 }
 
 /**
@@ -200,6 +227,11 @@ int input(SDL_Event event)
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
                     showVector(clickPosition);
                     clickOnBoard(clickPosition);
+                    showSdlBackground();
+                    SDL_Rect positionText = { caseWidth, caseWidth, caseWidth, 255 };
+
+                    /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
+                    text = write("Wait...", text, police, black, positionText, pSurf);
                     showSdlBoard();
                 }
 
@@ -229,6 +261,7 @@ int game()
     gameStarted = 1; // Flag jeu lancé
     setTestBoard();
 
+    showSdlBackground();
     if(EXIT_FAILURE == showSdlBoard()){
         printf("Erreur affichage\n");
         return EXIT_FAILURE;
@@ -293,6 +326,15 @@ int gui()
         goto Quit;
     }
     TTF_Init();
+
+    police = NULL;
+    text = NULL; //*fond = NULL;
+    pSurf = SDL_GetWindowSurface(window);
+    /* Chargement de la police */
+    if((police = TTF_OpenFont("./police/game_over.ttf", 62)) == NULL){
+        printf("TTF_OpenFont: %s\n", TTF_GetError());
+        goto Quit;
+    }
 
     loadTextures();
 

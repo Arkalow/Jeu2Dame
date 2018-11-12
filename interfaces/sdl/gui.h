@@ -20,6 +20,10 @@ SDL_Color orange; // Couleur orange
 SDL_Color black; // Couleur black
 SDL_Color blue; // Couleur black
 
+TTF_Font *police;
+SDL_Surface *text;
+SDL_Surface *pSurf;
+
 /**
  * Creer une fenetre et renvoie le renderer
  * On recupere aussi l'adresse du pointeur de la fenetre
