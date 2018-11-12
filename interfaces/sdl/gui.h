@@ -12,7 +12,7 @@ SDL_Texture *texturePionPlayer2; // Texture des pions du joueur 2
 struct Player player1;
 struct Player player2;
 int gameStarted; // Flag jeu start 
-struct Player * currentPlayer; // Joeur en cours
+struct Player * currentPlayer; // Joueur en cours
 struct Pion * pionStart; // Pion selectionné
 int comboMode; // Mode Combo
 
@@ -23,6 +23,8 @@ SDL_Color blue; // Couleur black
 TTF_Font *police;
 SDL_Surface *text;
 SDL_Surface *pSurf;
+SDL_Point positionText;
+char * infoMessage;
 
 /**
  * Creer une fenetre et renvoie le renderer

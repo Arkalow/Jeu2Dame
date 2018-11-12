@@ -118,6 +118,18 @@ int showSdlBackground()
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
         return EXIT_FAILURE;
     }
+    return EXIT_SUCCESS;
+}
+
+int showSdlPlayer()
+{
+    SDL_Point position = { caseWidth, caseWidth };
+    // affichage text
+    if(currentPlayer->team == player1.team){
+        write("Joueur 1", text, position, police, black);
+    }else{
+        write("Joueur 2", text, position, police, black);
+    }
 }
 
 /**
@@ -125,6 +137,7 @@ int showSdlBackground()
  */
 void clickOnBoard(struct Vector clickPosition)
 {
+    // Position du text
     if(pionStart == NULL){
         // On selectionne un pion
         printf("On selectionne le pion de depart\n");
@@ -132,17 +145,27 @@ void clickOnBoard(struct Vector clickPosition)
 
         if(resultSearchBoard == 0){ // Case déjà occupée 
             printf("Aucune piece n'est selectionnee\n");
+            
+            // affichage text
+            infoMessage = "Aucune piece n'est selectionnee";
+            
             pionStart = NULL;
         }else if(resultSearchBoard == -1){ // Case hors limite
             printf(" Case hors limite\n");
             pionStart = NULL;
         }else if(pionStart->team != currentPlayer->team){ // Le pion n'appartient pas au joueur
             printf(" Ce pion n'appartient pas au joueur\n");
+            
+            // affichage text
+            infoMessage = "Ce pion n'appartient pas au joueur";
+
             pionStart = NULL;
         }else{
             printf("Pion selectionne\n");
             comboMode = 0; // Réinitialisation du mode Combo
             pionStart->selected = 1;
+            // affichage text
+            infoMessage = "Selectionnez la destination";
         }
 
 
@@ -166,38 +189,40 @@ void clickOnBoard(struct Vector clickPosition)
             comboMode = 1;
             printf(" Continue action\n");
 
+            // Si le nombre de prise disponible autour du pion est 0
+            // Alors ont sort de la boucle marque la fin du tour
+            if(comboMode == 1 && testAllPrise(*pionStart) == 0){
+                printf(" Plus de prise disponible pour ce tours\n");
+                pionStart->selected = 0;
+                pionStart = NULL;
+                comboMode = 0;
+                // Changement de joueur
+                if(currentPlayer->team == player1.team){
+                    currentPlayer = &player2;
+                }else{
+                    currentPlayer = &player1;
+                }
+                return;
+            }
+
         }else{
             printf(" Action reussi\n");
 
-            // Changement de joueur
-            if(currentPlayer->team == player1.team){
-                currentPlayer = &player2;
-            }else{
-                currentPlayer = &player1;
-            }
             // Transformation du pion en dame
             if(testTranfo(*pionStart) == 1){
                 printf("Tranformation !!!!\n");
                 tranfoDame(pionStart);
             }
-            pionStart->selected = 0;
-            pionStart = NULL;
-        }
 
-        // Si le nombre de prise disponible autour du pion est 0
-        // Alors ont sort de la boucle marque la fin du tour
-        if(comboMode == 1 && testAllPrise(*pionStart) == 0){
-            printf(" Plus de prise disponible pour se tours\n");
-            pionStart->selected = 0;
-            pionStart = NULL;
-            comboMode = 0;
             // Changement de joueur
             if(currentPlayer->team == player1.team){
                 currentPlayer = &player2;
             }else{
                 currentPlayer = &player1;
             }
-            return;
+
+            pionStart->selected = 0; // Deselection du pion
+            pionStart = NULL;
         }
 
     }
@@ -229,17 +254,22 @@ int input(SDL_Event event)
                 if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE && gameStarted == 1){
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
                     showVector(clickPosition);
-                    clickOnBoard(clickPosition);
 
-                    /** AFFICHAGE **/
                     // Affichage background
                     showSdlBackground();
-                    // Position du text
-                    SDL_Point positionText = { caseWidth, caseWidth };
-                    // affichage text
-                    text = write("Wait...", text, positionText, police, black);
+
+
+                    clickOnBoard(clickPosition);
+
+                    // Affichage du player en cours
+                    showSdlPlayer();
+
+                    // Affichage du message d'indication
+                    write(infoMessage, text, positionText, police, black);
+
                     // Affichage plateau
                     showSdlBoard();
+
                     // Renderer Update
                     SDL_RenderPresent(renderer);
                 }
@@ -269,20 +299,23 @@ int game()
 {
     gameStarted = 1; // Flag jeu lancé
     setTestBoard();
-
     showSdlBackground();
+
+	player2 = createPlayer(2);
+	player1 = createPlayer(1);
+    currentPlayer = &player1;
+    showSdlPlayer();
+    // Affichage du message d'indication
+    write("Selectionnez une piece", text, positionText, police, black);
+    
+    // affichage text
+    infoMessage = "Selectionnez un pion";
     if(EXIT_FAILURE == showSdlBoard()){
         printf("Erreur affichage\n");
         return EXIT_FAILURE;
     }
     // Renderer Update
     SDL_RenderPresent(renderer);
-
-
-	player2 = createPlayer(2);
-	player1 = createPlayer(1);
-    currentPlayer = &player1;
-
 
     SDL_Event event;
 
@@ -339,8 +372,13 @@ int gui()
 
     
     if(loadPolices() == EXIT_FAILURE) goto Quit;
+    positionText.x = caseWidth;
+    positionText.y = caseWidth * 2;
+    infoMessage = "";
+
     loadTextures();
 
+    // Lancement partie
     game();
     
 
