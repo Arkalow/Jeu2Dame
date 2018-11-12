@@ -32,6 +32,15 @@ SDL_Renderer * createWindow(int height, int width);
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
 
 /**
+ * Fonction qui ecrit un texte a l'ecran
+ * string est la valeur à afficher
+ * font est la police du texte (à importer au prealable)
+ * color du texte
+ * position du texte
+ */
+SDL_Surface * write(char * string, SDL_Surface * text, TTF_Font * font, SDL_Color color, SDL_Rect position, SDL_Surface *pSurf);
+
+/**
  * 1. Fonction qui detecte les evenements
  * 2. Agit en fonction 
  * 3. Et retourne

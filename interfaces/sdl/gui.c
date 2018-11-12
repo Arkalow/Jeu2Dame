@@ -1,3 +1,5 @@
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,6 +70,24 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
     //SDL_QueryTexture(texture, NULL, NULL, &dst.w, &dst.h);
     
     return texture;
+}
+
+/**
+ * Fonction qui ecrit un texte a l'ecran
+ * string est la valeur à afficher
+ * font est la police du texte (à importer au prealable)
+ * color du texte
+ * position du texte
+ */
+SDL_Surface * write(char * string, SDL_Surface * text, TTF_Font * font, SDL_Color color, SDL_Rect position, SDL_Surface *pSurf){
+    /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
+    if((text = TTF_RenderText_Blended(font, string, color)) == NULL){
+        printf("Erreur ecriture\n");
+        return NULL;
+    }
+    SDL_BlitSurface(text, NULL, pSurf, &position); /* Blit du texte */
+    printf("Ecrit %s\n", string);
+    return text;
 }
 
 /**
@@ -179,11 +199,12 @@ int input(SDL_Event event)
                 if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE && gameStarted == 1){
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
                     showVector(clickPosition);
-                    clickOnBoard(clickPosition);   
+                    clickOnBoard(clickPosition);
                     showSdlBoard();
                 }
 
             }
+
             return SDL_MOUSEBUTTONUP;
 
         break;
@@ -260,6 +281,7 @@ int gui()
 
     SDLboard.x = positionBoard.x; SDLboard.y = positionBoard.y; // On place le plateau au bonne coordonnées
 
+    
     int statut = EXIT_FAILURE;
 
     // Creation de la fenetre
@@ -270,6 +292,7 @@ int gui()
     {
         goto Quit;
     }
+    TTF_Init();
 
     loadTextures();
 
