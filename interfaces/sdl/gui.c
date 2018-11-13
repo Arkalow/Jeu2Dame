@@ -74,9 +74,69 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
     return texture;
 }
 
-void bite(){
-    printf("click click bite\n");
+/**
+ * Charge les textures du jeu
+ * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
+ */
+int loadTextures()
+{
+    
+    // Ajout des textures des pions du joueur 1
+    texturePionPlayer1 = NULL;
+    texturePionPlayer1 = loadImage("images/circle-red.bmp", renderer);
+    
+    if(NULL == texturePionPlayer1)
+    {
+        printf("Impossible de charger la texture du joueur 1");
+        return EXIT_FAILURE;
+    }
+    
+
+    // Ajout des textures des pions du joueur 2
+    texturePionPlayer2 = NULL;
+    texturePionPlayer2 = loadImage("images/circle-blue.bmp", renderer);
+    
+    if(NULL == texturePionPlayer2)
+    {
+        printf("Impossible de charger la texture du joueur 1");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
+
+/**
+ * Charge les polices du jeu
+ * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
+ */
+int loadPolices()
+{
+    TTF_Init();
+    police = NULL;
+    text = NULL; //*fond = NULL;
+    pSurf = SDL_GetWindowSurface(window);
+    /* Chargement de la police */
+    if((police = TTF_OpenFont("./police/game_over.ttf", 62)) == NULL){
+        printf("TTF_OpenFont: %s\n", TTF_GetError());
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
+
+/**
+ * Change la couleur du cuseur
+ */
+int changeColor(SDL_Color color){
+
+    if(0 != SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a))
+    {
+        fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
+        return EXIT_FAILURE;
+    }
+    
+    return EXIT_SUCCESS;
+}
+
 /**
  * Charge le menu
  */
@@ -84,16 +144,21 @@ struct Menu loadMenu(){
     // ***MENU***
     struct Menu menu;
     int nbItem = 2;
+
     SDL_Rect rect1 = { caseWidth, caseWidth * 3, caseWidth * WIDTH - 2, caseWidth * 4 };
+    SDL_Point textPosition1 = { caseWidth * 5, caseWidth * 4};
+
     SDL_Rect rect2 = { caseWidth, caseWidth * 8, caseWidth * WIDTH - 2, caseWidth * 4};
+    SDL_Point textPosition2 = { caseWidth * 5, caseWidth * 9};
+
     struct Item_menu * items;
     items = malloc(sizeof(struct Item_menu) * nbItem);
-    items[0] = createItem("Jouer", rect1, 0, black, orange, &bite);
+    items[0] = createItem("Jouer", rect1, textPosition1, 0, white, black);
 
-    items[1] = createItem("Quitter", rect2, 0, blue, black, &bite);
+    items[1] = createItem("Quitter", rect2, textPosition2, 0, black, orange);
 
     SDL_Point point = { 0, 0 };
-    menu = createMenu("Jeu2Dame", items, nbItem, point, orange, blue);
+    menu = createMenu("Jeu2Dame", items, nbItem, point, orange, black);
     return menu;
 }
 
@@ -400,7 +465,7 @@ int gui()
     orange.r = 255; orange.g = 127; orange.b = 40; orange.a = 255;
     black.r = 0; black.g = 0; black.b = 0; black.a = 255;
     blue.r = 0; blue.g = 0; blue.b = 255; blue.a = 255;
-    white.r = 0; white.g = 0; white.b = 255; white.a = 255;
+    white.r = 255; white.g = 255; white.b = 255; white.a = 255;
 
     SDLboard.x = positionBoard.x; SDLboard.y = positionBoard.y; // On place le plateau au bonne coordonnées
 

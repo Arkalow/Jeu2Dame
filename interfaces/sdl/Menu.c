@@ -39,6 +39,7 @@ struct Menu createMenu(
 struct Item_menu createItem(
     char * title,
     SDL_Rect position,
+    SDL_Point textPosition,
 	int selected,
     SDL_Color backgroundColor,
     SDL_Color fontColor,
@@ -47,29 +48,37 @@ struct Item_menu createItem(
     struct Item_menu item;
     item.title = title;
     item.position = position;
+    item.textPosition = textPosition;
     item.selected = selected;
     item.backgroundColor = backgroundColor;
     item.fontColor = fontColor;
     item.click = click;
+    item.surface = NULL;
     return item;
+}
+
+/**
+ * Affiche un item
+ */
+void showItem(struct Item_menu item){
+    changeColor(item.backgroundColor);
+    SDL_RenderFillRect(renderer, &(item.position));
+    write(item.title, item.surface, item.textPosition, police, item.fontColor);
 }
 
 /**
  * Affiche le menu
  */
 int showMenu(struct Menu menu){
-    printf("showMenu !!!\n");
+
     // Affichage du background
-    changeColor(orange);
+    changeColor(menu.backgroundColor);
     if(0 != SDL_RenderClear(renderer))
     {
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
     }
     for(int i = 0; i < menu.nbItem; i++){
-        struct Item_menu item = menu.items[i];
-        printf("%d %d %d %d\n", item.position.x, item.position.y, item.position.h, item.position.w);
-        changeColor(item.backgroundColor);
-        SDL_RenderFillRect(renderer, &(item.position));
+        showItem(menu.items[i]);        
     }
     
     // Renderer Update
@@ -91,7 +100,7 @@ int showMenu(struct Menu menu){
                     SDL_Point mousePosition = {event.button.x, event.button.y };
                     for(int i = 0; i < menu.nbItem; i++){
                         if(SDL_PointInRect(&mousePosition, &(menu.items[i].position)) == SDL_TRUE){
-                            menu.items[i].click();
+                            //menu.items[i].click();
                             return i;
                         }
                     }

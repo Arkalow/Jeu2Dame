@@ -25,6 +25,8 @@ struct Item_menu
     SDL_Rect position;
 	int selected; // Indique si le pion est selectionné
     char * title;
+    SDL_Surface *surface;
+    SDL_Point textPosition;
 
     SDL_Color backgroundColor;
     SDL_Color fontColor;
@@ -51,11 +53,17 @@ struct Menu createMenu(
 struct Item_menu createItem(
     char * title,
     SDL_Rect position,
+    SDL_Point textPosition,
 	int selected,
     SDL_Color backgroundColor,
     SDL_Color fontColor,
     void (*click)(void)
 );
+
+/**
+ * Affiche un item
+ */
+void showItem(struct Item_menu item);
 
 /**
  * Affiche le menu

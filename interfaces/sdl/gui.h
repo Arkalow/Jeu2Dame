@@ -39,6 +39,23 @@ SDL_Renderer * createWindow(int height, int width);
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
 
 /**
+ * Charge les textures du jeu
+ * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
+ */
+int loadTextures();
+
+/**
+ * Charge les polices du jeu
+ * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
+ */
+int loadPolices();
+
+/**
+ * Change la couleur du cuseur
+ */
+int changeColor(SDL_Color color);
+
+/**
  * Fonction qui ecrit un texte a l'ecran
  * string est la valeur à afficher
  * font est la police du texte (à importer au prealable)
