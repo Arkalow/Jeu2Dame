@@ -17,6 +17,7 @@
  */
 struct Menu createMenu(
     char * title,
+    SDL_Point textPosition,
     struct Item_menu * items,
     int nbItem,
     SDL_Point positionStartItem, 
@@ -25,6 +26,8 @@ struct Menu createMenu(
 ){
     struct Menu menu;
     menu.title = title;
+    menu.textPosition = textPosition;
+    menu.surface = NULL;
     menu.items = items;
     menu.nbItem = nbItem;
     menu.positionStartItem = positionStartItem;
@@ -81,6 +84,9 @@ int showMenu(struct Menu menu){
         showItem(menu.items[i]);        
     }
     
+    changeColor(menu.backgroundColor);
+    write(menu.title, menu.surface, menu.textPosition, police, menu.fontColor);
+
     // Renderer Update
     SDL_RenderPresent(renderer);
 

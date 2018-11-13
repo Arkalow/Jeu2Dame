@@ -10,6 +10,8 @@ struct Menu
     struct Item_menu * items;
     int nbItem;
     char * title;
+    SDL_Surface *surface; // Surface pour afficher le title
+    SDL_Point textPosition; // Position du title sur le menu
 
     SDL_Point positionStartItem;
 
@@ -25,7 +27,7 @@ struct Item_menu
     SDL_Rect position;
 	int selected; // Indique si le pion est selectionné
     char * title;
-    SDL_Surface *surface;
+    SDL_Surface *surface; // Surface pour afficher le title
     SDL_Point textPosition;
 
     SDL_Color backgroundColor;
@@ -40,6 +42,7 @@ struct Item_menu
  */
 struct Menu createMenu(
     char * title,
+    SDL_Point textPosition,
     struct Item_menu * items,
     int nbItem,
     SDL_Point positionStartItem, 

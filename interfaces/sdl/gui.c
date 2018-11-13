@@ -144,21 +144,24 @@ struct Menu loadMenu(){
     // ***MENU***
     struct Menu menu;
     int nbItem = 2;
-
-    SDL_Rect rect1 = { caseWidth, caseWidth * 3, caseWidth * WIDTH - 2, caseWidth * 4 };
-    SDL_Point textPosition1 = { caseWidth * 5, caseWidth * 4};
-
-    SDL_Rect rect2 = { caseWidth, caseWidth * 8, caseWidth * WIDTH - 2, caseWidth * 4};
-    SDL_Point textPosition2 = { caseWidth * 5, caseWidth * 9};
-
     struct Item_menu * items;
     items = malloc(sizeof(struct Item_menu) * nbItem);
-    items[0] = createItem("Jouer", rect1, textPosition1, 0, white, black);
 
-    items[1] = createItem("Quitter", rect2, textPosition2, 0, black, orange);
+    // Item 1
+    SDL_Rect rect1 = { caseWidth, caseWidth * 4, caseWidth * WIDTH - 2, caseWidth * 4 };
+    SDL_Point textPosition1 = { caseWidth * 5, caseWidth * 5};
+    items[0] = createItem("Jouer", rect1, textPosition1, 0, white, black, NULL);
 
-    SDL_Point point = { 0, 0 };
-    menu = createMenu("Jeu2Dame", items, nbItem, point, orange, black);
+    // Item 2
+    SDL_Rect rect2 = { caseWidth, caseWidth * 9, caseWidth * WIDTH - 2, caseWidth * 4};
+    SDL_Point textPosition2 = { caseWidth * 5, caseWidth * 10};
+    items[1] = createItem("Quitter", rect2, textPosition2, 0, black, orange, NULL);
+
+
+    SDL_Point textPositionMenu = { caseWidth * 4, caseWidth};
+    SDL_Point point = { 0, 0 }; // Position du menu
+    menu = createMenu("Jeu2Dame", textPositionMenu, items, nbItem, point, orange, black);
+
     return menu;
 }
 
