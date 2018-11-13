@@ -138,34 +138,6 @@ int changeColor(SDL_Color color){
 }
 
 /**
- * Charge le menu
- */
-struct Menu loadMenu(){
-    // ***MENU***
-    struct Menu menu;
-    int nbItem = 2;
-    struct Item_menu * items;
-    items = malloc(sizeof(struct Item_menu) * nbItem);
-
-    // Item 1
-    SDL_Rect rect1 = { caseWidth, caseWidth * 4, caseWidth * WIDTH - 2, caseWidth * 4 };
-    SDL_Point textPosition1 = { caseWidth * 5, caseWidth * 5};
-    items[0] = createItem("Jouer", rect1, textPosition1, 0, white, black, NULL);
-
-    // Item 2
-    SDL_Rect rect2 = { caseWidth, caseWidth * 9, caseWidth * WIDTH - 2, caseWidth * 4};
-    SDL_Point textPosition2 = { caseWidth * 5, caseWidth * 10};
-    items[1] = createItem("Quitter", rect2, textPosition2, 0, black, orange, NULL);
-
-
-    SDL_Point textPositionMenu = { caseWidth * 4, caseWidth};
-    SDL_Point point = { 0, 0 }; // Position du menu
-    menu = createMenu("Jeu2Dame", textPositionMenu, items, nbItem, point, orange, black);
-
-    return menu;
-}
-
-/**
  * Fonction qui ecrit un texte a l'ecran
  * string est la valeur à afficher
  * position du texte
@@ -416,8 +388,8 @@ int game()
     setTestBoard();
     showSdlBackground();
 
-	player2 = createPlayer(2);
-	player1 = createPlayer(1);
+	player1 = createPlayer(1, "Joueur 1");
+	player2 = createPlayer(2, "Joueur 2");
     currentPlayer = &player1;
     showSdlPlayer();
     // Affichage du message d'indication
@@ -492,10 +464,19 @@ int gui()
 
     loadTextures();
 
-    struct Menu startMenu = loadMenu();
-    if(showMenu(startMenu) == 0){
+    struct Menu startMenu = loadStartMenu();
+    while(showMenu(startMenu) == 0){
         // Lancement partie
         game();
+
+        // Titre menu
+        startMenu.title = calloc(sizeof(currentPlayer->name)+sizeof(" gagne"), sizeof(startMenu.title));
+        strcpy(startMenu.title,currentPlayer->name);
+        strcat(startMenu.title," gagne");
+        startMenu.textPosition.x = caseWidth * 3;
+
+
+        startMenu.items[0].title = "Rejouer";
     }
     
 
@@ -507,7 +488,7 @@ Quit:
     if(NULL != window) SDL_DestroyWindow(window);
     if(NULL != texturePionPlayer1) SDL_DestroyTexture(texturePionPlayer1);
     if(NULL != texturePionPlayer2) SDL_DestroyTexture(texturePionPlayer2);
-    free(startMenu.items);
+    freeMenu(startMenu);
     SDL_Quit();
     return statut;
 }

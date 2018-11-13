@@ -72,3 +72,14 @@ void showItem(struct Item_menu item);
  * Affiche le menu
  */
 int showMenu(struct Menu menu);
+
+
+/**
+ * Charge le menu start
+ */
+struct Menu loadStartMenu();
+
+/**
+ * Charge le menu
+ */
+void freeMenu(struct Menu menu);

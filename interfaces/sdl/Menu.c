@@ -116,3 +116,39 @@ int showMenu(struct Menu menu){
 
     }
 }
+
+/**
+ * Charge le menu
+ */
+void freeMenu(struct Menu menu){
+    free(menu.items);
+}
+
+
+/**
+ * Charge le menu start
+ */
+struct Menu loadStartMenu(){
+    // ***MENU***
+    struct Menu menu;
+    int nbItem = 2;
+    struct Item_menu * items;
+    items = malloc(sizeof(struct Item_menu) * nbItem);
+
+    // Item 1
+    SDL_Rect rect1 = { caseWidth, caseWidth * 4, caseWidth * WIDTH - 2, caseWidth * 4 };
+    SDL_Point textPosition1 = { caseWidth * 4.5, caseWidth * 5};
+    items[0] = createItem("Jouer", rect1, textPosition1, 0, white, black, NULL);
+
+    // Item 2
+    SDL_Rect rect2 = { caseWidth, caseWidth * 9, caseWidth * WIDTH - 2, caseWidth * 4};
+    SDL_Point textPosition2 = { caseWidth * 4.5, caseWidth * 10};
+    items[1] = createItem("Quitter", rect2, textPosition2, 0, black, orange, NULL);
+
+
+    SDL_Point textPositionMenu = { caseWidth * 4, caseWidth};
+    SDL_Point point = { 0, 0 }; // Position du menu
+    menu = createMenu("Jeu2Dame", textPositionMenu, items, nbItem, point, orange, black);
+
+    return menu;
+}

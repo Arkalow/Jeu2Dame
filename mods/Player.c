@@ -8,10 +8,11 @@
 /**
  * Créer un joueur
  */
-struct Player createPlayer(int team){
+struct Player createPlayer(int team, char * name){
     struct Player player;
     player.team = team;
     player.score = 0;
+    player.name = name;
     return player;
 }
 

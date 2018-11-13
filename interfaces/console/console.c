@@ -18,8 +18,8 @@ int console()
 
 	struct Player player1, player2;
 	struct Player * currentPlayer;
-	player1 = createPlayer(1);
-	player2 = createPlayer(2);
+	player1 = createPlayer(1, "Joueur 1");
+	player2 = createPlayer(2, "Joueur 2");
 
 	currentPlayer = &player1;
 

@@ -9,12 +9,13 @@
 struct Player{
     int team;
     int score; // Nombre de pion adverse attrapé
+    char * name;
 };
 
 /**
  * Créer un pion
  */
-struct Player createPlayer(int team);
+struct Player createPlayer(int team, char * name);
 
 /**
  * Test si le pion appartient au joueur
