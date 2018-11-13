@@ -8,6 +8,8 @@
 #include "../../mods/Vector.h"
 #include "../../mods/Pion.h"
 #include "../../mods/Player.h"
+#include "../../main.h"
+#include "Menu.h"
 #include "sdlBoard.h"
 #include "gui.h"
 
@@ -87,8 +89,11 @@ SDL_Surface * write(char * string, SDL_Surface * text,  SDL_Point position, TTF_
         return NULL;
     }
 
+    SDL_Rect rect_position;
+    rect_position.x = position.x;
+    rect_position.y = position.y;
     // On créer le text (Surface)
-    SDL_BlitSurface(text, NULL, pSurf, &position); /* Blit du texte */
+    SDL_BlitSurface(text, NULL, pSurf, &rect_position); /* Blit du texte */
 
 
     // On convertie le text (surface) en texture
@@ -101,7 +106,7 @@ SDL_Surface * write(char * string, SDL_Surface * text,  SDL_Point position, TTF_
     }
 
     // On copie la texture sur le renderer
-    SDL_RenderCopy(renderer, texture, NULL, &position);
+    SDL_RenderCopy(renderer, texture, NULL, &rect_position);
     return text;
 }
 
@@ -120,7 +125,10 @@ int showSdlBackground()
     return EXIT_SUCCESS;
 }
 
-int showSdlPlayer()
+/**
+ * Affiche le joueur en cours
+ */
+void showSdlPlayer()
 {
     SDL_Point position = { caseWidth, caseWidth };
     // affichage text

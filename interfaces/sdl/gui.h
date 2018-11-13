@@ -47,6 +47,16 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
 SDL_Surface * write(char * string, SDL_Surface * text,  SDL_Point position, TTF_Font * font, SDL_Color color);
 
 /**
+ * Affiche le font d'ecran
+ */
+int showSdlBackground();
+
+/**
+ * Affiche le joueur en cours
+ */
+void showSdlPlayer();
+
+/**
  * 1. Fonction qui detecte les evenements
  * 2. Agit en fonction 
  * 3. Et retourne

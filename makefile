@@ -1,8 +1,11 @@
-exe: Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o main.o
-	gcc Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o main.o -o exe `sdl2-config --cflags --libs` -lSDL2_ttf -Wall
+exe: main.o Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o Menu.o
+	gcc main.o Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o Menu.o -o exe `sdl2-config --cflags --libs` -lSDL2_ttf -Wall
 
 main.o: main.c
 	gcc -c main.c -Wall
+
+Menu.o: interfaces/sdl/Menu.h interfaces/sdl/Menu.c
+	gcc -c interfaces/sdl/Menu.c -Wall
 
 gui.o: interfaces/sdl/gui.h interfaces/sdl/gui.c
 	gcc -c interfaces/sdl/gui.c -Wall

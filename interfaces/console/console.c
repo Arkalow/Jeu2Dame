@@ -6,6 +6,7 @@
 #include "../../mods/Vector.h"
 #include "../../mods/Pion.h"
 #include "../../mods/Player.h"
+#include "../../main.h"
 #include "consoleBoard.h"
 #include "console.h"
 
