@@ -74,6 +74,29 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
     return texture;
 }
 
+void bite(){
+    printf("click click bite\n");
+}
+/**
+ * Charge le menu
+ */
+struct Menu loadMenu(){
+    // ***MENU***
+    struct Menu menu;
+    int nbItem = 2;
+    SDL_Rect rect1 = { caseWidth, caseWidth * 3, caseWidth * WIDTH - 2, caseWidth * 4 };
+    SDL_Rect rect2 = { caseWidth, caseWidth * 8, caseWidth * WIDTH - 2, caseWidth * 4};
+    struct Item_menu * items;
+    items = malloc(sizeof(struct Item_menu) * nbItem);
+    items[0] = createItem("Jouer", rect1, 0, black, orange, &bite);
+
+    items[1] = createItem("Quitter", rect2, 0, blue, black, &bite);
+
+    SDL_Point point = { 0, 0 };
+    menu = createMenu("Jeu2Dame", items, nbItem, point, orange, blue);
+    return menu;
+}
+
 /**
  * Fonction qui ecrit un texte a l'ecran
  * string est la valeur à afficher
@@ -377,6 +400,7 @@ int gui()
     orange.r = 255; orange.g = 127; orange.b = 40; orange.a = 255;
     black.r = 0; black.g = 0; black.b = 0; black.a = 255;
     blue.r = 0; blue.g = 0; blue.b = 255; blue.a = 255;
+    white.r = 0; white.g = 0; white.b = 255; white.a = 255;
 
     SDLboard.x = positionBoard.x; SDLboard.y = positionBoard.y; // On place le plateau au bonne coordonnées
 
@@ -400,8 +424,11 @@ int gui()
 
     loadTextures();
 
-    // Lancement partie
-    game();
+    struct Menu startMenu = loadMenu();
+    if(showMenu(startMenu) == 0){
+        // Lancement partie
+        game();
+    }
     
 
     statut = EXIT_SUCCESS;
@@ -412,7 +439,7 @@ Quit:
     if(NULL != window) SDL_DestroyWindow(window);
     if(NULL != texturePionPlayer1) SDL_DestroyTexture(texturePionPlayer1);
     if(NULL != texturePionPlayer2) SDL_DestroyTexture(texturePionPlayer2);
-
+    free(startMenu.items);
     SDL_Quit();
     return statut;
 }

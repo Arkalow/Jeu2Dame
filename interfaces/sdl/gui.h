@@ -17,8 +17,9 @@ struct Pion * pionStart; // Pion selectionné
 int comboMode; // Mode Combo
 
 SDL_Color orange; // Couleur orange
-SDL_Color black; // Couleur black
-SDL_Color blue; // Couleur black
+SDL_Color black; // Couleur noire
+SDL_Color blue; // Couleur bleu
+SDL_Color white; // Couleur Blanc
 
 TTF_Font *police;
 SDL_Surface *text;
