@@ -131,19 +131,32 @@ void freeMenu(struct Menu menu){
 struct Menu loadStartMenu(){
     // ***MENU***
     struct Menu menu;
-    int nbItem = 2;
+    int nbItem = 3;
     struct Item_menu * items;
     items = malloc(sizeof(struct Item_menu) * nbItem);
 
+    SDL_Rect rect = { 
+        caseWidth, // Position x
+        caseWidth * 4, // Position y
+        caseWidth * WIDTH - 2, // largeur
+        caseWidth * 2 // hauteur
+    };
+    SDL_Point textPosition;
+
+    // Item 0
+    textPosition.x = rect.x + caseWidth * 2.4; textPosition.y = rect.y + caseWidth * 0.2;
+    items[0] = createItem("Partie locale", rect, textPosition, 0, white, black, NULL);
+
     // Item 1
-    SDL_Rect rect1 = { caseWidth, caseWidth * 4, caseWidth * WIDTH - 2, caseWidth * 4 };
-    SDL_Point textPosition1 = { caseWidth * 4.5, caseWidth * 5};
-    items[0] = createItem("Jouer", rect1, textPosition1, 0, white, black, NULL);
+    rect.y += caseWidth + rect.h;
+    textPosition.x = rect.x + caseWidth * 2; textPosition.y = rect.y + caseWidth * 0.2;
+    items[1] = createItem("Partie en reseau", rect, textPosition, 0, white, black, NULL);
+
 
     // Item 2
-    SDL_Rect rect2 = { caseWidth, caseWidth * 9, caseWidth * WIDTH - 2, caseWidth * 4};
-    SDL_Point textPosition2 = { caseWidth * 4.5, caseWidth * 10};
-    items[1] = createItem("Quitter", rect2, textPosition2, 0, black, orange, NULL);
+    rect.y += caseWidth + rect.h;
+    textPosition.x = rect.x + caseWidth * 3.8; textPosition.y = rect.y + caseWidth * 0.2;
+    items[2] = createItem("Quitter", rect, textPosition, 0, black, orange, NULL);
 
 
     SDL_Point textPositionMenu = { caseWidth * 4, caseWidth};

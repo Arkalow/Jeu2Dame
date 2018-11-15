@@ -8,6 +8,7 @@
 #include "../../mods/Vector.h"
 #include "../../mods/Pion.h"
 #include "../../mods/Player.h"
+#include "../../mods/network.h"
 #include "../../main.h"
 #include "Menu.h"
 #include "sdlBoard.h"
@@ -387,6 +388,7 @@ int input(SDL_Event event)
                         // On attend que le joueur joue
                         // Mode serveur
                         printf("Mode serveur...\n");
+                        server();
                     }
 
                     // Affichage background
@@ -519,8 +521,6 @@ int gui()
         strcpy(startMenu.title,currentPlayer->name);
         strcat(startMenu.title," gagne");
         startMenu.textPosition.x = caseWidth * 3;
-
-        startMenu.items[0].title = "Rejouer";
     }
     
 
