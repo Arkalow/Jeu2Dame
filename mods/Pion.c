@@ -64,7 +64,7 @@ int testTranfo(struct Pion pion){
 	if(pion.type != 0) return 0; // Ce n'est pas un pion 
 
 	if(pion.team == 2 && pion.position.y == 0) return 1;
-	else if(pion.team == 1 && pion.position.y == WIDTH) return 1;
+	else if(pion.team == 1 && pion.position.y == WIDTH - 1) return 1;
 	
 	return 0;
 }
