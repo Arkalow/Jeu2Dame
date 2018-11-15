@@ -62,7 +62,7 @@ int changeColor(SDL_Color color);
  * color du texte
  * position du texte
  */
-SDL_Surface * write(char * string, SDL_Surface * text,  SDL_Point position, TTF_Font * font, SDL_Color color);
+SDL_Surface * sdlWrite(char * string, SDL_Surface * text,  SDL_Point position, TTF_Font * font, SDL_Color color);
 
 /**
  * Affiche le font d'ecran

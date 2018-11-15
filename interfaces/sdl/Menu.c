@@ -66,7 +66,7 @@ struct Item_menu createItem(
 void showItem(struct Item_menu item){
     changeColor(item.backgroundColor);
     SDL_RenderFillRect(renderer, &(item.position));
-    write(item.title, item.surface, item.textPosition, police, item.fontColor);
+    sdlWrite(item.title, item.surface, item.textPosition, police, item.fontColor);
 }
 
 /**
@@ -85,7 +85,7 @@ int showMenu(struct Menu menu){
     }
     
     changeColor(menu.backgroundColor);
-    write(menu.title, menu.surface, menu.textPosition, police, menu.fontColor);
+    sdlWrite(menu.title, menu.surface, menu.textPosition, police, menu.fontColor);
 
     // Renderer Update
     SDL_RenderPresent(renderer);

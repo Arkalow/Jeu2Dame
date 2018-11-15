@@ -13,6 +13,7 @@
 #include "mods/Vector.h"
 #include "mods/Pion.h"
 #include "mods/Player.h"
+#include "mods/network.h"
 #include "interfaces/sdl/gui.h"
 #include "interfaces/console/console.h"
 #include "main.h"

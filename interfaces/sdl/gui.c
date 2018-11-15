@@ -144,7 +144,7 @@ int changeColor(SDL_Color color){
  * font est la police du texte (à importer au prealable)
  * color du texte
  */
-SDL_Surface * write(char * string, SDL_Surface * text,  SDL_Point position, TTF_Font * font, SDL_Color color)
+SDL_Surface * sdlWrite(char * string, SDL_Surface * text,  SDL_Point position, TTF_Font * font, SDL_Color color)
 {
     /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
     if((text = TTF_RenderText_Blended(font, string, color)) == NULL){
@@ -196,9 +196,9 @@ void showSdlPlayer()
     SDL_Point position = { caseWidth, caseWidth };
     // affichage text
     if(currentPlayer->team == player1.team){
-        write("Joueur 1", text, position, police, black);
+        sdlWrite("Joueur 1", text, position, police, black);
     }else{
-        write("Joueur 2", text, position, police, black);
+        sdlWrite("Joueur 2", text, position, police, black);
     }
 }
 
@@ -375,7 +375,7 @@ int input(SDL_Event event)
                         showSdlPlayer();
 
                         // Affichage du message d'indication
-                        write(infoMessage, text, positionText, police, black);
+                        sdlWrite(infoMessage, text, positionText, police, black);
 
                         // Affichage plateau
                         showSdlBoard();
@@ -383,7 +383,7 @@ int input(SDL_Event event)
                         // Renderer Update
                         SDL_RenderPresent(renderer);
 
-                        
+
                         // On attend que le joueur joue
                         // Mode serveur
                         printf("Mode serveur...\n");
@@ -396,7 +396,7 @@ int input(SDL_Event event)
                     showSdlPlayer();
 
                     // Affichage du message d'indication
-                    write(infoMessage, text, positionText, police, black);
+                    sdlWrite(infoMessage, text, positionText, police, black);
 
                     // Affichage plateau
                     showSdlBoard();
@@ -437,7 +437,7 @@ int game()
     currentPlayer = &player1;
     showSdlPlayer();
     // Affichage du message d'indication
-    write("Selectionnez un pion", text, positionText, police, black);
+    sdlWrite("Selectionnez un pion", text, positionText, police, black);
     
     if(EXIT_FAILURE == showSdlBoard()){
         printf("Erreur affichage\n");
