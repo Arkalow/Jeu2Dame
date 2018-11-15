@@ -127,7 +127,8 @@ int loadPolices()
 /**
  * Change la couleur du cuseur
  */
-int changeColor(SDL_Color color){
+int changeColor(SDL_Color color)
+{
 
     if(0 != SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a))
     {
@@ -431,6 +432,7 @@ int input(SDL_Event event)
 int game()
 {
     gameStarted = 1; // Flag jeu lancé
+
     setTestBoard();
     showSdlBackground();
 
@@ -445,6 +447,7 @@ int game()
         printf("Erreur affichage\n");
         return EXIT_FAILURE;
     }
+    
     // Renderer Update
     SDL_RenderPresent(renderer);
 

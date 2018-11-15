@@ -1,5 +1,5 @@
-exe: main.o server.o client.o Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o Menu.o
-	gcc main.o server.o client.o Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o Menu.o -o exe `sdl2-config --cflags --libs` -lSDL2_ttf -Wall
+exe: main.o network.o Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o Menu.o
+	gcc main.o network.o Player.o console.o gui.o Vector.o Pion.o consoleBoard.o sdlBoard.o Menu.o -o exe `sdl2-config --cflags --libs` -lSDL2_ttf -Wall
 
 main.o: main.c
 	gcc -c main.c -Wall
@@ -19,11 +19,8 @@ consoleBoard.o: interfaces/console/consoleBoard.h interfaces/console/consoleBoar
 sdlBoard.o: interfaces/sdl/sdlBoard.h interfaces/sdl/sdlBoard.c
 	gcc -c interfaces/sdl/sdlBoard.c -Wall
 
-server.o: mods/network.h mods/server.c
-	gcc -c mods/server.c -Wall 
-
-client.o: mods/network.h mods/client.c
-	gcc -c mods/client.c -Wall 
+network.o: mods/network.h mods/network.c
+	gcc -c mods/network.c -Wall 
 
 Vector.o: mods/Vector.h mods/Vector.c
 	gcc -c mods/Vector.c -Wall 
