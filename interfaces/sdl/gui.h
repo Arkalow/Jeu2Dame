@@ -11,6 +11,7 @@ SDL_Texture *texturePionPlayer2; // Texture des pions du joueur 2
 
 struct Player player1;
 struct Player player2;
+int network; // Flag mode reseau
 int gameStarted; // Flag jeu start 
 struct Player * currentPlayer; // Joueur en cours
 struct Pion * pionStart; // Pion selectionné
@@ -94,8 +95,6 @@ int input(SDL_Event event);
 
 /**
  * Boucle de jeu
- * Renvoie 0 si tout se passe bien
- * Si le joueur quitte le jeu prematurement renvoie SDL_QUIT
  */
 int game();
 

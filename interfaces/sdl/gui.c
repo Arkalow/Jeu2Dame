@@ -367,7 +367,7 @@ int input(SDL_Event event)
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
                     showVector("Selection", clickPosition);
 
-                    if(clickOnBoard(clickPosition) == 0) // Fin de tour
+                    if(clickOnBoard(clickPosition) == 0 && network == 1) // Fin de tour et mode reseau actif
                     {
                          // Affichage background
                         showSdlBackground();
@@ -511,8 +511,12 @@ int gui()
     loadTextures();
 
     struct Menu startMenu = loadStartMenu();
+    int resultMenu;
+    while((resultMenu = showMenu(startMenu)) != 2){
 
-    while(showMenu(startMenu) == 0){
+        // Mode réseau
+        if(resultMenu == 1) network = 1; else network = 0;
+
         // Lancement partie
         game();
 
