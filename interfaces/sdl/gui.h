@@ -75,6 +75,14 @@ int showSdlBackground();
 void showSdlPlayer();
 
 /**
+ * Gere les actions du tour quand on click sur le plateau
+ * La fonction renvoie  -1 en cas d'erreur
+ *                      0 en fin de tours
+ *                      > 0 en case de selection... 
+ */
+int clickOnBoard(struct Vector clickPosition);
+
+/**
  * 1. Fonction qui detecte les evenements
  * 2. Agit en fonction 
  * 3. Et retourne

@@ -204,8 +204,11 @@ void showSdlPlayer()
 
 /**
  * Gere les actions du tour quand on click sur le plateau
+ * La fonction renvoie  -1 en cas d'erreur
+ *                      0 en fin de tours
+ *                      > 0 en case de selection... 
  */
-void clickOnBoard(struct Vector clickPosition)
+int clickOnBoard(struct Vector clickPosition)
 {
     // Position du text
     if(pionStart == NULL){
@@ -219,9 +222,11 @@ void clickOnBoard(struct Vector clickPosition)
             infoMessage = "Aucune piece n'est selectionnee";
             
             pionStart = NULL;
+            return -1;
         }else if(resultSearchBoard == -1){ // Case hors limite
             printf("Case hors limite\n");
             pionStart = NULL;
+            return -1;
         }else if(pionStart->team != currentPlayer->team){ // Le pion n'appartient pas au joueur
             printf("Ce pion n'appartient pas au joueur\n");
             
@@ -229,12 +234,14 @@ void clickOnBoard(struct Vector clickPosition)
             infoMessage = "Ce pion n'appartient pas au joueur";
 
             pionStart = NULL;
+            return -1;
         }else{
             printf("Pion selectionne\n");
             comboMode = 0; // Réinitialisation du mode Combo
             pionStart->selected = 1;
             // affichage text
             infoMessage = "Selectionnez la destination";
+            return 1;
         }
 
 
@@ -244,8 +251,8 @@ void clickOnBoard(struct Vector clickPosition)
         pionStart->selected = 0;
         pionStart = NULL;
         comboMode = 0;
+        return 1;
     }else{
-
 
         /**
          * La fonction retourne :
@@ -259,16 +266,31 @@ void clickOnBoard(struct Vector clickPosition)
          */
         int resultAction = action(pionStart, clickPosition, currentPlayer);
         // L'action n'a pas aboutie
-        if(resultAction == -1){
+        if(resultAction == -1)
+        {
             infoMessage = "Erreur, pas de prise";
-        }else if(resultAction == -2){
+            return -1;
+        }
+        else if(resultAction == -2)
+        {
             infoMessage = "Erreur, hors limite";
-        }else if(resultAction == -3){
+            return -1;
+        }
+        else if(resultAction == -3)
+        {
             infoMessage = "Erreur, deja occupee";
-        }else if(resultAction == -4){
+            return -1;
+        }
+        else if(resultAction == -4)
+        {
             infoMessage = "Erreur, prise";
-        }else if(resultAction == -5){
+            return -1;
+        }
+        else if(resultAction == -5)
+        {
             infoMessage = "Erreur, deplacement impossible";
+            return -1;
+
 
         // L'action est une prise
         }else if(resultAction == 1){
@@ -288,8 +310,9 @@ void clickOnBoard(struct Vector clickPosition)
                     currentPlayer = &player1;
                 }
                 infoMessage = "Selectionnez un pion";
-                return;
+                return 0;
             }
+            return 2;
 
         }else{
             printf("Action reussi\n");
@@ -309,6 +332,7 @@ void clickOnBoard(struct Vector clickPosition)
 
             pionStart->selected = 0; // Deselection du pion
             pionStart = NULL;
+            return 0;
             infoMessage = "Selectionnez un pion";
         }
 
@@ -342,11 +366,31 @@ int input(SDL_Event event)
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
                     showVector("Selection", clickPosition);
 
+                    if(clickOnBoard(clickPosition) == 0) // Fin de tour
+                    {
+                         // Affichage background
+                        showSdlBackground();
+
+                        // Affichage du player en cours
+                        showSdlPlayer();
+
+                        // Affichage du message d'indication
+                        write(infoMessage, text, positionText, police, black);
+
+                        // Affichage plateau
+                        showSdlBoard();
+
+                        // Renderer Update
+                        SDL_RenderPresent(renderer);
+
+                        
+                        // On attend que le joueur joue
+                        // Mode serveur
+                        printf("Mode serveur...\n");
+                    }
+
                     // Affichage background
                     showSdlBackground();
-
-
-                    clickOnBoard(clickPosition);
 
                     // Affichage du player en cours
                     showSdlPlayer();
@@ -465,6 +509,7 @@ int gui()
     loadTextures();
 
     struct Menu startMenu = loadStartMenu();
+
     while(showMenu(startMenu) == 0){
         // Lancement partie
         game();
@@ -474,7 +519,6 @@ int gui()
         strcpy(startMenu.title,currentPlayer->name);
         strcat(startMenu.title," gagne");
         startMenu.textPosition.x = caseWidth * 3;
-
 
         startMenu.items[0].title = "Rejouer";
     }
