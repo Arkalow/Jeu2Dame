@@ -3,17 +3,18 @@
 #include <string.h>
 #include "network.h"
 
-int server(char buffer[32])
+void *server()
 {
+    int PORT = 23;
     #if defined (WIN32)
         WSADATA WSAData;
         int erreur = WSAStartup(MAKEWORD(2,2), &WSAData);
     #else
         int erreur = 0;
     #endif
-
+    char buffer[32] = "OK !";
     int status = EXIT_SUCCESS;
- 
+
     SOCKET sock;
     SOCKADDR_IN sin;
     SOCKET csock;
@@ -83,11 +84,10 @@ int server(char buffer[32])
     }else{
         status = EXIT_FAILURE;
     }
- 
-    return status;
+    pthread_exit(NULL);
 }
 
-int client(char * response)
+int client(char * response, int PORT)
 {
     #if defined (WIN32)
         WSADATA WSAData;

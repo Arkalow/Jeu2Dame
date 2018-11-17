@@ -28,6 +28,8 @@ SDL_Surface *pSurf;
 SDL_Point positionText;
 char * infoMessage;
 
+pthread_t thread;
+
 /**
  * Creer une fenetre et renvoie le renderer
  * On recupere aussi l'adresse du pointeur de la fenetre

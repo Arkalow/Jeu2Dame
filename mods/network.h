@@ -14,9 +14,15 @@
     typedef struct sockaddr_in SOCKADDR_IN;
     typedef struct sockaddr SOCKADDR;
 #endif
-#define PORT 23
 
+/**
+ * Represente le tour du joueur
+ */
+struct tour{
+    int value;
+    pthread_mutex_t mutex;
+};
 
-int server();
+void *server();
 
-int client();
+int client(char * response, int PORT);

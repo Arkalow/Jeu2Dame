@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #include "../../define.h"
 #include "../../mods/Vector.h"
@@ -389,7 +390,7 @@ int input(SDL_Event event)
                         // On attend que le joueur joue
                         // Mode serveur
                         printf("Mode serveur...\n");
-                        server();
+                        //server();
                     }
 
                     // Affichage background
@@ -490,9 +491,7 @@ int gui()
     black.r = 0; black.g = 0; black.b = 0; black.a = 255;
     blue.r = 0; blue.g = 0; blue.b = 255; blue.a = 255;
     white.r = 255; white.g = 255; white.b = 255; white.a = 255;
-
     SDLboard.x = positionBoard.x; SDLboard.y = positionBoard.y; // On place le plateau au bonne coordonnées
-
     
     int statut = EXIT_FAILURE;
 
@@ -513,12 +512,24 @@ int gui()
 
     loadTextures();
 
+
     struct Menu startMenu = loadStartMenu();
     int resultMenu;
     while((resultMenu = showMenu(startMenu)) != 2){
 
         // Mode réseau
-        if(resultMenu == 1) network = 1; else network = 0;
+        if(resultMenu == 1){
+
+            // On lance le 
+
+            if(pthread_create(&thread, NULL, server, NULL) == -1) {
+                perror("pthread_create");
+                statut = EXIT_FAILURE;
+                goto Quit;
+            }
+
+
+        }
 
         // Lancement partie
         game();
@@ -541,6 +552,11 @@ Quit:
     if(NULL != texturePionPlayer2) SDL_DestroyTexture(texturePionPlayer2);
     freeMenu(startMenu);
     SDL_Quit();
+
+    if (pthread_join(thread, NULL)) {
+	    perror("pthread_join");
+    }
+
     return statut;
 }
 
