@@ -23,6 +23,6 @@ struct tour{
     pthread_mutex_t mutex;
 };
 
-void *server();
+void *server(void * arg);
 
 int client(char * response, int PORT);

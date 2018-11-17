@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include "network.h"
 
-void *server()
+
+void *server(void * arg)
 {
-    int PORT = 23;
+    int PORT = *((int*)arg);
     #if defined (WIN32)
         WSADATA WSAData;
         int erreur = WSAStartup(MAKEWORD(2,2), &WSAData);
@@ -84,6 +86,7 @@ void *server()
     }else{
         status = EXIT_FAILURE;
     }
+    (void) arg;
     pthread_exit(NULL);
 }
 

@@ -520,9 +520,10 @@ int gui()
         // Mode réseau
         if(resultMenu == 1){
 
-            // On lance le 
-
-            if(pthread_create(&thread, NULL, server, NULL) == -1) {
+            // On lance le thread serveur
+            int port = 23;
+            void * arg = (void*)&port;
+            if(pthread_create(&thread, NULL, server, arg) == -1) {
                 perror("pthread_create");
                 statut = EXIT_FAILURE;
                 goto Quit;
