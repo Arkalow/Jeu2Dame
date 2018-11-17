@@ -3,9 +3,7 @@
 #include <string.h>
 #include "network.h"
 
-
-
-int server(void)
+int server(char buffer[32])
 {
     #if defined (WIN32)
         WSADATA WSAData;
@@ -13,12 +11,13 @@ int server(void)
     #else
         int erreur = 0;
     #endif
+
+    int status = EXIT_SUCCESS;
  
     SOCKET sock;
     SOCKADDR_IN sin;
     SOCKET csock;
     SOCKADDR_IN csin;
-    char buffer[32] = "Bonjour !";
     socklen_t recsize = sizeof(csin);
     int sock_err;
  
@@ -65,23 +64,30 @@ int server(void)
                     /* Il ne faut pas oublier de fermer la connexion (fermée dans les deux sens) */
                     shutdown(csock, 2);
                 }
+            }else{
+                status = EXIT_FAILURE;
             }
  
             /* Fermeture de la socket */
             printf("Fermeture de la socket...\n");
             closesocket(sock);
+            closesocket(csock);
             printf("Fermeture du serveur terminee\n");
+        }else{
+            status = EXIT_FAILURE;
         }
  
         #if defined (WIN32)
             WSACleanup();
         #endif
+    }else{
+        status = EXIT_FAILURE;
     }
  
-    return EXIT_SUCCESS;
+    return status;
 }
 
-int client(void)
+int client(char * response)
 {
     #if defined (WIN32)
         WSADATA WSAData;
@@ -90,6 +96,8 @@ int client(void)
         int erreur = 0;
     #endif
  
+    int status = EXIT_SUCCESS;
+
     SOCKET sock;
     SOCKADDR_IN sin;
     char buffer[32] = "";
@@ -112,13 +120,16 @@ int client(void)
             
             /* Si l'on reçoit des informations : on les affiche à l'écran */
             if(recv(sock, buffer, 32, 0) != SOCKET_ERROR)
+            {
                 printf("Recu : %s\n", buffer);
+                strcpy(response, buffer);
+            }
         }
         /* sinon, on affiche "Impossible de se connecter" */
         else
         {
             printf("Impossible de se connecter\n");
-            return EXIT_FAILURE;
+            status = EXIT_FAILURE;
         }
  
         /* On ferme la socket */
@@ -129,9 +140,8 @@ int client(void)
         #endif
 
     }else{
-        
-        return EXIT_FAILURE;
+        status = EXIT_FAILURE;
     }
 
-    return EXIT_SUCCESS;
+    return status;
 }
