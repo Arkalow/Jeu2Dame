@@ -19,13 +19,27 @@
  * Represente le tour du joueur
  */
 struct Data{
-    int value;
+    struct Vector posStart; // Position du pion selectionné
+    struct Vector posEnd; // Position du pion destination
+    struct Vector posPrises[NB_PION]; // Tableau de positions des prises
+    int nbPrise; // Nombre de prise effectuées
 
-    int port_src, port_des;
+    int port_src, port_des; // Port source et destination
 };
 
+/**
+ * Lance laa fonction network_server dans un thread
+ */
 void *network_connect(void * arg);
 
+/**
+ * Ecoute les socket sur le port PORT
+ * Et renvoie une donnée
+ */
 int network_server(int PORT);
 
+/**
+ * Se connecte au serveur et recupere une socket.
+ * Les données sont sous forme de chaine de caractère récupérer par adresse dans la variable response
+ */
 int network_client(char * response, int PORT);

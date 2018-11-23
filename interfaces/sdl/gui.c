@@ -398,6 +398,7 @@ int input(SDL_Event event)
                         if(pthread_create(&thread, NULL, network_connect, arg) == -1) {
                             perror("pthread_create");
                         }
+                        printf("FIN DE TOUR\n");
                         printf("==================================================================\n");
                         tour = 0;
                     }

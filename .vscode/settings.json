@@ -3,6 +3,7 @@
         "pion.h": "c",
         "gui.h": "c",
         "sdl_ttf.h": "c",
-        "sdl_image.h": "c"
+        "sdl_image.h": "c",
+        "vector.h": "c"
     }
 }
