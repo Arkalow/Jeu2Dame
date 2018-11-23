@@ -21,3 +21,8 @@ struct Player createPlayer(int team, char * name);
  * Test si le pion appartient au joueur
  */
 int testPion(struct Pion pion, struct Player player);
+
+/**
+ * Change le current joueur
+ */ 
+void changePlayer(struct Player *player1, struct Player *player2, struct Player **currentPlayer);

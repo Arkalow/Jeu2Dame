@@ -70,7 +70,7 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
     }
 
     // On recupere les dimensions de l'image
-    // A terme on rajoutera la taille en parametre et on redimensionnera en fonction
+    // A terme on rajoutera la taille en thread_parametre et on redimensionnera en fonction
     //SDL_QueryTexture(texture, NULL, NULL, &dst.w, &dst.h);
     
     return texture;
@@ -371,7 +371,7 @@ int input(SDL_Event event)
 
                     if(clickOnBoard(clickPosition) == 0 && network == 1) // Fin de tour et mode reseau actif
                     {
-                         // Affichage background
+                        // Affichage background
                         showSdlBackground();
 
                         // Affichage du player en cours
@@ -386,11 +386,20 @@ int input(SDL_Event event)
                         // Renderer Update
                         SDL_RenderPresent(renderer);
 
+                        // On lance le thread serveur
+                        printf("Server...\n");
+                        void * arg = (void*)&thread_param;
 
-                        // On attend que le joueur joue
-                        // Mode serveur
-                        printf("Mode serveur...\n");
-                        //server();
+                        // On s'assure que le thread est biens fermé avant de continuer
+                        if (pthread_join(thread, NULL)) {
+                            perror("pthread_join");
+                        }
+                        // On ouvre une nouvelle connexion dans un thread
+                        if(pthread_create(&thread, NULL, network_connect, arg) == -1) {
+                            perror("pthread_create");
+                        }
+                        printf("==================================================================\n");
+                        tour = 0;
                     }
 
                     // Affichage background
@@ -407,6 +416,7 @@ int input(SDL_Event event)
 
                     // Renderer Update
                     SDL_RenderPresent(renderer);
+
                 }
                 
             }
@@ -444,7 +454,8 @@ int game()
     // Affichage du message d'indication
     sdlWrite("Selectionnez un pion", text, positionText, police, black);
     
-    if(EXIT_FAILURE == showSdlBoard()){
+    if(EXIT_FAILURE == showSdlBoard())
+    {
         printf("Erreur affichage\n");
         return EXIT_FAILURE;
     }
@@ -453,15 +464,32 @@ int game()
     SDL_RenderPresent(renderer);
 
     SDL_Event event;
-
+    char response[32]; // Buffer pour la fontion network_client
     // Boucle de jeu
 	while(player1.score != NB_PION && player2.score != NB_PION)
     {
         // Lecture d'un evenement
         while(SDL_PollEvent(&event))
         {
-            if(input(event) == SDL_QUIT)
+            if(event.type == SDL_QUIT)
                 return SDL_QUIT;
+
+            if(tour == 1)
+            {
+                input(event);
+            }
+            else
+            {
+                if(network_client(response, thread_param.port_des) == EXIT_SUCCESS){
+                    tour = 1;
+                    // Changement de joueur
+                    if(currentPlayer->team == player1.team){
+                        currentPlayer = &player2;
+                    }else{
+                        currentPlayer = &player1;
+                    }
+                }
+            }
         }
         SDL_Delay(30);
     }
@@ -518,18 +546,22 @@ int gui()
     while((resultMenu = showMenu(startMenu)) != 2){
 
         // Mode réseau
-        if(resultMenu == 1){
+        if(resultMenu == 1)
+        {
+            printf("Entrez le port source \n");
+            scanf("%d", &thread_param.port_src);
+            printf("Entrez le port destination \n");
+            scanf("%d", &thread_param.port_des);
 
-            // On lance le thread serveur
-            int port = 23;
-            void * arg = (void*)&port;
-            if(pthread_create(&thread, NULL, server, arg) == -1) {
-                perror("pthread_create");
-                statut = EXIT_FAILURE;
-                goto Quit;
+            char response[32];
+            if(network_client(response, thread_param.port_des) == EXIT_FAILURE)
+            {
+                network_server(thread_param.port_src);
+                tour = 1;
+            }else{
+                tour = 0;
             }
-
-
+            network = 1;
         }
 
         // Lancement partie

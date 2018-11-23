@@ -5,22 +5,32 @@
 #include "network.h"
 
 
-void *server(void * arg)
+void *network_connect(void * arg)
 {
-    int PORT = *((int*)arg);
+    printf("start thread\n");
+    struct Data thread_param = *((struct Data*)arg);
+    network_server(thread_param.port_src);
+    (void) arg;
+    printf("Close thread\n");
+    pthread_exit(NULL);
+}
+
+
+int network_server(int PORT)
+{
+    int status = EXIT_SUCCESS;
     #if defined (WIN32)
         WSADATA WSAData;
         int erreur = WSAStartup(MAKEWORD(2,2), &WSAData);
     #else
         int erreur = 0;
     #endif
-    char buffer[32] = "OK !";
-    int status = EXIT_SUCCESS;
-
+ 
     SOCKET sock;
     SOCKADDR_IN sin;
     SOCKET csock;
     SOCKADDR_IN csin;
+    char buffer[32] = "OK !";
     socklen_t recsize = sizeof(csin);
     int sock_err;
  
@@ -36,7 +46,6 @@ void *server(void * arg)
  
             /* Configuration */
             sin.sin_addr.s_addr    = htonl(INADDR_ANY);   /* Adresse IP automatique */
-            //sin.sin_addr.s_addr = inet_addr("127.0.0.1"); /* Adresse IP Manuel */
             sin.sin_family         = AF_INET;             /* Protocole familial (IP) */
             sin.sin_port           = htons(PORT);         /* Listage du port */
             sock_err = bind(sock, (SOCKADDR*)&sin, sizeof(sin));
@@ -58,25 +67,38 @@ void *server(void * arg)
                     printf("Un client se connecte avec la socket %d de %s:%d\n", csock, inet_ntoa(csin.sin_addr), htons(csin.sin_port));
  
                     sock_err = send(csock, buffer, 32, 0);
- 
+
                     if(sock_err != SOCKET_ERROR)
                         printf("Chaine envoyée : %s\n", buffer);
                     else
                         printf("Erreur de transmission\n");
  
                     /* Il ne faut pas oublier de fermer la connexion (fermée dans les deux sens) */
-                    shutdown(csock, 2);
+                    if(!shutdown(csock, SHUT_RD))
+                        perror("shutdown");
+                    if(!shutdown(sock, SHUT_RD))
+                        perror("shutdown");
+                }else{
+                    perror("bind");
+                    status = EXIT_FAILURE;
                 }
-            }else{
+
+            }else{ 
+                perror("bind");
                 status = EXIT_FAILURE;
             }
  
             /* Fermeture de la socket */
             printf("Fermeture de la socket...\n");
-            closesocket(sock);
-            closesocket(csock);
+            if(!closesocket(sock))
+                perror("closesocket");
+
+            if(!closesocket(csock))
+                perror("closesocket");
+            
             printf("Fermeture du serveur terminee\n");
         }else{
+            printf("La socket est invalide\n");
             status = EXIT_FAILURE;
         }
  
@@ -84,13 +106,14 @@ void *server(void * arg)
             WSACleanup();
         #endif
     }else{
+        printf("Les sockets windows ne fonctionnent pas\n");
         status = EXIT_FAILURE;
     }
-    (void) arg;
-    pthread_exit(NULL);
+ 
+    return status;
 }
 
-int client(char * response, int PORT)
+int network_client(char * response, int PORT)
 {
     #if defined (WIN32)
         WSADATA WSAData;
@@ -131,7 +154,7 @@ int client(char * response, int PORT)
         /* sinon, on affiche "Impossible de se connecter" */
         else
         {
-            printf("Impossible de se connecter\n");
+            //printf("Impossible de se connecter\n");
             status = EXIT_FAILURE;
         }
  

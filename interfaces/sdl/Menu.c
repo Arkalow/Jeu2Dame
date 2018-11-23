@@ -9,6 +9,7 @@
 #include "../../mods/Pion.h"
 #include "../../mods/Player.h"
 #include "sdlBoard.h"
+#include "../../mods/network.h"
 #include "gui.h"
 #include "Menu.h"
 

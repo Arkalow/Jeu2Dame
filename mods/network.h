@@ -18,11 +18,14 @@
 /**
  * Represente le tour du joueur
  */
-struct tour{
+struct Data{
     int value;
-    pthread_mutex_t mutex;
+
+    int port_src, port_des;
 };
 
-void *server(void * arg);
+void *network_connect(void * arg);
 
-int client(char * response, int PORT);
+int network_server(int PORT);
+
+int network_client(char * response, int PORT);
