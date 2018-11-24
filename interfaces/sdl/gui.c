@@ -496,7 +496,7 @@ int game()
     SDL_RenderPresent(renderer);
 
     SDL_Event event;
-    char response[32]; // Buffer pour la fontion network_client
+    char response[100]; // Buffer pour la fontion network_client
     // Boucle de jeu
 	while(player1.score != NB_PION && player2.score != NB_PION)
     {
@@ -514,13 +514,23 @@ int game()
             {
                 if(network_client(response, thread_param.port_des) == EXIT_SUCCESS){
                     // On s'assure que le thread est biens fermé avant de continuer
-                    printf("\tWAIT THREAD\n");
                     if(pthread_join(thread, NULL)) {
                         perror("pthread_join");
                     }
-                    printf("\tEND THREAD\n");
                     tour = 1;
                     thread_param.nbPrise = 0; // On reinitialise le nombre de prises
+
+                    struct Data data;
+                    data = decode_data(response);
+                    showVector("Start", data.posStart);
+                    showVector("End", data.posEnd);
+
+                    for(int i = 0; i < data.nbPrise; i++){
+                        showVector("Prise", data.posPrises[i]);
+                    }
+
+
+
                     // Changement de joueur
                     if(currentPlayer->team == player1.team){
                         currentPlayer = &player2;

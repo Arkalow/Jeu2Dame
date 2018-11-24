@@ -50,6 +50,8 @@ char * encode_data(struct Data data)
         str = str_concat(str, ";");
     }
 
+    str = str_concat(str, ";");
+
     printf("Fin encode : %s\n", str);
     return str;
 }
@@ -57,7 +59,25 @@ char * encode_data(struct Data data)
 struct Data decode_data(char * str)
 {
     struct Data data;
+    printf("\t\tDECODE DATA : \n");
+    printf("%s\n", str);
 
+    data.posStart = stringToVector(str);
+    while(str++[0] != ';');
+    printf("%s\n", str);
+
+    data.posEnd = stringToVector(str);
+    while(str++[0] != ';');
+    printf("%s\n", str);
+    
+    data.nbPrise = 0;
+    while(str[0] != ';')
+    {
+        data.posPrises[data.nbPrise] = stringToVector(str);
+        while(str++[0] != ';');
+        printf("%s\n", str);
+        data.nbPrise++;
+    }
     return data;
 }
 

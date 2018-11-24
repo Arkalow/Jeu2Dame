@@ -107,14 +107,6 @@ char * vectorToString(struct Vector vector)
 }
 
 /**
- * Affiche un vecteur
- * Pour le debug
- */
-void showVector(char * title, struct Vector vector){
-	printf("Vector : %s (%d, %d)\n", title, vector.x, vector.y);
-}
-
-/**
  * Convertie une chaine de caractère en Vector
  */
 struct Vector stringToVector(char * str){
@@ -131,6 +123,14 @@ struct Vector stringToVector(char * str){
 	}
 	vector.y = temp;
 	return vector;
+}
+
+/**
+ * Affiche un vecteur
+ * Pour le debug
+ */
+void showVector(char * title, struct Vector vector){
+	printf("Vector : %s (%d, %d)\n", title, vector.x, vector.y);
 }
 
 /**

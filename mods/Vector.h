@@ -52,6 +52,11 @@ struct Vector unitVector(struct Vector v);
 char * intToString(int nb);
 
 /**
+ * Convertie une chaine de caractère en Vector
+ */
+struct Vector stringToVector(char * str);
+
+/**
  * Concat 2 chaines de caractère
  */
 char * str_concat(char * str1, char * str2);
