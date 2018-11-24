@@ -4,6 +4,8 @@
         "gui.h": "c",
         "sdl_ttf.h": "c",
         "sdl_image.h": "c",
-        "vector.h": "c"
+        "vector.h": "c",
+        "console.h": "c",
+        "main.h": "c"
     }
 }

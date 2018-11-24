@@ -18,6 +18,7 @@
 #include "interfaces/console/console.h"
 #include "main.h"
 
+
 /**
  * Effectue une action 
  * move, move + prise...
@@ -134,6 +135,11 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 // PROGRAMME PRINCIPALE
 // -------------------------------------------------------------------------------------
 int main(){
-	gui(); // Lancement jeu en SDL2
+	struct Vector vector;
+	vector = createPoint(2, 34);
+	showVector("test", vector);
+	printf("Vector : %s\n", vectorToString(vector));
+	showVector("retest", stringToVector(vectorToString(vector)));
+	//gui(); // Lancement jeu en SDL2
 	//console(); // Lancement du jeu en console (Operationnel)
 }

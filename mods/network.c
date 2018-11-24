@@ -2,22 +2,37 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include "../define.h"
 #include "Vector.h"
 #include "network.h"
 
-
 void *network_connect(void * arg)
 {
+    // Encode data
+    char buffer[32] = "Data";
+
     printf("start thread\n");
     struct Data thread_param = *((struct Data*)arg);
-    network_server(thread_param.port_src);
+    network_server(buffer, thread_param.port_src);
     (void) arg;
     printf("Close thread\n");
     pthread_exit(NULL);
 }
 
+char * encode_data(struct Data data)
+{
+    
+    return "Data encode";
+}
 
-int network_server(int PORT)
+struct Data decode_data(char * str)
+{
+    struct Data data;
+
+    return data;
+}
+
+int network_server(char buffer[32], int PORT)
 {
     int status = EXIT_SUCCESS;
     #if defined (WIN32)
@@ -31,7 +46,6 @@ int network_server(int PORT)
     SOCKADDR_IN sin;
     SOCKET csock;
     SOCKADDR_IN csin;
-    char buffer[32] = "OK !";
     socklen_t recsize = sizeof(csin);
     int sock_err;
  

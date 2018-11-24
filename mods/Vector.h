@@ -52,6 +52,16 @@ struct Vector unitVector(struct Vector v);
  */
 void showVector(char * title, struct Vector vector);
 
+/**
+ * Convertie un vector en chaine de caractère
+ * Format : (x,y)
+ */
+char * vectorToString(struct Vector vector);
+
+/**
+ * Convertie une chaine de caractère en Vector
+ */
+struct Vector stringToVector(char * str);
 
 /**
  * Test si le vecteur test est compris dans le vecteur reference

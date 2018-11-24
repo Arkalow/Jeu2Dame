@@ -557,7 +557,7 @@ int gui()
             char response[32];
             if(network_client(response, thread_param.port_des) == EXIT_FAILURE)
             {
-                network_server(thread_param.port_src);
+                network_server("OK !", thread_param.port_src);
                 tour = 1;
             }else{
                 tour = 0;

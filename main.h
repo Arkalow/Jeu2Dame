@@ -70,7 +70,7 @@ joueur effectue une prise et reviens à 0 à la fin du tour.
 
 
 =============================================================================
-MODE RESEAU
+	MODE RESEAU
 =============================================================================
 
 CONNEXION RESEAUX

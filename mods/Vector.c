@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include "Vector.h"
+
 
 /**
  * Créer un vecteur à partir de coordonées
@@ -70,12 +72,65 @@ struct Vector unitVector(struct Vector v){
 	return v;
 }
 
+char * intToString(int nb)
+{
+	char* str;
+	str = malloc(sizeof(char));
+	sprintf(str, "%d", nb);
+	return str;
+}
+
+/**
+ * Concat 2 chaines de caractère
+ */
+char * str_concat(char * str1, char * str2)
+{
+	char* str;
+	str = malloc(sizeof(char) * strlen(str1)); /* make space for the new string (should check the return value ...) */
+	strcpy(str, str1); /* copy str1 into the new var */
+	strcat(str, str2); /* add the str2 */
+	return str;
+}
+
 /**
  * Affiche un vecteur
  * Pour le debug
  */
 void showVector(char * title, struct Vector vector){
 	printf("Vector : %s (%d, %d)\n", title, vector.x, vector.y);
+}
+
+/**
+ * Convertie un vector en chaine de caractère
+ * Format : (x,y)
+ */
+char * vectorToString(struct Vector vector)
+{
+	char * str = "(";
+	str = str_concat(str, intToString(vector.x));
+	str = str_concat(str, ",");
+	str = str_concat(str, intToString(vector.y));
+	str = str_concat(str, ")");
+	return str;
+}
+
+/**
+ * Convertie une chaine de caractère en Vector
+ */
+struct Vector stringToVector(char * str){
+	struct Vector vector;
+	int temp = 0;
+	while(str++[0] != ')'){
+		if(str[0] == ')') continue;
+		if(str[0] == ','){
+			vector.x = temp;
+			temp = 0;
+			continue;
+		}
+		temp = temp * 10 + str[0] - '0';
+	}
+	vector.y = temp;
+	return vector;
 }
 
 /**

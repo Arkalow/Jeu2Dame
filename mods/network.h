@@ -33,10 +33,20 @@ struct Data{
 void *network_connect(void * arg);
 
 /**
+ * Encode les datas en chaine de caractère
+ */
+char * encode_data(struct Data data);
+
+/**
+ * Decode les data en structure
+ */
+struct Data decode_data(char * data);
+
+/**
  * Ecoute les socket sur le port PORT
  * Et renvoie une donnée
  */
-int network_server(int PORT);
+int network_server(char buffer[32], int PORT);
 
 /**
  * Se connecte au serveur et recupere une socket.
