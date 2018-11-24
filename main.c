@@ -140,6 +140,6 @@ int main(){
 	showVector("test", vector);
 	printf("Vector : %s\n", vectorToString(vector));
 	showVector("retest", stringToVector(vectorToString(vector)));
-	//gui(); // Lancement jeu en SDL2
+	gui(); // Lancement jeu en SDL2
 	//console(); // Lancement du jeu en console (Operationnel)
 }

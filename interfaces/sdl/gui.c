@@ -563,6 +563,8 @@ int gui()
                 tour = 0;
             }
             network = 1;
+        }else{
+            tour = 1;
         }
 
         // Lancement partie
