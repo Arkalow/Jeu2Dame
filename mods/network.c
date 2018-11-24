@@ -2,18 +2,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <string.h>
 #include "../define.h"
 #include "Vector.h"
 #include "network.h"
 
 void *network_connect(void * arg)
 {
-    // Encode data
-    char buffer[32] = "Data";
-
     printf("start thread\n");
     struct Data thread_param = *((struct Data*)arg);
-    network_server(buffer, thread_param.port_src);
+    // Encode data
+    char buffer[200];
+    strcpy(buffer, encode_data(thread_param));
+    int compteur = 0;
+    // GERER L'ERREUR DE CONNEXION!!
+    while(compteur < 100 && network_server(buffer, thread_param.port_src) == EXIT_FAILURE) compteur++;
     (void) arg;
     printf("Close thread\n");
     pthread_exit(NULL);
@@ -21,8 +24,34 @@ void *network_connect(void * arg)
 
 char * encode_data(struct Data data)
 {
-    
-    return "Data encode";
+    showVector("Debut encode\n", data.posStart);
+    char * str;
+    str = malloc(sizeof(char) * 100);
+    // Coordonnées start
+    str = str_concat(str, vectorToString(data.posStart));
+    str = str_concat(str, ";");
+
+    // Coordonnées end
+    str = str_concat(str, vectorToString(data.posEnd));
+    str = str_concat(str, ";");
+
+    // Liste des prises
+    if(data.nbPrise > 1)
+    {
+        for(int i = 0; i < data.nbPrise; i++)
+        {
+            str = str_concat(str, vectorToString(data.posPrises[i]));
+            str = str_concat(str, ";");
+        }
+    }
+    else if(data.nbPrise == 1)
+    {
+        str = str_concat(str, vectorToString(data.posPrises[0]));
+        str = str_concat(str, ";");
+    }
+
+    printf("Fin encode : %s\n", str);
+    return str;
 }
 
 struct Data decode_data(char * str)
@@ -32,7 +61,7 @@ struct Data decode_data(char * str)
     return data;
 }
 
-int network_server(char buffer[32], int PORT)
+int network_server(char buffer[200], int PORT)
 {
     int status = EXIT_SUCCESS;
     #if defined (WIN32)
@@ -48,6 +77,7 @@ int network_server(char buffer[32], int PORT)
     SOCKADDR_IN csin;
     socklen_t recsize = sizeof(csin);
     int sock_err;
+    int yes = 1;
  
     /* Si les sockets Windows fonctionnent */
     if(!erreur)
@@ -63,6 +93,13 @@ int network_server(char buffer[32], int PORT)
             sin.sin_addr.s_addr    = htonl(INADDR_ANY);   /* Adresse IP automatique */
             sin.sin_family         = AF_INET;             /* Protocole familial (IP) */
             sin.sin_port           = htons(PORT);         /* Listage du port */
+
+            // lose the pesky "Address already in use" error message
+            if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+                perror("setsockopt");
+                pthread_exit(NULL);
+            }
+
             sock_err = bind(sock, (SOCKADDR*)&sin, sizeof(sin));
  
             /* Si la socket fonctionne */

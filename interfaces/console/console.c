@@ -78,7 +78,7 @@ int console()
 			printf(" => y : ");
 			scanf("%d", &end.y);
 
-			resultAction = action(pionStart, end, currentPlayer);
+			resultAction = action(pionStart, end, currentPlayer, NULL);
 
 			// L'action n'a pas aboutie
 			if(resultAction == -1){

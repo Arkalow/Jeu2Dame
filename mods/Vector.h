@@ -47,10 +47,14 @@ struct Vector createVector(int startX, int startY, int endX, int endY);
 struct Vector unitVector(struct Vector v);
 
 /**
- * Affiche un vecteur
- * Pour le debug
+ * Convertie un entier en chaine de caractere
  */
-void showVector(char * title, struct Vector vector);
+char * intToString(int nb);
+
+/**
+ * Concat 2 chaines de caractère
+ */
+char * str_concat(char * str1, char * str2);
 
 /**
  * Convertie un vector en chaine de caractère
@@ -59,9 +63,10 @@ void showVector(char * title, struct Vector vector);
 char * vectorToString(struct Vector vector);
 
 /**
- * Convertie une chaine de caractère en Vector
+ * Affiche un vecteur
+ * Pour le debug
  */
-struct Vector stringToVector(char * str);
+void showVector(char * title, struct Vector vector);
 
 /**
  * Test si le vecteur test est compris dans le vecteur reference

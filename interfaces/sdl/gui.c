@@ -213,8 +213,9 @@ void showSdlPlayer()
  */
 int clickOnBoard(struct Vector clickPosition)
 {
-    // Position du text
-    if(pionStart == NULL){
+    // Selection start
+    if(pionStart == NULL)
+    {
         // On selectionne un pion
         int resultSearchBoard = searchBoard(clickPosition, &pionStart);
 
@@ -248,15 +249,21 @@ int clickOnBoard(struct Vector clickPosition)
         }
 
 
-    }else if(pionStart != NULL && equalVector(pionStart->position, clickPosition) && comboMode == 0){
+    }
+    // Deselection
+    else if(pionStart != NULL && equalVector(pionStart->position, clickPosition) && comboMode == 0)
+    {
         // L'user re-click sur le pion selectionne
         // On desactive alors le pion
         pionStart->selected = 0;
         pionStart = NULL;
         comboMode = 0;
         return 1;
-    }else{
-
+    }
+    // Selection d'une destination
+    else
+    {
+        struct Vector posPrise; // Position de la prise
         /**
          * La fonction retourne :
          * 		- 0 : succès
@@ -267,7 +274,7 @@ int clickOnBoard(struct Vector clickPosition)
          * 		- -4 : Erreur prise (plusieurs prises sur le chemin)
          * 		- -5 : Déplacement impossible
          */
-        int resultAction = action(pionStart, clickPosition, currentPlayer);
+        int resultAction = action(pionStart, clickPosition, currentPlayer, &posPrise);
         // L'action n'a pas aboutie
         if(resultAction == -1)
         {
@@ -293,15 +300,16 @@ int clickOnBoard(struct Vector clickPosition)
         {
             infoMessage = "Erreur, deplacement impossible";
             return -1;
-
-
+        }
         // L'action est une prise
-        }else if(resultAction == 1){
+        else if(resultAction == 1)
+        {
             comboMode = 1;
             printf("Continue action\n");
             // Si le nombre de prise disponible autour du pion est 0
-            // Alors ont sort de la boucle marque la fin du tour
-            if(comboMode == 1 && testAllPrise(*pionStart) == 0){
+            // Alors ont sort de la boucle, ça marque la fin du tour
+            if(comboMode == 1 && testAllPrise(*pionStart) == 0)
+            {
                 printf("Plus de prise disponible pour ce tours\n");
                 pionStart->selected = 0;
                 pionStart = NULL;
@@ -313,11 +321,26 @@ int clickOnBoard(struct Vector clickPosition)
                     currentPlayer = &player1;
                 }
                 infoMessage = "Selectionnez un pion";
+
+                // On stocke la position de la prise si on est en mode réseau 
+                if(network == 1){
+                    printf("Add Prise !\n");
+                    thread_param.posPrises[thread_param.nbPrise] = posPrise;
+                    thread_param.nbPrise++;
+                }
                 return 0;
+            }
+            // On stocke la position de la prise si on est en mode réseau 
+            if(network == 1){
+                printf("Add Prise !\n");
+                thread_param.posPrises[thread_param.nbPrise] = posPrise;
+                thread_param.nbPrise++;
             }
             return 2;
 
-        }else{
+        }
+        else
+        {
             printf("Action reussi\n");
 
             // Transformation du pion en dame
@@ -369,7 +392,9 @@ int input(SDL_Event event)
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
                     showVector("Selection", clickPosition);
 
-                    if(clickOnBoard(clickPosition) == 0 && network == 1) // Fin de tour et mode reseau actif
+                    int resultClickOnBoard = clickOnBoard(clickPosition);
+
+                    if(resultClickOnBoard == 0 && network == 1) // Fin de tour et mode reseau actif
                     {
                         // Affichage background
                         showSdlBackground();
@@ -386,14 +411,14 @@ int input(SDL_Event event)
                         // Renderer Update
                         SDL_RenderPresent(renderer);
 
+
+                        printf("Enregistrement de la selectionEnd\n");
+                        thread_param.posEnd.x = clickPosition.x;
+                        thread_param.posEnd.y = clickPosition.y;
                         // On lance le thread serveur
                         printf("Server...\n");
                         void * arg = (void*)&thread_param;
 
-                        // On s'assure que le thread est biens fermé avant de continuer
-                        if (pthread_join(thread, NULL)) {
-                            perror("pthread_join");
-                        }
                         // On ouvre une nouvelle connexion dans un thread
                         if(pthread_create(&thread, NULL, network_connect, arg) == -1) {
                             perror("pthread_create");
@@ -401,6 +426,12 @@ int input(SDL_Event event)
                         printf("FIN DE TOUR\n");
                         printf("==================================================================\n");
                         tour = 0;
+                    }
+                    else if(network == 1 && resultClickOnBoard > 0) // Selection de tour et mode reseau actif
+                    {
+                        // On stocke la position de la selection dans les parametres de thread 
+                        thread_param.posStart.x = pionStart->position.x;
+                        thread_param.posStart.y = pionStart->position.y;
                     }
 
                     // Affichage background
@@ -482,7 +513,14 @@ int game()
             else
             {
                 if(network_client(response, thread_param.port_des) == EXIT_SUCCESS){
+                    // On s'assure que le thread est biens fermé avant de continuer
+                    printf("\tWAIT THREAD\n");
+                    if(pthread_join(thread, NULL)) {
+                        perror("pthread_join");
+                    }
+                    printf("\tEND THREAD\n");
                     tour = 1;
+                    thread_param.nbPrise = 0; // On reinitialise le nombre de prises
                     // Changement de joueur
                     if(currentPlayer->team == player1.team){
                         currentPlayer = &player2;

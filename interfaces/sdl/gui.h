@@ -28,6 +28,7 @@ SDL_Surface *pSurf;
 SDL_Point positionText;
 char * infoMessage;
 
+// Pour la partie network
 struct Data thread_param;
 int tour;
 pthread_t thread;

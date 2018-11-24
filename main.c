@@ -22,6 +22,7 @@
 /**
  * Effectue une action 
  * move, move + prise...
+ * On stocke l'adresse de la prise dans prise
  * La fonction retourne :
  * 		- 0 : succès
  * 		- 1 : combo
@@ -31,7 +32,7 @@
  * 		- -4 : Erreur prise (plusieurs prises sur le chemin)
  * 		- -5 : Déplacement impossible
  */
-int action(struct Pion * pion, struct Vector point, struct Player * player){
+int action(struct Pion * pion, struct Vector point, struct Player * player, struct Vector * posPrise){
 	struct Vector prise;
 	
 	//printf("Pion selectionne : \n");
@@ -79,6 +80,8 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 
 		// On est dans le cas restant, une prise est trouvée
 		printf(" Prise trouvee\n");
+		if(posPrise != NULL)
+			*posPrise = board[prise.x][prise.y]->position;
 		board[prise.x][prise.y] = NULL;
 		player->score++;
 		printf(" Prise effectue\n");
@@ -116,6 +119,8 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 			printf(" Deplacement\n");
 			move(pion, point);
 			printf(" Prise trouvee\n");
+			if(posPrise != NULL)
+				*posPrise = board[prise.x][prise.y]->position;
 			board[prise.x][prise.y] = NULL;
 			player->score++;
 			printf(" Prise effectue\n");
@@ -135,11 +140,6 @@ int action(struct Pion * pion, struct Vector point, struct Player * player){
 // PROGRAMME PRINCIPALE
 // -------------------------------------------------------------------------------------
 int main(){
-	struct Vector vector;
-	vector = createPoint(2, 34);
-	showVector("test", vector);
-	printf("Vector : %s\n", vectorToString(vector));
-	showVector("retest", stringToVector(vectorToString(vector)));
 	gui(); // Lancement jeu en SDL2
 	//console(); // Lancement du jeu en console (Operationnel)
 }

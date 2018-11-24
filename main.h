@@ -121,6 +121,7 @@ l'ecrire de cette manière :
 /**
  * Effectue une action 
  * move, move + prise...
+ * On stocke l'adresse de la prise dans prise
  * La fonction retourne :
  * 		- 0 : succès
  * 		- 1 : combo
@@ -130,6 +131,6 @@ l'ecrire de cette manière :
  * 		- -4 : Erreur prise (plusieurs prises sur le chemin)
  * 		- -5 : Déplacement impossible
  */
-int action(struct Pion * pion, struct Vector point, struct Player * player);
+int action(struct Pion * pion, struct Vector point, struct Player * player, struct Vector * posPrise);
 
 int main();

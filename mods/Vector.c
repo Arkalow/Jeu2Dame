@@ -93,14 +93,6 @@ char * str_concat(char * str1, char * str2)
 }
 
 /**
- * Affiche un vecteur
- * Pour le debug
- */
-void showVector(char * title, struct Vector vector){
-	printf("Vector : %s (%d, %d)\n", title, vector.x, vector.y);
-}
-
-/**
  * Convertie un vector en chaine de caractère
  * Format : (x,y)
  */
@@ -112,6 +104,14 @@ char * vectorToString(struct Vector vector)
 	str = str_concat(str, intToString(vector.y));
 	str = str_concat(str, ")");
 	return str;
+}
+
+/**
+ * Affiche un vecteur
+ * Pour le debug
+ */
+void showVector(char * title, struct Vector vector){
+	printf("Vector : %s (%d, %d)\n", title, vector.x, vector.y);
 }
 
 /**
