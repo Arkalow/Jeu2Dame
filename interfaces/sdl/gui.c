@@ -505,60 +505,70 @@ int game()
         {
             if(event.type == SDL_QUIT)
                 return SDL_QUIT;
-
             if(tour == 1)
-            {
                 input(event);
+        }
+
+        if(tour == 0 && network == 1 && network_client(response, thread_param.port_des) == EXIT_SUCCESS)
+        {
+            // On s'assure que le thread est biens fermé avant de continuer
+            if(pthread_join(thread, NULL)) {
+                perror("pthread_join");
             }
-            else
+            tour = 1;
+            thread_param.nbPrise = 0; // On reinitialise le nombre de prises
+
+            struct Data data; // Données recupérées par la socket
+            data = decode_data(response);
+            showVector("Start", data.posStart);
+            showVector("End", data.posEnd);
+
+            for(int i = 0; i < data.nbPrise; i++){
+                showVector("Prise", data.posPrises[i]);
+            }
+
+            board[data.posEnd.x][data.posEnd.y] = board[data.posStart.x][data.posStart.y];
+            board[data.posStart.x][data.posStart.y] = NULL;
+            
+            // Liste des prises
+            if(data.nbPrise > 1)
             {
-                if(network == 1 && network_client(response, thread_param.port_des) == EXIT_SUCCESS)
+                for(int i = 0; i < data.nbPrise; i++)
                 {
-                    // On s'assure que le thread est biens fermé avant de continuer
-                    if(pthread_join(thread, NULL)) {
-                        perror("pthread_join");
-                    }
-                    tour = 1;
-                    thread_param.nbPrise = 0; // On reinitialise le nombre de prises
-
-                    struct Data data; // Données recupérées par la socket
-                    data = decode_data(response);
-                    showVector("Start", data.posStart);
-                    showVector("End", data.posEnd);
-
-                    for(int i = 0; i < data.nbPrise; i++){
-                        showVector("Prise", data.posPrises[i]);
-                    }
-
-                    board[data.posEnd.x][data.posEnd.y] = board[data.posStart.x][data.posStart.y];
-                    board[data.posStart.x][data.posStart.y] = NULL;
-                    
-                    // Liste des prises
-                    if(data.nbPrise > 1)
-                    {
-                        for(int i = 0; i < data.nbPrise; i++)
-                        {
-                            board[data.posPrises[i].x][data.posPrises[i].y] = NULL;
-                        }
-                    }
-                    else if(data.nbPrise == 1)
-                    {
-                        board[data.posPrises[0].x][data.posPrises[0].y] = NULL;
-                    }
-
-                    currentPlayer->score += data.nbPrise;
-
-                    // Changement de joueur
-                    if(currentPlayer->team == player1.team){
-                        currentPlayer = &player2;
-                    }else{
-                        currentPlayer = &player1;
-                    }
+                    board[data.posPrises[i].x][data.posPrises[i].y] = NULL;
                 }
             }
-        
-        SDL_Delay(60);
+            else if(data.nbPrise == 1)
+            {
+                board[data.posPrises[0].x][data.posPrises[0].y] = NULL;
+            }
+
+            currentPlayer->score += data.nbPrise;
+
+            // Changement de joueur
+            if(currentPlayer->team == player1.team){
+                currentPlayer = &player2;
+            }else{
+                currentPlayer = &player1;
+            }
+
+            // Affichage background
+            showSdlBackground();
+
+            // Affichage du player en cours
+            showSdlPlayer();
+
+            // Affichage du message d'indication
+            sdlWrite(infoMessage, text, positionText, police, black);
+
+            // Affichage plateau
+            showSdlBoard();
+
+            // Renderer Update
+            SDL_RenderPresent(renderer);
         }
+        
+        SDL_Delay(30);
     }
     // Changement de joueur
     if(currentPlayer->team == player1.team){
