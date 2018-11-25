@@ -82,9 +82,13 @@ void showSdlPlayer();
 
 /**
  * Gere les actions du tour quand on click sur le plateau
- * La fonction renvoie  -1 en cas d'erreur
- *                      0 en fin de tours
- *                      > 0 en case de selection... 
+ * La fonction renvoie :
+ *      - -1 : erreur
+ *      - 0 : fin combo
+ *      - 1 : selection d'un pion
+ *      - 2 : combo en cours
+ *      - 3 : fin deplacement
+ *      - 4 : Deselection pion
  */
 int clickOnBoard(struct Vector clickPosition);
 

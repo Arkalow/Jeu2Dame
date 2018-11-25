@@ -207,9 +207,13 @@ void showSdlPlayer()
 
 /**
  * Gere les actions du tour quand on click sur le plateau
- * La fonction renvoie  -1 en cas d'erreur
- *                      0 en fin de tours
- *                      > 0 en case de selection... 
+ * La fonction renvoie :
+ *      - -1 : erreur
+ *      - 0 : fin combo
+ *      - 1 : selection d'un pion
+ *      - 2 : combo en cours
+ *      - 3 : fin deplacement
+ *      - 4 : Deselection pion
  */
 int clickOnBoard(struct Vector clickPosition)
 {
@@ -264,16 +268,7 @@ int clickOnBoard(struct Vector clickPosition)
     else
     {
         struct Vector posPrise; // Position de la prise
-        /**
-         * La fonction retourne :
-         * 		- 0 : succès
-         * 		- 1 : combo
-         * 		- -1 : pas de prise
-         * 		- -2 : hors limite
-         * 		- -3 : case de destination déjà occupée
-         * 		- -4 : Erreur prise (plusieurs prises sur le chemin)
-         * 		- -5 : Déplacement impossible
-         */
+
         int resultAction = action(pionStart, clickPosition, currentPlayer, &posPrise);
         // L'action n'a pas aboutie
         if(resultAction == -1)
@@ -328,7 +323,7 @@ int clickOnBoard(struct Vector clickPosition)
                     thread_param.posPrises[thread_param.nbPrise] = posPrise;
                     thread_param.nbPrise++;
                 }
-                return 0;
+                return 0; // fin combo
             }
             // On stocke la position de la prise si on est en mode réseau 
             if(network == 1){
@@ -336,7 +331,7 @@ int clickOnBoard(struct Vector clickPosition)
                 thread_param.posPrises[thread_param.nbPrise] = posPrise;
                 thread_param.nbPrise++;
             }
-            return 2;
+            return 2; // Combo en cours
 
         }
         else
@@ -358,8 +353,8 @@ int clickOnBoard(struct Vector clickPosition)
 
             pionStart->selected = 0; // Deselection du pion
             pionStart = NULL;
-            return 0;
             infoMessage = "Selectionnez un pion";
+            return 3;
         }
 
     }
@@ -394,7 +389,7 @@ int input(SDL_Event event)
 
                     int resultClickOnBoard = clickOnBoard(clickPosition);
 
-                    if(resultClickOnBoard == 0 && network == 1) // Fin de tour et mode reseau actif
+                    if((resultClickOnBoard == 0 || resultClickOnBoard == 3) && network == 1) // Fin de tour et mode reseau actif
                     {
                         // Affichage background
                         showSdlBackground();
@@ -427,11 +422,10 @@ int input(SDL_Event event)
                         printf("==================================================================\n");
                         tour = 0;
                     }
-                    else if(network == 1 && resultClickOnBoard > 1) // Selection de tour et mode reseau actif
+                    else if(network == 1 && resultClickOnBoard == 1) // Selection de tour et mode reseau actif
                     {
                         // On stocke la position de la selection dans les parametres de thread 
-                        thread_param.posStart.x = pionStart->position.x;
-                        thread_param.posStart.y = pionStart->position.y;
+                        thread_param.posStart = pionStart->position;
                     }
 
                     // Affichage background
