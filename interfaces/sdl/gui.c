@@ -475,7 +475,9 @@ int game()
 
 	player1 = createPlayer(1, "Joueur 1");
 	player2 = createPlayer(2, "Joueur 2");
+
     currentPlayer = &player1;
+
     showSdlPlayer();
     // Affichage du message d'indication
     sdlWrite("Selectionnez un pion", text, positionText, police, black);
