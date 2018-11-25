@@ -427,7 +427,7 @@ int input(SDL_Event event)
                         printf("==================================================================\n");
                         tour = 0;
                     }
-                    else if(network == 1 && resultClickOnBoard > 0) // Selection de tour et mode reseau actif
+                    else if(network == 1 && resultClickOnBoard > 1) // Selection de tour et mode reseau actif
                     {
                         // On stocke la position de la selection dans les parametres de thread 
                         thread_param.posStart.x = pionStart->position.x;
