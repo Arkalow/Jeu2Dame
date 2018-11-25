@@ -512,7 +512,8 @@ int game()
             }
             else
             {
-                if(network_client(response, thread_param.port_des) == EXIT_SUCCESS){
+                if(network == 1 && network_client(response, thread_param.port_des) == EXIT_SUCCESS)
+                {
                     // On s'assure que le thread est biens fermé avant de continuer
                     if(pthread_join(thread, NULL)) {
                         perror("pthread_join");
@@ -520,7 +521,7 @@ int game()
                     tour = 1;
                     thread_param.nbPrise = 0; // On reinitialise le nombre de prises
 
-                    struct Data data;
+                    struct Data data; // Données recupérées par la socket
                     data = decode_data(response);
                     showVector("Start", data.posStart);
                     showVector("End", data.posEnd);
@@ -529,7 +530,23 @@ int game()
                         showVector("Prise", data.posPrises[i]);
                     }
 
+                    board[data.posEnd.x][data.posEnd.y] = board[data.posStart.x][data.posStart.y];
+                    board[data.posStart.x][data.posStart.y] = NULL;
+                    
+                    // Liste des prises
+                    if(data.nbPrise > 1)
+                    {
+                        for(int i = 0; i < data.nbPrise; i++)
+                        {
+                            board[data.posPrises[i].x][data.posPrises[i].y] = NULL;
+                        }
+                    }
+                    else if(data.nbPrise == 1)
+                    {
+                        board[data.posPrises[0].x][data.posPrises[0].y] = NULL;
+                    }
 
+                    currentPlayer->score += data.nbPrise;
 
                     // Changement de joueur
                     if(currentPlayer->team == player1.team){
@@ -539,8 +556,9 @@ int game()
                     }
                 }
             }
+        
+        SDL_Delay(60);
         }
-        SDL_Delay(30);
     }
     // Changement de joueur
     if(currentPlayer->team == player1.team){
