@@ -26,7 +26,7 @@ char * encode_data(struct Data data)
 {
     showVector("Debut encode\n", data.posStart);
     char * str;
-    str = "";
+    str = malloc(sizeof(char) * 100);
     // Coordonnées start
     str = str_concat(str, vectorToString(data.posStart));
     str = str_concat(str, ";");
