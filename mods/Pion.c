@@ -303,5 +303,5 @@ void setTestBoard(){
 
 	// Team 2
 	createPion(1, 1, 2, 0);
-	createPion(3, 3, 2, 0);
+	createPion(4, 4, 2, 0);
 }
