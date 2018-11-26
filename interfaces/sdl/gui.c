@@ -262,7 +262,7 @@ int clickOnBoard(struct Vector clickPosition)
         pionStart->selected = 0;
         pionStart = NULL;
         comboMode = 0;
-        return 1;
+        return 4;
     }
     // Selection d'une destination
     else
