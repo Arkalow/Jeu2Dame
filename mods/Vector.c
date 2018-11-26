@@ -80,17 +80,6 @@ char * intToString(int nb)
 	return str;
 }
 
-/**
- * Concat 2 chaines de caractère
- */
-char * str_concat(char * str1, char * str2)
-{
-	char* str;
-	str = malloc(sizeof(char) * strlen(str1)); /* make space for the new string (should check the return value ...) */
-	strcpy(str, str1); /* copy str1 into the new var */
-	strcat(str, str2); /* add the str2 */
-	return str;
-}
 
 /**
  * Convertie un vector en chaine de caractère
@@ -98,11 +87,13 @@ char * str_concat(char * str1, char * str2)
  */
 char * vectorToString(struct Vector vector)
 {
-	char * str = "(";
-	str = str_concat(str, intToString(vector.x));
-	str = str_concat(str, ",");
-	str = str_concat(str, intToString(vector.y));
-	str = str_concat(str, ")");
+	char * str;
+	str = malloc(sizeof(char) * 100);
+	str = strcat(str, "(");
+	str = strcat(str, intToString(vector.x));
+	str = strcat(str, ",");
+	str = strcat(str, intToString(vector.y));
+	str = strcat(str, ")");
 	return str;
 }
 

@@ -57,11 +57,6 @@ char * intToString(int nb);
 struct Vector stringToVector(char * str);
 
 /**
- * Concat 2 chaines de caractère
- */
-char * str_concat(char * str1, char * str2);
-
-/**
  * Convertie un vector en chaine de caractère
  * Format : (x,y)
  */
