@@ -21,7 +21,7 @@
 
 /**
  * Effectue une action 
- * move, move + prise...
+ * move, move + prise->..
  * On stocke l'adresse de la prise dans prise
  * La fonction retourne :
  * 		- 0 : succès
@@ -32,8 +32,7 @@
  * 		- -4 : Erreur prise (plusieurs prises sur le chemin)
  * 		- -5 : Déplacement impossible
  */
-int action(struct Pion * pion, struct Vector point, struct Player * player, struct Vector * posPrise){
-	struct Vector prise;
+int action(struct Pion * pion, struct Vector point, struct Player * player, struct Vector * prise){
 	
 	//printf("Pion selectionne : \n");
 	//showPion(*pion);
@@ -60,7 +59,7 @@ int action(struct Pion * pion, struct Vector point, struct Player * player, stru
 	if(testMove(*pion, point)){
 
 		// Test les prises s'il existe des prises sur le chemin
-		resultTestPrise = testPrise(*pion, point, &prise);
+		resultTestPrise = testPrise(*pion, point, prise);
 
 		// Erreur, il y a plusieurs prises
 		if(resultTestPrise == -1){
@@ -80,9 +79,9 @@ int action(struct Pion * pion, struct Vector point, struct Player * player, stru
 
 		// On est dans le cas restant, une prise est trouvée
 		printf(" Prise trouvee\n");
-		if(posPrise != NULL)
-			*posPrise = board[prise.x][prise.y]->position;
-		board[prise.x][prise.y] = NULL;
+
+		board[prise->x][prise->y] = NULL;
+	
 		player->score++;
 		printf(" Prise effectue\n");
 		return 1; // combo
@@ -98,7 +97,7 @@ int action(struct Pion * pion, struct Vector point, struct Player * player, stru
 		if(testMove(*pion, point)){
 
 			// On test la présence de prises
-			resultTestPrise = testPrise(*pion, point, &prise);
+			resultTestPrise = testPrise(*pion, point, prise);
 
 			// Plusieurs prise sur le chemin
 			if(resultTestPrise == -1){
@@ -119,9 +118,8 @@ int action(struct Pion * pion, struct Vector point, struct Player * player, stru
 			printf(" Deplacement\n");
 			move(pion, point);
 			printf(" Prise trouvee\n");
-			if(posPrise != NULL)
-				*posPrise = board[prise.x][prise.y]->position;
-			board[prise.x][prise.y] = NULL;
+
+			board[prise->x][prise->y] = NULL;
 			player->score++;
 			printf(" Prise effectue\n");
 			decrementMoveList(pion);
@@ -141,5 +139,5 @@ int action(struct Pion * pion, struct Vector point, struct Player * player, stru
 // -------------------------------------------------------------------------------------
 int main(){
 	gui(); // Lancement jeu en SDL2
-	//console(); // Lancement du jeu en console (Operationnel)
+	//console(); // Lancement du jeu en console
 }

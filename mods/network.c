@@ -24,7 +24,6 @@ void *network_connect(void * arg)
 
 char * encode_data(struct Data data)
 {
-    showVector("Debut encode\n", data.posStart);
     char * str;
     str = "";
     // Coordonnées start
