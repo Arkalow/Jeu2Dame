@@ -39,6 +39,7 @@ char * encode_data(struct Data data)
     {
         for(int i = 0; i < data.nbPrise; i++)
         {
+            showVector("Boucle encode prise : ", data.posPrises[data.nbPrise]);
             str = str_concat(str, vectorToString(data.posPrises[i]));
             str = str_concat(str, ";");
         }

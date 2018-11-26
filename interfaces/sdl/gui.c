@@ -319,17 +319,15 @@ int clickOnBoard(struct Vector clickPosition)
 
                 // On stocke la position de la prise si on est en mode réseau 
                 if(network == 1){
-                    printf("Add Prise !\n");
-                    thread_param.posPrises[thread_param.nbPrise] = posPrise;
                     thread_param.nbPrise++;
+                    thread_param.posPrises[thread_param.nbPrise] = posPrise;
                 }
                 return 0; // fin combo
             }
             // On stocke la position de la prise si on est en mode réseau 
             if(network == 1){
-                printf("Add Prise !\n");
-                thread_param.posPrises[thread_param.nbPrise] = posPrise;
                 thread_param.nbPrise++;
+                thread_param.posPrises[thread_param.nbPrise] = posPrise;
             }
             return 2; // Combo en cours
 
@@ -407,7 +405,6 @@ int input(SDL_Event event)
                         SDL_RenderPresent(renderer);
 
 
-                        printf("Enregistrement de la selectionEnd\n");
                         thread_param.posEnd.x = clickPosition.x;
                         thread_param.posEnd.y = clickPosition.y;
                         // On lance le thread serveur
