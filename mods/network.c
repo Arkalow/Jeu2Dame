@@ -25,31 +25,31 @@ void *network_connect(void * arg)
 char * encode_data(struct Data data)
 {
     char * str;
-    str = "";
+    str = malloc(sizeof(char) * 100); /* make space for the new string (should check the return value ...) */
     // Coordonnées start
-    str = str_concat(str, vectorToString(data.posStart));
-    str = str_concat(str, ";");
+    str = strcat(str, vectorToString(data.posStart));
+    str = strcat(str, ";");
 
     // Coordonnées end
-    str = str_concat(str, vectorToString(data.posEnd));
-    str = str_concat(str, ";");
+    str = strcat(str, vectorToString(data.posEnd));
+    str = strcat(str, ";");
 
     // Liste des prises
     if(data.nbPrise > 1)
     {
         for(int i = 0; i < data.nbPrise; i++)
         {
-            str = str_concat(str, vectorToString(data.posPrises[i]));
-            str = str_concat(str, ";");
+            str = strcat(str, vectorToString(data.posPrises[i]));
+            str = strcat(str, ";");
         }
     }
     else if(data.nbPrise == 1)
     {
-        str = str_concat(str, vectorToString(data.posPrises[0]));
-        str = str_concat(str, ";");
+        str = strcat(str, vectorToString(data.posPrises[0]));
+        str = strcat(str, ";");
     }
 
-    str = str_concat(str, ";");
+    str = strcat(str, ";");
 
     printf("Fin encode : %s\n", str);
     return str;
