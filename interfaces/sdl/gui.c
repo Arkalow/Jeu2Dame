@@ -84,23 +84,42 @@ int loadTextures()
 {
     
     // Ajout des textures des pions du joueur 1
-    texturePionPlayer1 = NULL;
-    texturePionPlayer1 = loadImage("images/circle-red.bmp", renderer);
+    rond_blue = NULL;
+    rond_blue = loadImage("images/rond-blue.bmp", renderer);
     
-    if(NULL == texturePionPlayer1)
+    if(NULL == rond_blue)
     {
         printf("Impossible de charger la texture du joueur 1");
         return EXIT_FAILURE;
     }
     
 
-    // Ajout des textures des pions du joueur 2
-    texturePionPlayer2 = NULL;
-    texturePionPlayer2 = loadImage("images/circle-blue.bmp", renderer);
+    circle_blue = NULL;
+    circle_blue = loadImage("images/circle-blue.bmp", renderer);
     
-    if(NULL == texturePionPlayer2)
+    if(NULL == circle_blue)
     {
         printf("Impossible de charger la texture du joueur 1");
+        return EXIT_FAILURE;
+    }
+
+    // Ajout des textures des pions du joueur 2
+    rond_red = NULL;
+    rond_red = loadImage("images/rond-red.bmp", renderer);
+    
+    if(NULL == rond_red)
+    {
+        printf("Impossible de charger la texture du joueur 2");
+        return EXIT_FAILURE;
+    }
+    
+
+    circle_red = NULL;
+    circle_red = loadImage("images/circle-red.bmp", renderer);
+    
+    if(NULL == circle_red)
+    {
+        printf("Impossible de charger la texture du joueur 2");
         return EXIT_FAILURE;
     }
 
@@ -586,8 +605,6 @@ int gui()
     positionBoard.y = caseWidth * 4;
     SDLboard.x = 0; SDLboard.y = 0; 
     SDLboard.h = caseWidth + 9 * caseWidth; SDLboard.w = caseWidth + 9 * caseWidth;
-    texturePionPlayer1 = NULL; // Texture des pions du joueur 1
-    texturePionPlayer2 = NULL; // Texture des pions du joueur 2
     orange.r = 255; orange.g = 127; orange.b = 40; orange.a = 255;
     black.r = 0; black.g = 0; black.b = 0; black.a = 255;
     blue.r = 0; blue.g = 0; blue.b = 255; blue.a = 255;
@@ -656,8 +673,10 @@ Quit:
 
     if(NULL != renderer) SDL_DestroyRenderer(renderer);
     if(NULL != window) SDL_DestroyWindow(window);
-    if(NULL != texturePionPlayer1) SDL_DestroyTexture(texturePionPlayer1);
-    if(NULL != texturePionPlayer2) SDL_DestroyTexture(texturePionPlayer2);
+    if(NULL != rond_blue) SDL_DestroyTexture(rond_blue);
+    if(NULL != circle_red) SDL_DestroyTexture(circle_red);
+    if(NULL != rond_red) SDL_DestroyTexture(rond_red);
+    if(NULL != circle_blue) SDL_DestroyTexture(circle_blue);
     freeMenu(startMenu);
     SDL_Quit();
 

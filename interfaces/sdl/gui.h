@@ -6,8 +6,10 @@ SDL_Point positionBoard;
 SDL_Rect SDLboard;
 SDL_Window *window;
 SDL_Renderer *renderer;
-SDL_Texture *texturePionPlayer1; // Texture des pions du joueur 1
-SDL_Texture *texturePionPlayer2; // Texture des pions du joueur 2
+SDL_Texture *rond_blue; // Texture pion 
+SDL_Texture *rond_red; // Texture pion 
+SDL_Texture *circle_blue; // Texture pion 
+SDL_Texture *circle_red; // Texture pion 
 
 struct Player player1;
 struct Player player2;
