@@ -11,9 +11,14 @@ struct Pion
 	struct Vector position;
 
     int team; // La team du pion
-	int nbMove; // Nombre de déplacement possible
 	int type; // type de pion
-	struct Vector moveList[8]; // Les déplacements possible du pion
+	int nbMove; // Nombre de déplacement possible
+	struct Vector * moveList;
+
+	int nbNormalMove;
+	int nbSpecialMove;
+	struct Vector normalMoveList[8]; // Les déplacements possible du pion
+	struct Vector specialMoveList[8]; // Deplacement pendant une prise
 
 	int selected; // Indique si le pion est selectionné
 };

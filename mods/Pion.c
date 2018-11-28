@@ -21,7 +21,7 @@ void createPion(int x, int y, int team, int type){
 	board[x][y]->team = team;
 	board[x][y]->type = type;
 	board[x][y]->selected = 0; // Pion non selectionné
-
+	board[x][y]->moveList = &(board[x][y]->normalMoveList);
 
 	// Si le type est une dame
 	// 	MAX 0 MAX
@@ -30,10 +30,10 @@ void createPion(int x, int y, int team, int type){
 	if(type == 1){
 
 		board[x][y]->nbMove = 4; // Une dame a 4 déplacements possible
-		board[x][y]->moveList[0] = createVector(0, 0, 10, 10); // Bas droite
-		board[x][y]->moveList[1] = createVector(0, 0, -10, -10); // Haut gauche
-		board[x][y]->moveList[2] = createVector(0, 0, -10, 10); // Bas gauche
-		board[x][y]->moveList[3] = createVector(0, 0, 10, -10); // Haut droite
+		board[x][y]->normalMoveList[0] = createVector(0, 0, 10, 10); // Bas droite
+		board[x][y]->normalMoveList[1] = createVector(0, 0, -10, -10); // Haut gauche
+		board[x][y]->normalMoveList[2] = createVector(0, 0, -10, 10); // Bas gauche
+		board[x][y]->normalMoveList[3] = createVector(0, 0, 10, -10); // Haut droite
 
 	}else{ // Le pion est un pion classique
 
@@ -44,15 +44,31 @@ void createPion(int x, int y, int team, int type){
 			// 	0 0 0
 			// 	0 P 0
 			// 	1 0 1
-			board[x][y]->moveList[0] = createVector(0, 0, 1, 1); // Bas droite
-			board[x][y]->moveList[1] = createVector(0, 0, -1, 1); // Bas gauche
+			board[x][y]->normalMoveList[0] = createVector(0, 0, 1, 1); // Bas droite
+			board[x][y]->normalMoveList[1] = createVector(0, 0, -1, 1); // Bas gauche
+			board[x][y]->nbNormalMove = 2;
+
+			// Deplacement possible pendant une prise
+			board[x][y]->specialMoveList[0] = createVector(0, 0, 2, 2); // Bas droite
+			board[x][y]->specialMoveList[1] = createVector(0, 0, -2, 2); // Bas gauche
+			board[x][y]->specialMoveList[2] = createVector(0, 0, -2, -2); // Haut gauche
+			board[x][y]->specialMoveList[3] = createVector(0, 0, 2, -2); // Haut droite
+			board[x][y]->nbSpecialMove = 4;
 		}else{
 			// Si c'est un pion joueur 2
 			// 	1 0 1
 			// 	0 P 0
 			// 	0 0 0
-			board[x][y]->moveList[0] = createVector(0, 0, -1, -1); // Haut gauche
-			board[x][y]->moveList[1] = createVector(0, 0, 1, -1); // Haut droite
+			board[x][y]->normalMoveList[0] = createVector(0, 0, -1, -1); // Haut gauche
+			board[x][y]->normalMoveList[1] = createVector(0, 0, 1, -1); // Haut droite
+			board[x][y]->nbNormalMove = 2;
+
+			// Deplacement possible pendant une prise
+			board[x][y]->specialMoveList[0] = createVector(0, 0, -2, -2); // Haut gauche
+			board[x][y]->specialMoveList[1] = createVector(0, 0, 2, -2); // Haut droite
+			board[x][y]->specialMoveList[2] = createVector(0, 0, 2, 2); // Bas droite
+			board[x][y]->specialMoveList[3] = createVector(0, 0, -2, 2); // Bas gauche
+			board[x][y]->nbSpecialMove = 4;
 		}
 	}
 }
@@ -76,10 +92,16 @@ int testTranfo(struct Pion pion){
 void tranfoDame(struct Pion * pion){
 	pion->type = 1;
 	pion->nbMove = 4; // Une dame a 4 déplacements possible
-	pion->moveList[0] = createVector(0, 0, 10, 10); // Bas droite
-	pion->moveList[1] = createVector(0, 0, -10, -10); // Haut gauche
-	pion->moveList[2] = createVector(0, 0, -10, 10); // Bas gauche
-	pion->moveList[3] = createVector(0, 0, 10, -10); // Haut droite
+	pion->normalMoveList[0] = createVector(0, 0, 10, 10); // Bas droite
+	pion->normalMoveList[1] = createVector(0, 0, -10, -10); // Haut gauche
+	pion->normalMoveList[2] = createVector(0, 0, -10, 10); // Bas gauche
+	pion->normalMoveList[3] = createVector(0, 0, 10, -10); // Haut droite
+
+	// Liste de deplacement pendant une prise
+	pion->specialMoveList[0] = createVector(0, 0, 10, 10); // Bas droite
+	pion->specialMoveList[1] = createVector(0, 0, -10, -10); // Haut gauche
+	pion->specialMoveList[2] = createVector(0, 0, -10, 10); // Bas gauche
+	pion->specialMoveList[3] = createVector(0, 0, 10, -10); // Haut droite
 }
 
 /**
@@ -109,6 +131,9 @@ void freeBoard(){
 
 /**
  * Test si un pion peut atteindre la case c d'après la liste de ses déplacements possible
+ * retourne 0 si pas possible
+ * retourne 1 si deplacement
+ * retourne 2 si deplacement speciale
  */
 int testMove(struct Pion pion, struct Vector c){
 	struct Vector move;
@@ -120,6 +145,15 @@ int testMove(struct Pion pion, struct Vector c){
 			return 1; // True 
 		}
 	}
+	incrementMoveList(&pion);
+	for(int i = 0; i < pion.nbMove; i++){
+		if(testVector(move, pion.moveList[i]) == 1){
+			printf("qdfqsgqsfgqsfgqsfgqsfgsdfgsdfgsdfgsdfgsdfgsdfgsdfg");
+			return 2; // True 
+		}
+	}
+	decrementMoveList(&pion);
+
 	return 0;
 }
 
@@ -195,7 +229,7 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 int testAllPrise(struct Pion pion){
 	struct Vector prise;
 	for(int i = 0; i < pion.nbMove; i++){
-		if(testPrise(pion, addVector(pion.position, pion.moveList[i]), &prise) == 1){
+		if(testPrise(pion, addVector(pion.position, (pion.moveList)[i]), &prise) == 1){
 			return 1;
 		}
 	}
@@ -226,30 +260,17 @@ int searchBoard(struct Vector point, struct Pion ** pion){
  * Incremente la liste des deplacement du pion de une unite vecteur
  */
 void incrementMoveList(struct Pion * pion){
-	// On parcourt tous les déplacements possible du pion
-	for(int i = 0; i < pion->nbMove; i++){
-		
-		// On increment le vecteur de 1 unite
-		pion->moveList[i] = addVector(pion->moveList[i], unitVector(pion->moveList[i])); 
-		
-	}
+	pion->moveList = &(pion->specialMoveList);
+	pion->nbMove = pion->nbSpecialMove;
 }
 
 /**
  * Decrement la liste des deplacement du pion de une unite vecteur
  */
 void decrementMoveList(struct Pion * pion){
-	// On parcourt tous les déplacements possible du pion
-	for(int i = 0; i < pion->nbMove; i++){
-
-		// On decrement le vecteur de 1 unite
-		pion->moveList[i] = subVector(pion->moveList[i], unitVector(pion->moveList[i])); 
-		
-	}
+	pion->moveList = &(pion->normalMoveList);
+	pion->nbMove = pion->nbNormalMove;
 }
-
-
-
 
 /**
  * Rempli le plateau
