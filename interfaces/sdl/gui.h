@@ -6,10 +6,12 @@ SDL_Point positionBoard;
 SDL_Rect SDLboard;
 SDL_Window *window;
 SDL_Renderer *renderer;
-SDL_Texture *rond_blue; // Texture pion 
-SDL_Texture *rond_red; // Texture pion 
-SDL_Texture *circle_blue; // Texture pion 
-SDL_Texture *circle_red; // Texture pion 
+
+// Texture 
+SDL_Texture *texturePion1; // Texture pion joueur 1
+SDL_Texture *texturePion2; // Texture pion joueur 1
+SDL_Texture *textureDame1; // Texture Dame joueur 2
+SDL_Texture *textureDame2; // Texture Dame joueur 2
 
 struct Player player1;
 struct Player player2;
@@ -50,7 +52,7 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
  * Charge les textures du jeu
  * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
  */
-int loadTextures();
+int loadTextures(char * name);
 
 /**
  * Charge les polices du jeu

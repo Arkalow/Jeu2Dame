@@ -49,6 +49,7 @@ SDL_Renderer * createWindow(int height, int width)
  */
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
 {
+    printf("str : %s\n", path);
     SDL_Surface *tmp = NULL; 
     SDL_Texture *texture = NULL;
     tmp = SDL_LoadBMP(path);
@@ -80,44 +81,63 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
  * Charge les textures du jeu
  * Renvoie EXIT_FAILURE en cas d'erreur et EXIT_SUCCESS en cas de succes
  */
-int loadTextures()
+int loadTextures(char * name)
 {
-    
+    char * str;
+    str = (char *)malloc(sizeof(char) * 100);
+
     // Ajout des textures des pions du joueur 1
-    rond_blue = NULL;
-    rond_blue = loadImage("images/rond-blue.bmp", renderer);
+    str[0] = '\0';
+    texturePion1 = NULL;
+    str = strcat(str, "images/");
+    str = strcat(str, name);
+    str = strcat(str, "/pion1.bmp");
+    texturePion1 = loadImage("images/circle-green.bmp", renderer);
     
-    if(NULL == rond_blue)
+    if(NULL == texturePion1)
     {
         printf("Impossible de charger la texture du joueur 1");
         return EXIT_FAILURE;
     }
     
-
-    circle_blue = NULL;
-    circle_blue = loadImage("images/circle-blue.bmp", renderer);
+    // Ajout des textures des dames du joueur 1
+    str[0] = '\0';
+    textureDame1 = NULL;
+    str = strcat(str, "images/");
+    str = strcat(str, name);
+    str = strcat(str, "/dame1.bmp");
+    textureDame1 = loadImage(str, renderer);
     
-    if(NULL == circle_blue)
+    if(NULL == textureDame1)
     {
         printf("Impossible de charger la texture du joueur 1");
         return EXIT_FAILURE;
     }
 
     // Ajout des textures des pions du joueur 2
-    rond_red = NULL;
-    rond_red = loadImage("images/rond-red.bmp", renderer);
+    str[0] = '\0';
+    texturePion2 = NULL;
+    str = strcat(str, "images/");
+    str = strcat(str, name);
+    str = strcat(str, "/pion2.bmp");
+    texturePion2 = loadImage(str, renderer);
     
-    if(NULL == rond_red)
+    if(NULL == texturePion2)
     {
         printf("Impossible de charger la texture du joueur 2");
         return EXIT_FAILURE;
     }
     
-
-    circle_red = NULL;
-    circle_red = loadImage("images/circle-red.bmp", renderer);
+    // Ajout des textures des dames du joueur 2
+    str[0] = '\0';
+    textureDame2 = NULL;
+    str = strcat(str, "images/");
+    str = strcat(str, name);
+    str = strcat(str, "/dame2.bmp");
+    printf("%s\n", str);
+    textureDame2 = loadImage(str, renderer);
     
-    if(NULL == circle_red)
+    if(NULL == textureDame2)
     {
         printf("Impossible de charger la texture du joueur 2");
         return EXIT_FAILURE;
@@ -621,6 +641,7 @@ int gui()
     {
         goto Quit;
     }
+    SDL_SetWindowTitle(window, "jeu2Dame");
 
     
     if(loadPolices() == EXIT_FAILURE) goto Quit;
@@ -628,7 +649,7 @@ int gui()
     positionText.y = caseWidth * 2;
     infoMessage = "";
 
-    loadTextures();
+    loadTextures("default");
 
 
     struct Menu startMenu = loadStartMenu();
@@ -673,10 +694,10 @@ Quit:
 
     if(NULL != renderer) SDL_DestroyRenderer(renderer);
     if(NULL != window) SDL_DestroyWindow(window);
-    if(NULL != rond_blue) SDL_DestroyTexture(rond_blue);
-    if(NULL != circle_red) SDL_DestroyTexture(circle_red);
-    if(NULL != rond_red) SDL_DestroyTexture(rond_red);
-    if(NULL != circle_blue) SDL_DestroyTexture(circle_blue);
+    if(NULL != textureDame1) SDL_DestroyTexture(textureDame1);
+    if(NULL != textureDame2) SDL_DestroyTexture(textureDame2);
+    if(NULL != texturePion1) SDL_DestroyTexture(texturePion1);
+    if(NULL != texturePion2) SDL_DestroyTexture(texturePion2);
     freeMenu(startMenu);
     SDL_Quit();
 

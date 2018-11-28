@@ -147,7 +147,8 @@ int showMenu(struct Menu menu)
                     printf("String : %s\n", inputText);
                     if(str_contains(inputText, "rony") == 0){
                         printf("RONY MODE !!!\n");
-                        return 0;
+                        SDL_SetWindowTitle(window, "RONY MODE !!!!");
+                        loadTextures("rony");
                     }
                     
                 break;
