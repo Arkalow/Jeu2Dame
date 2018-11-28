@@ -25,8 +25,10 @@ void *network_connect(void * arg)
 char * encode_data(struct Data data)
 {
     char * str;
-    str = malloc(sizeof(char) * 100); /* make space for the new string (should check the return value ...) */
+    str = (char *)malloc(sizeof(char) * 100); /* make space for the new string (should check the return value ...) */
+    str[0] = '\0';
     // Coordonnées start
+    printf("position start : %s", vectorToString(data.posStart));
     str = strcat(str, vectorToString(data.posStart));
     str = strcat(str, ";");
 

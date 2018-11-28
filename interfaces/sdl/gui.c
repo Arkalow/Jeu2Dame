@@ -408,8 +408,7 @@ int input(SDL_Event event)
 
 
                         printf("Enregistrement de la selectionEnd\n");
-                        thread_param.posEnd.x = clickPosition.x;
-                        thread_param.posEnd.y = clickPosition.y;
+                        thread_param.posEnd = clickPosition;
                         // On lance le thread serveur
                         printf("Server...\n");
                         void * arg = (void*)&thread_param;
@@ -576,6 +575,7 @@ int game()
 	freeBoard();
 
     gameStarted = 0;
+    thread_param.nbPrise = 0;
     return 0;
 }
 

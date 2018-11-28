@@ -88,7 +88,8 @@ char * intToString(int nb)
 char * vectorToString(struct Vector vector)
 {
 	char * str;
-	str = malloc(sizeof(char) * 100);
+	str = (char *)malloc(sizeof(char) * 100); /* make space for the new string (should check the return value ...) */
+    str[0] = '\0';
 	str = strcat(str, "(");
 	str = strcat(str, intToString(vector.x));
 	str = strcat(str, ",");
