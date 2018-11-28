@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../../define.h"
 #include "../../mods/Vector.h"
@@ -70,11 +71,29 @@ void showItem(struct Item_menu item){
     sdlWrite(item.title, item.surface, item.textPosition, police, item.fontColor);
 }
 
+int str_contains(char * str1, char * str2)
+{
+    int index = 0;
+    while(str2[index] != '\0')
+    {
+        if(str1[0] == '\0') return -1;
+        if(str2[index] == str1[0])
+        {
+            index++;
+        }
+        str1++;
+    }
+    return 0;
+}
+
 /**
  * Affiche le menu
  */
-int showMenu(struct Menu menu){
+int showMenu(struct Menu menu)
+{
 
+    char * inputText; // Text saisie par l'user
+    inputText = (char *)malloc(sizeof(char) * 100);
     // Affichage du background
     changeColor(menu.backgroundColor);
     if(0 != SDL_RenderClear(renderer))
@@ -92,29 +111,49 @@ int showMenu(struct Menu menu){
     SDL_RenderPresent(renderer);
 
     SDL_Event event;
+    
     while(1)
     {
-        SDL_WaitEvent(&event);
-        switch(event.type){
-            case SDL_QUIT:
-                return 2;
-            break;
-            
-            case SDL_MOUSEBUTTONUP:
-                // Detection left-click
-                if(event.button.button == SDL_BUTTON_LEFT)
-                {
-                    SDL_Point mousePosition = {event.button.x, event.button.y };
-                    for(int i = 0; i < menu.nbItem; i++){
-                        if(SDL_PointInRect(&mousePosition, &(menu.items[i].position)) == SDL_TRUE){
-                            //menu.items[i].click();
-                            return i;
+        while(SDL_PollEvent(&event))
+        {
+            switch(event.type)
+            {
+                case SDL_QUIT:
+                    return 2;
+                break;
+                
+                case SDL_MOUSEBUTTONUP:
+                    // Detection left-click
+                    if(event.button.button == SDL_BUTTON_LEFT)
+                    {
+                        SDL_Point mousePosition = { event.button.x, event.button.y };
+                        for(int i = 0; i < menu.nbItem; i++){
+                            if(SDL_PointInRect(&mousePosition, &(menu.items[i].position)) == SDL_TRUE){
+                                //menu.items[i].click();
+                                return i;
+                            }
                         }
                     }
-                }
-            break;
-        }
+                break;
 
+                case SDL_KEYDOWN:
+
+                    if(event.key.keysym.sym == SDLK_r) inputText = strcat(inputText, "r");
+                    else if(event.key.keysym.sym == SDLK_o) inputText = strcat(inputText, "o");
+                    else if(event.key.keysym.sym == SDLK_n) inputText = strcat(inputText, "n");
+                    else if(event.key.keysym.sym == SDLK_y) inputText = strcat(inputText, "y");
+                    else inputText = strcpy(inputText, "");
+
+                    printf("String : %s\n", inputText);
+                    if(str_contains(inputText, "rony") == 0){
+                        printf("RONY MODE !!!\n");
+                        return 0;
+                    }
+                    
+                break;
+            }
+        }
+        SDL_Delay(60);
     }
 }
 
