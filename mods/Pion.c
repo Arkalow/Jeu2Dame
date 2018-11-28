@@ -224,12 +224,16 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 }
 
 /**
- * Test pour tous les déplacement possible du pion si il existe au moins 1 prise
+ * Test pour tous les déplacement possible du pion s'il existe au moins 1 prise et rien derriere
  */ 
 int testAllPrise(struct Pion pion){
 	struct Vector prise;
+	struct Pion * p;
 	for(int i = 0; i < pion.nbMove; i++){
-		if(testPrise(pion, addVector(pion.position, (pion.moveList)[i]), &prise) == 1){
+		if(
+			testPrise(pion, addVector(pion.position, (pion.moveList)[i]), &prise) == 1 && 
+			searchBoard(addVector(pion.moveList[i], unitVector(pion.moveList[i])), &p) == 0
+		){
 			return 1;
 		}
 	}
@@ -250,6 +254,7 @@ int searchBoard(struct Vector point, struct Pion ** pion){
 		}else{
 			return 0; // Faux
 		}
+
 	}else{
 		*pion = NULL;
 		return -1; // Erreur

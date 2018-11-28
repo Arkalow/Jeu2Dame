@@ -488,7 +488,7 @@ int game()
 {
     gameStarted = 1; // Flag jeu lancé
 
-    setTestBoard();
+    setBoard();
     showSdlBackground();
 
 	player1 = createPlayer(1, "Joueur 1");
