@@ -92,7 +92,7 @@ int loadTextures(char * name)
     str = strcat(str, "images/");
     str = strcat(str, name);
     str = strcat(str, "/pion1.bmp");
-    texturePion1 = loadImage("images/circle-green.bmp", renderer);
+    texturePion1 = loadImage(str, renderer);
     
     if(NULL == texturePion1)
     {

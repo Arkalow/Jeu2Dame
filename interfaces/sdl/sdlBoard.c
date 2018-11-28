@@ -44,19 +44,19 @@ int showSdlBoard(){
                     // Joueur 1
 					if(board[x][y]->type == 1){
 						// Dame du joueur 1
-                        SDL_RenderCopy(renderer, rond_blue, NULL, &frame);
+                        SDL_RenderCopy(renderer, textureDame1, NULL, &frame);
 					}else{
 						// Pion du joueur 1
-                        SDL_RenderCopy(renderer, circle_blue, NULL, &frame);
+                        SDL_RenderCopy(renderer, texturePion1, NULL, &frame);
 					}
 				}else{
                     // Joueur 2
 					if(board[x][y]->type == 1){
 						// Dame du joueur 2
-                        SDL_RenderCopy(renderer, rond_red, NULL, &frame);
+                        SDL_RenderCopy(renderer, textureDame2, NULL, &frame);
 					}else{
 						// Pion du joueur 2
-                        SDL_RenderCopy(renderer, circle_red, NULL, &frame);
+                        SDL_RenderCopy(renderer, texturePion2, NULL, &frame);
 					}
 				}
 			}else{
