@@ -69,6 +69,11 @@ struct Item_menu createItem(
 void showItem(struct Item_menu item);
 
 /**
+ * Retourne un nombre aleatoire avec pour max pour valeur maximum
+ */
+int randomValue(int max);
+
+/**
  * Active le ronyMode
  */
 void activeRonyMode(struct Menu * menu);

@@ -135,7 +135,6 @@ int loadTextures(char * name)
     str = strcat(str, "images/");
     str = strcat(str, name);
     str = strcat(str, "/dame2.bmp");
-    printf("%s\n", str);
     textureDame2 = loadImage(str, renderer);
     
     if(NULL == textureDame2)

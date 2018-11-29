@@ -88,16 +88,24 @@ int str_contains(char * str1, char * str2)
 }
 
 /**
+ * Retourne un nombre aleatoire avec pour max pour valeur maximum
+ */
+int randomValue(int max)
+{
+    return (int)(rand() / (double)RAND_MAX * (max - 1));
+}
+
+/**
  * Active le ronyMode
  */
 void activeRonyMode(struct Menu * menu)
 {
     initAudio();
-    loadTextures("rony");
     ronyMode = 1;
 
     SDL_SetWindowTitle(window, "RONY MODE !!!!");
     playMusic("sounds/oui.wav", SDL_MIX_MAXVOLUME);
+    loadTextures("rony");
 }
 
 /**
@@ -115,45 +123,41 @@ void desactiveRonyMode()
  */
 void updateRonyMode(struct Menu menu)
 {
-    
-
-    int randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
-    menu.backgroundColor.r = randomValue;
-    randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
-    menu.backgroundColor.g = randomValue;
-    randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
-    menu.backgroundColor.b = randomValue;
+    menu.backgroundColor.r = randomValue(255);
+    menu.backgroundColor.g = randomValue(255);
+    menu.backgroundColor.b = randomValue(255);
 
     showSdlBackground(menu.backgroundColor);
+
+    SDL_Rect frame; 
+    for(int i = 0; i < 50; i++)
+    {
+        frame.x = randomValue(caseWidth * 10);
+        frame.y = randomValue(caseWidth * 12 + caseWidth * 3);
+        frame.h = randomValue(100);
+        frame.w = frame.h,
+        SDL_RenderCopy(renderer, texturePion2, NULL, &frame);
+    }
 
     for(int i = 0; i < menu.nbItem; i++){
         struct Item_menu item;
         item = menu.items[i];
 
         // BrainFuckColor
-        randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
-        item.backgroundColor.r = randomValue;
-        randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
-        item.backgroundColor.g = randomValue;
-        randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
-        item.backgroundColor.b = randomValue;
+        item.backgroundColor.r = randomValue(255);
+        item.backgroundColor.g = randomValue(255);
+        item.backgroundColor.b = randomValue(255);
 
         // BrainFuck position
-        randomValue = (int)(rand() / (double)RAND_MAX * (30 - 1));
-        item.position.x += randomValue - 15;
-        randomValue = (int)(rand() / (double)RAND_MAX * (30 - 1));
-        item.position.y += randomValue - 15;
-        randomValue = (int)(rand() / (double)RAND_MAX * (30 - 1));
-        item.textPosition.x += randomValue - 15;
-        randomValue = (int)(rand() / (double)RAND_MAX * (30 - 1));
-        item.textPosition.y += randomValue - 15;
+        item.position.x += randomValue(30) - 15;
+        item.position.y += randomValue(30) - 15;
+        item.textPosition.x += randomValue(30) - 15;
+        item.textPosition.y += randomValue(30) - 15;
         showItem(item);        
     }
 
-    randomValue = (int)(rand() / (double)RAND_MAX * (60 - 1));
-    menu.textPosition.x += randomValue - 60;
-    randomValue = (int)(rand() / (double)RAND_MAX * (60 - 1));
-    menu.textPosition.y += randomValue - 15;
+    menu.textPosition.x += randomValue(60) - 60;
+    menu.textPosition.y += randomValue(60) - 15;
     sdlWrite("RONY MODE !!!", menu.surface, menu.textPosition, police, menu.fontColor);
     // Renderer Update
     SDL_RenderPresent(renderer);
