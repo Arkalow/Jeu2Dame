@@ -11,6 +11,7 @@
 #include "../../mods/Player.h"
 #include "../../mods/network.h"
 #include "../../main.h"
+#include "../../mods/audio.h"
 #include "Menu.h"
 #include "sdlBoard.h"
 #include "gui.h"
@@ -651,6 +652,14 @@ int gui()
 
     loadTextures("default");
 
+    /* Initialize only SDL Audio on default device */
+    if(SDL_Init(SDL_INIT_AUDIO) < 0)
+    {
+        return 1; 
+    }
+
+    /* Init Simple-SDL2-Audio */
+    initAudio();
 
     struct Menu startMenu = loadStartMenu();
     int resultMenu;
@@ -699,11 +708,15 @@ Quit:
     if(NULL != texturePion1) SDL_DestroyTexture(texturePion1);
     if(NULL != texturePion2) SDL_DestroyTexture(texturePion2);
     freeMenu(startMenu);
-    SDL_Quit();
+    
+    /* End Simple-SDL2-Audio */
+    endAudio();
 
     if (pthread_join(thread, NULL)) {
 	    perror("pthread_join");
     }
+    SDL_Quit();
+
 
     return statut;
 }

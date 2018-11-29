@@ -11,6 +11,7 @@
 #include "../../mods/Player.h"
 #include "sdlBoard.h"
 #include "../../mods/network.h"
+#include "../../mods/audio.h"
 #include "gui.h"
 #include "Menu.h"
 
@@ -133,6 +134,7 @@ void mony(struct Menu menu){
  */
 int showMenu(struct Menu menu)
 {
+    unpauseAudio();
     char * inputText; // Text saisie par l'user
     inputText = (char *)malloc(sizeof(char) * 100);
     // Affichage du background
@@ -172,6 +174,7 @@ int showMenu(struct Menu menu)
                         for(int i = 0; i < menu.nbItem; i++){
                             if(SDL_PointInRect(&mousePosition, &(menu.items[i].position)) == SDL_TRUE){
                                 //menu.items[i].click();
+                                pauseAudio();
                                 return i;
                             }
                         }
@@ -192,6 +195,9 @@ int showMenu(struct Menu menu)
                         SDL_SetWindowTitle(window, "RONY MODE !!!!");
                         loadTextures("rony");
                         ronyMode = 1;
+
+                        /* Play music and a sound */
+                        playMusic("sounds/oui.wav", SDL_MIX_MAXVOLUME);
                     }
                     
                 break;
