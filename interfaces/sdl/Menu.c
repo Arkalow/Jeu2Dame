@@ -93,11 +93,10 @@ int str_contains(char * str1, char * str2)
 void activeRonyMode(struct Menu * menu)
 {
     initAudio();
-    menu->title = "RonyMode !!!";
-    SDL_SetWindowTitle(window, "RONY MODE !!!!");
     loadTextures("rony");
     ronyMode = 1;
 
+    SDL_SetWindowTitle(window, "RONY MODE !!!!");
     playMusic("sounds/oui.wav", SDL_MIX_MAXVOLUME);
 }
 
@@ -114,7 +113,10 @@ void desactiveRonyMode()
 /**
  * Update le ronyMode
  */
-void updateRonyMode(struct Menu menu){
+void updateRonyMode(struct Menu menu)
+{
+    
+
     int randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
     menu.backgroundColor.r = randomValue;
     randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
@@ -148,7 +150,11 @@ void updateRonyMode(struct Menu menu){
         showItem(item);        
     }
 
-    sdlWrite("RonyMode !!!", menu.surface, menu.textPosition, police, menu.fontColor);
+    randomValue = (int)(rand() / (double)RAND_MAX * (60 - 1));
+    menu.textPosition.x += randomValue - 60;
+    randomValue = (int)(rand() / (double)RAND_MAX * (60 - 1));
+    menu.textPosition.y += randomValue - 15;
+    sdlWrite("RONY MODE !!!", menu.surface, menu.textPosition, police, menu.fontColor);
     // Renderer Update
     SDL_RenderPresent(renderer);
 }
