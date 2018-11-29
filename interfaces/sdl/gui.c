@@ -218,10 +218,10 @@ SDL_Surface * sdlWrite(char * string, SDL_Surface * text,  SDL_Point position, T
 /**
  * Affiche le font d'ecran
  */
-int showSdlBackground()
+int showSdlBackground(SDL_Color color)
 {
     // Affichage du background
-    changeColor(orange);
+    changeColor(color);
     if(0 != SDL_RenderClear(renderer))
     {
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s\n", SDL_GetError());
@@ -431,11 +431,11 @@ int input(SDL_Event event)
                     if((resultClickOnBoard == 0 || resultClickOnBoard == 3) && network == 1) // Fin de tour et mode reseau actif
                     {
                         // Affichage background
-                        showSdlBackground();
+                        showSdlBackground(orange);
 
                         // Affichage du player en cours
                         showSdlPlayer();
-
+                        
                         // Affichage du message d'indication
                         sdlWrite(infoMessage, text, positionText, police, black);
 
@@ -467,7 +467,7 @@ int input(SDL_Event event)
                     }
 
                     // Affichage background
-                    showSdlBackground();
+                    showSdlBackground(orange);
 
                     // Affichage du player en cours
                     showSdlPlayer();
@@ -509,7 +509,7 @@ int game()
     gameStarted = 1; // Flag jeu lancé
 
     setBoard();
-    showSdlBackground();
+    showSdlBackground(orange);
 
 	player1 = createPlayer(1, "Joueur 1");
 	player2 = createPlayer(2, "Joueur 2");
@@ -587,7 +587,7 @@ int game()
             }
 
             // Affichage background
-            showSdlBackground();
+            showSdlBackground(orange);
 
             // Affichage du player en cours
             showSdlPlayer();

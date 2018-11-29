@@ -21,6 +21,7 @@ struct Player * currentPlayer; // Joueur en cours
 struct Pion * pionStart; // Pion selectionné
 int comboMode; // Mode Combo
 
+int ronyMode;
 SDL_Color orange; // Couleur orange
 SDL_Color black; // Couleur noire
 SDL_Color blue; // Couleur bleu
@@ -77,7 +78,7 @@ SDL_Surface * sdlWrite(char * string, SDL_Surface * text,  SDL_Point position, T
 /**
  * Affiche le font d'ecran
  */
-int showSdlBackground();
+int showSdlBackground(SDL_Color color);
 
 /**
  * Affiche le joueur en cours

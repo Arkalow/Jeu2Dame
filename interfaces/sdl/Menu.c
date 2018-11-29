@@ -87,14 +87,56 @@ int str_contains(char * str1, char * str2)
 }
 
 /**
+ * Menu ronyMode
+ */
+void mony(struct Menu menu){
+    int randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
+    menu.backgroundColor.r = randomValue;
+    randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
+    menu.backgroundColor.g = randomValue;
+    randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
+    menu.backgroundColor.b = randomValue;
+
+    showSdlBackground(menu.backgroundColor);
+
+    for(int i = 0; i < menu.nbItem; i++){
+        struct Item_menu item;
+        item = menu.items[i];
+
+        // BrainFuckColor
+        randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
+        item.backgroundColor.r = randomValue;
+        randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
+        item.backgroundColor.g = randomValue;
+        randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
+        item.backgroundColor.b = randomValue;
+
+        // BrainFuck position
+        randomValue = (int)(rand() / (double)RAND_MAX * (30 - 1));
+        item.position.x += randomValue - 15;
+        randomValue = (int)(rand() / (double)RAND_MAX * (30 - 1));
+        item.position.y += randomValue - 15;
+        randomValue = (int)(rand() / (double)RAND_MAX * (30 - 1));
+        item.textPosition.x += randomValue - 15;
+        randomValue = (int)(rand() / (double)RAND_MAX * (30 - 1));
+        item.textPosition.y += randomValue - 15;
+        showItem(item);        
+    }
+
+    sdlWrite("RonyMode !!!", menu.surface, menu.textPosition, police, menu.fontColor);
+    // Renderer Update
+    SDL_RenderPresent(renderer);
+}
+
+/**
  * Affiche le menu
  */
 int showMenu(struct Menu menu)
 {
-
     char * inputText; // Text saisie par l'user
     inputText = (char *)malloc(sizeof(char) * 100);
     // Affichage du background
+    showSdlBackground(menu.backgroundColor);
     changeColor(menu.backgroundColor);
     if(0 != SDL_RenderClear(renderer))
     {
@@ -146,15 +188,17 @@ int showMenu(struct Menu menu)
 
                     printf("String : %s\n", inputText);
                     if(str_contains(inputText, "rony") == 0){
-                        printf("RONY MODE !!!\n");
+                        menu.title = "RonyMode !!!";
                         SDL_SetWindowTitle(window, "RONY MODE !!!!");
                         loadTextures("rony");
+                        ronyMode = 1;
                     }
                     
                 break;
             }
         }
-        SDL_Delay(60);
+        if(ronyMode == 1) mony(menu);
+        SDL_Delay(80);
     }
 }
 
