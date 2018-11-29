@@ -123,6 +123,9 @@ void desactiveRonyMode()
  */
 void updateRonyMode(struct Menu menu)
 {
+    int tauxDeRony = 5; // Nombre de rony sur la fenetre
+    int tailleRony = 150; // Taille max de rony 
+
     menu.backgroundColor.r = randomValue(255);
     menu.backgroundColor.g = randomValue(255);
     menu.backgroundColor.b = randomValue(255);
@@ -130,11 +133,11 @@ void updateRonyMode(struct Menu menu)
     showSdlBackground(menu.backgroundColor);
 
     SDL_Rect frame; 
-    for(int i = 0; i < 50; i++)
+    for(int i = 0; i < tauxDeRony; i++)
     {
         frame.x = randomValue(caseWidth * 10);
         frame.y = randomValue(caseWidth * 12 + caseWidth * 3);
-        frame.h = randomValue(100);
+        frame.h = randomValue(tailleRony);
         frame.w = frame.h,
         SDL_RenderCopy(renderer, texturePion2, NULL, &frame);
     }
