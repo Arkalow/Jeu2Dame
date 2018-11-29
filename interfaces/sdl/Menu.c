@@ -88,9 +88,33 @@ int str_contains(char * str1, char * str2)
 }
 
 /**
- * Menu ronyMode
+ * Active le ronyMode
  */
-void mony(struct Menu menu){
+void activeRonyMode(struct Menu * menu)
+{
+    initAudio();
+    menu->title = "RonyMode !!!";
+    SDL_SetWindowTitle(window, "RONY MODE !!!!");
+    loadTextures("rony");
+    ronyMode = 1;
+
+    playMusic("sounds/oui.wav", SDL_MIX_MAXVOLUME);
+}
+
+/**
+ * Desactive le ronyMode
+ */
+void desactiveRonyMode()
+{
+    endAudio();
+    initAudio();
+    playSound("sounds/pet.wav", SDL_MIX_MAXVOLUME);
+}
+
+/**
+ * Update le ronyMode
+ */
+void updateRonyMode(struct Menu menu){
     int randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
     menu.backgroundColor.r = randomValue;
     randomValue = (int)(rand() / (double)RAND_MAX * (255 - 1));
@@ -134,7 +158,6 @@ void mony(struct Menu menu){
  */
 int showMenu(struct Menu menu)
 {
-    unpauseAudio();
     char * inputText; // Text saisie par l'user
     inputText = (char *)malloc(sizeof(char) * 100);
     // Affichage du background
@@ -155,7 +178,7 @@ int showMenu(struct Menu menu)
     SDL_RenderPresent(renderer);
 
     SDL_Event event;
-    
+    if(ronyMode == 1) activeRonyMode(&menu);
     while(1)
     {
         while(SDL_PollEvent(&event))
@@ -174,7 +197,10 @@ int showMenu(struct Menu menu)
                         for(int i = 0; i < menu.nbItem; i++){
                             if(SDL_PointInRect(&mousePosition, &(menu.items[i].position)) == SDL_TRUE){
                                 //menu.items[i].click();
-                                pauseAudio();
+                                if(ronyMode == 1)
+                                {
+                                    desactiveRonyMode();
+                                }
                                 return i;
                             }
                         }
@@ -189,21 +215,12 @@ int showMenu(struct Menu menu)
                     else if(event.key.keysym.sym == SDLK_y) inputText = strcat(inputText, "y");
                     else inputText = strcpy(inputText, "");
 
-                    printf("String : %s\n", inputText);
-                    if(str_contains(inputText, "rony") == 0){
-                        menu.title = "RonyMode !!!";
-                        SDL_SetWindowTitle(window, "RONY MODE !!!!");
-                        loadTextures("rony");
-                        ronyMode = 1;
-
-                        /* Play music and a sound */
-                        playMusic("sounds/oui.wav", SDL_MIX_MAXVOLUME);
-                    }
+                    if(str_contains(inputText, "rony") == 0) activeRonyMode(&menu); 
                     
                 break;
             }
         }
-        if(ronyMode == 1) mony(menu);
+        if(ronyMode == 1) updateRonyMode(menu);
         SDL_Delay(80);
     }
 }

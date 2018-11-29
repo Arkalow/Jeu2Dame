@@ -658,9 +658,6 @@ int gui()
         return 1; 
     }
 
-    /* Init Simple-SDL2-Audio */
-    initAudio();
-
     struct Menu startMenu = loadStartMenu();
     int resultMenu;
     while((resultMenu = showMenu(startMenu)) != 2){

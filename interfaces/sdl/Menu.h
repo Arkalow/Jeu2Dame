@@ -69,6 +69,21 @@ struct Item_menu createItem(
 void showItem(struct Item_menu item);
 
 /**
+ * Active le ronyMode
+ */
+void activeRonyMode(struct Menu * menu);
+
+/**
+ * Update le ronyMode
+ */
+void updateRonyMode(struct Menu menu);
+
+/**
+ * Desactive le ronyMode
+ */
+void desactiveRonyMode();
+
+/**
  * Affiche le menu
  */
 int showMenu(struct Menu menu);
