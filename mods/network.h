@@ -24,6 +24,8 @@ struct Data{
     struct Vector posPrises[NB_PION]; // Tableau de positions des prises
     int nbPrise; // Nombre de prise effectuées
 
+    char addr_src[100];
+    char addr_des[100]; // Adresses sources et destination
     int port_src, port_des; // Port source et destination
 };
 
@@ -46,10 +48,10 @@ struct Data decode_data(char * data);
  * Ecoute les socket sur le port PORT
  * Et renvoie une donnée
  */
-int network_server(char buffer[32], int PORT);
+int network_server(char buffer[32], char * addr_src, int PORT);
 
 /**
  * Se connecte au serveur et recupere une socket.
  * Les données sont sous forme de chaine de caractère récupérer par adresse dans la variable response
  */
-int network_client(char * response, int PORT);
+int network_client(char * response, char * addr_des, int PORT);

@@ -133,4 +133,9 @@ l'ecrire de cette manière :
  */
 int action(struct Pion * pion, struct Vector point, struct Player * player, struct Vector * posPrise);
 
+/**
+ * Affiche les messages de debug
+ * si debug est à 1
+ */
+void debug(char * message);
 int main();

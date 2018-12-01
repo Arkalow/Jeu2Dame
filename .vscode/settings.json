@@ -6,6 +6,7 @@
         "sdl_image.h": "c",
         "vector.h": "c",
         "console.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "stdlib.h": "c"
     }
 }

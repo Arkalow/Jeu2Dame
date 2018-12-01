@@ -50,7 +50,6 @@ SDL_Renderer * createWindow(int height, int width)
  */
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
 {
-    printf("str : %s\n", path);
     SDL_Surface *tmp = NULL; 
     SDL_Texture *texture = NULL;
     tmp = SDL_LoadBMP(path);
@@ -97,7 +96,7 @@ int loadTextures(char * name)
     
     if(NULL == texturePion1)
     {
-        printf("Impossible de charger la texture du joueur 1");
+        fprintf(stderr, "Impossible de charger la texture du joueur 1");
         return EXIT_FAILURE;
     }
     
@@ -111,7 +110,7 @@ int loadTextures(char * name)
     
     if(NULL == textureDame1)
     {
-        printf("Impossible de charger la texture du joueur 1");
+        fprintf(stderr, "Impossible de charger la texture du joueur 1");
         return EXIT_FAILURE;
     }
 
@@ -125,7 +124,7 @@ int loadTextures(char * name)
     
     if(NULL == texturePion2)
     {
-        printf("Impossible de charger la texture du joueur 2");
+        fprintf(stderr, "Impossible de charger la texture du joueur 2");
         return EXIT_FAILURE;
     }
     
@@ -139,7 +138,7 @@ int loadTextures(char * name)
     
     if(NULL == textureDame2)
     {
-        printf("Impossible de charger la texture du joueur 2");
+        fprintf(stderr, "Impossible de charger la texture du joueur 2");
         return EXIT_FAILURE;
     }
 
@@ -158,7 +157,7 @@ int loadPolices()
     pSurf = SDL_GetWindowSurface(window);
     /* Chargement de la police */
     if((police = TTF_OpenFont("./police/game_over.ttf", 62)) == NULL){
-        printf("TTF_OpenFont: %s\n", TTF_GetError());
+        fprintf(stderr, "TTF_OpenFont: %s\n", TTF_GetError());
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
@@ -190,7 +189,7 @@ SDL_Surface * sdlWrite(char * string, SDL_Surface * text,  SDL_Point position, T
 {
     /* Écriture du texte dans la SDL_Surface texte en mode Blended (optimal) */
     if((text = TTF_RenderText_Blended(font, string, color)) == NULL){
-        printf("Erreur ecriture\n");
+        fprintf(stderr, "Erreur ecriture\n");
         return NULL;
     }
 
@@ -263,7 +262,7 @@ int clickOnBoard(struct Vector clickPosition)
         int resultSearchBoard = searchBoard(clickPosition, &pionStart);
 
         if(resultSearchBoard == 0){ // Case déjà occupée 
-            printf("Aucune piece n'est selectionnee\n");
+            debug("Aucune piece n'est selectionnee\n");
             
             // affichage text
             infoMessage = "Aucune piece n'est selectionnee";
@@ -275,7 +274,7 @@ int clickOnBoard(struct Vector clickPosition)
             pionStart = NULL;
             return -1;
         }else if(pionStart->team != currentPlayer->team){ // Le pion n'appartient pas au joueur
-            printf("Ce pion n'appartient pas au joueur\n");
+            debug("Ce pion n'appartient pas au joueur\n");
             
             // affichage text
             infoMessage = "Ce pion n'appartient pas au joueur";
@@ -283,7 +282,7 @@ int clickOnBoard(struct Vector clickPosition)
             pionStart = NULL;
             return -1;
         }else{
-            printf("Pion selectionne\n");
+            debug("Pion selectionne\n");
             comboMode = 0; // Réinitialisation du mode Combo
             pionStart->selected = 1;
             // affichage text
@@ -339,12 +338,12 @@ int clickOnBoard(struct Vector clickPosition)
         else if(resultAction == 1)
         {
             comboMode = 1;
-            printf("Continue action\n");
+            debug("Continue action\n");
             // Si le nombre de prise disponible autour du pion est 0
             // Alors ont sort de la boucle, ça marque la fin du tour
             if(comboMode == 1 && testAllPrise(*pionStart) == 0)
             {
-                printf("Plus de prise disponible pour ce tours\n");
+                debug("Plus de prise disponible pour ce tours\n");
                 pionStart->selected = 0;
                 pionStart = NULL;
                 comboMode = 0;
@@ -358,7 +357,7 @@ int clickOnBoard(struct Vector clickPosition)
 
                 // On stocke la position de la prise si on est en mode réseau 
                 if(network == 1){
-                    printf("Add Prise !\n");
+                    debug("Add Prise !\n");
                     thread_param.posPrises[thread_param.nbPrise] = posPrise;
                     thread_param.nbPrise++;
                 }
@@ -366,7 +365,7 @@ int clickOnBoard(struct Vector clickPosition)
             }
             // On stocke la position de la prise si on est en mode réseau 
             if(network == 1){
-                printf("Add Prise !\n");
+                debug("Add Prise !\n");
                 thread_param.posPrises[thread_param.nbPrise] = posPrise;
                 thread_param.nbPrise++;
             }
@@ -375,11 +374,11 @@ int clickOnBoard(struct Vector clickPosition)
         }
         else
         {
-            printf("Action reussi\n");
+            debug("Action reussi\n");
 
             // Transformation du pion en dame
             if(testTranfo(*pionStart) == 1){
-                printf("Tranformation !!!!\n");
+                debug("Tranformation !!!!\n");
                 tranfoDame(pionStart);
             }
 
@@ -424,7 +423,6 @@ int input(SDL_Event event)
                 // Test si le click est dans le plateau
                 if(SDL_PointInRect(&mousePosition, &SDLboard) == SDL_TRUE && gameStarted == 1){
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
-                    showVector("Selection", clickPosition);
 
                     int resultClickOnBoard = clickOnBoard(clickPosition);
 
@@ -543,7 +541,7 @@ int game()
                 input(event);
         }
 
-        if(tour == 0 && network == 1 && network_client(response, thread_param.port_des) == EXIT_SUCCESS)
+        if(tour == 0 && network == 1 && network_client(response, thread_param.addr_des, thread_param.port_des) == EXIT_SUCCESS)
         {
             // On s'assure que le thread est biens fermé avant de continuer
             if(pthread_join(thread, NULL)) {
@@ -554,12 +552,6 @@ int game()
 
             struct Data data; // Données recupérées par la socket
             data = decode_data(response);
-            showVector("Start", data.posStart);
-            showVector("End", data.posEnd);
-
-            for(int i = 0; i < data.nbPrise; i++){
-                showVector("Prise", data.posPrises[i]);
-            }
 
             board[data.posEnd.x][data.posEnd.y] = board[data.posStart.x][data.posStart.y];
             board[data.posStart.x][data.posStart.y] = NULL;
@@ -664,15 +656,25 @@ int gui()
         // Mode réseau
         if(resultMenu == 1)
         {
-            printf("Entrez le port source \n");
+            printf("-------------------------------------------\n");
+            printf("Configuration réseau reseau : \n");
+            printf("Adresse IP source : ");
+            gets(thread_param.addr_src);
+
+            printf("Adresse IP destination : ");
+            gets(thread_param.addr_des);
+
+
+            printf("Port source : \n");
             scanf("%d", &thread_param.port_src);
-            printf("Entrez le port destination \n");
+            
+            printf("Port destination : ");
             scanf("%d", &thread_param.port_des);
 
             char response[32];
-            if(network_client(response, thread_param.port_des) == EXIT_FAILURE)
+            if(network_client(response, thread_param.addr_des, thread_param.port_des) == EXIT_FAILURE)
             {
-                network_server("OK !", thread_param.port_src);
+                network_server("OK !", thread_param.addr_src, thread_param.port_src);
                 tour = 1;
             }else{
                 tour = 0;

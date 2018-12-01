@@ -5,20 +5,22 @@
 #include <string.h>
 #include "../define.h"
 #include "Vector.h"
+#include "Player.h"
+#include "../main.h"
 #include "network.h"
 
 void *network_connect(void * arg)
 {
-    printf("start thread\n");
+    debug("start thread\n");
     struct Data thread_param = *((struct Data*)arg);
     // Encode data
     char buffer[200];
     strcpy(buffer, encode_data(thread_param));
     int compteur = 0;
     // GERER L'ERREUR DE CONNEXION!!
-    while(compteur < 100 && network_server(buffer, thread_param.port_src) == EXIT_FAILURE) compteur++;
+    while(compteur < 100 && network_server(buffer, thread_param.addr_src, thread_param.port_src) == EXIT_FAILURE) compteur++;
     (void) arg;
-    printf("Close thread\n");
+    debug("Close thread\n");
     pthread_exit(NULL);
 }
 
@@ -28,7 +30,6 @@ char * encode_data(struct Data data)
     str = (char *)malloc(sizeof(char) * 100); /* make space for the new string (should check the return value ...) */
     str[0] = '\0';
     // Coordonnées start
-    printf("position start : %s", vectorToString(data.posStart));
     str = strcat(str, vectorToString(data.posStart));
     str = strcat(str, ";");
 
@@ -53,36 +54,32 @@ char * encode_data(struct Data data)
 
     str = strcat(str, ";");
 
-    printf("Fin encode : %s\n", str);
+    debug("Fin encode\n");
     return str;
 }
 
 struct Data decode_data(char * str)
 {
     struct Data data;
-    printf("\t\tDECODE DATA : \n");
-    printf("%s\n", str);
+    debug("\t\tDECODE DATA : \n");
 
     data.posStart = stringToVector(str);
     while(str++[0] != ';');
-    printf("%s\n", str);
 
     data.posEnd = stringToVector(str);
     while(str++[0] != ';');
-    printf("%s\n", str);
     
     data.nbPrise = 0;
     while(str[0] != ';')
     {
         data.posPrises[data.nbPrise] = stringToVector(str);
         while(str++[0] != ';');
-        printf("%s\n", str);
         data.nbPrise++;
     }
     return data;
 }
 
-int network_server(char buffer[200], int PORT)
+int network_server(char buffer[200], char * addr_src, int PORT)
 {
     int status = EXIT_SUCCESS;
     #if defined (WIN32)
@@ -108,10 +105,11 @@ int network_server(char buffer[200], int PORT)
         /* Si la socket est valide */
         if(sock != INVALID_SOCKET)
         {
-            printf("La socket %d est maintenant ouverte en mode TCP/IP\n", sock);
+            debug("La socket est maintenant ouverte en mode TCP/IP\n");
  
             /* Configuration */
-            sin.sin_addr.s_addr    = htonl(INADDR_ANY);   /* Adresse IP automatique */
+            // sin.sin_addr.s_addr    = htonl(INADDR_ANY);   /* Adresse IP automatique */
+            sin.sin_addr.s_addr = inet_addr(addr_src);
             sin.sin_family         = AF_INET;             /* Protocole familial (IP) */
             sin.sin_port           = htons(PORT);         /* Listage du port */
 
@@ -128,23 +126,24 @@ int network_server(char buffer[200], int PORT)
             {
                 /* Démarrage du listage (mode server) */
                 sock_err = listen(sock, 5);
-                printf("Listage du port %d...\n", PORT);
+                debug("Listage du port...\n");
  
                 /* Si la socket fonctionne */
                 if(sock_err != SOCKET_ERROR)
                 {
                     /* Attente pendant laquelle le client se connecte */
-                    printf("Patientez pendant que le client se connecte sur le port %d...\n", PORT);        
+                    debug("Patientez pendant que le client se connecte sur le port...\n");        
  
                     csock = accept(sock, (SOCKADDR*)&csin, &recsize);
-                    printf("Un client se connecte avec la socket %d de %s:%d\n", csock, inet_ntoa(csin.sin_addr), htons(csin.sin_port));
+                    debug("Client connecte");
+                    //printf("Un client se connecte avec la socket %d de %s:%d\n", csock, inet_ntoa(csin.sin_addr), htons(csin.sin_port));
  
                     sock_err = send(csock, buffer, 32, 0);
 
                     if(sock_err != SOCKET_ERROR)
-                        printf("Chaine envoyée : %s\n", buffer);
+                        debug("Data envoyee");
                     else
-                        printf("Erreur de transmission\n");
+                        debug("Erreur de transmission\n");
  
                     /* Il ne faut pas oublier de fermer la connexion (fermée dans les deux sens) */
                     if(!shutdown(csock, SHUT_RD))
@@ -162,16 +161,16 @@ int network_server(char buffer[200], int PORT)
             }
  
             /* Fermeture de la socket */
-            printf("Fermeture de la socket...\n");
+            debug("Fermeture de la socket...\n");
             if(!closesocket(sock))
                 perror("closesocket");
 
             if(!closesocket(csock))
                 perror("closesocket");
             
-            printf("Fermeture du serveur terminee\n");
+            debug("Fermeture du serveur terminee\n");
         }else{
-            printf("La socket est invalide\n");
+            fprintf(stderr, "La socket est invalide\n");
             status = EXIT_FAILURE;
         }
  
@@ -179,14 +178,14 @@ int network_server(char buffer[200], int PORT)
             WSACleanup();
         #endif
     }else{
-        printf("Les sockets windows ne fonctionnent pas\n");
+        fprintf(stderr, "Les sockets windows ne fonctionnent pas\n");
         status = EXIT_FAILURE;
     }
  
     return status;
 }
 
-int network_client(char * response, int PORT)
+int network_client(char * response, char * addr_des, int PORT)
 {
     #if defined (WIN32)
         WSADATA WSAData;
@@ -208,19 +207,19 @@ int network_client(char * response, int PORT)
         sock = socket(AF_INET, SOCK_STREAM, 0);
  
         /* Configuration de la connexion */
-        sin.sin_addr.s_addr = inet_addr("127.0.0.1");
+        sin.sin_addr.s_addr = inet_addr(addr_des);
         sin.sin_family = AF_INET;
         sin.sin_port = htons(PORT);
  
         /* Si l'on a réussi à se connecter */
         if(connect(sock, (SOCKADDR*)&sin, sizeof(sin)) != SOCKET_ERROR)
         {
-            printf("Connection à %s sur le port %d\n", inet_ntoa(sin.sin_addr), htons(sin.sin_port));
-            
+            //printf("Connection à %s sur le port %d\n", inet_ntoa(sin.sin_addr), htons(sin.sin_port));
+            debug("Connexion...\n");
             /* Si l'on reçoit des informations : on les affiche à l'écran */
             if(recv(sock, buffer, 32, 0) != SOCKET_ERROR)
             {
-                printf("Recu : %s\n", buffer);
+                debug("Data recu");
                 strcpy(response, buffer);
             }
         }

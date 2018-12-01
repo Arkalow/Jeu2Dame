@@ -34,23 +34,18 @@
  */
 int action(struct Pion * pion, struct Vector point, struct Player * player, struct Vector * prise){
 	
-	//printf("Pion selectionne : \n");
-	//showPion(*pion);
-	//printf("Destination : ");
-	//showVector(point);
-
 	struct Pion * end;
 	
 	// Test de la case destination
 	int resultSearchBoard = searchBoard(point, &end);
 	int resultTestPrise;
 	if(resultSearchBoard == 1){ // Case déjà occupée 
-		printf(" Impossible, la case de destination est deja occupee\n");
+		debug(" Impossible, la case de destination est deja occupee\n");
 		return -3;
 	}
 	
 	if(resultSearchBoard == -1){ // Case hors limite
-		printf(" Case hors limite\n");
+		debug(" Case hors limite\n");
 		return -3;
 	}
 
@@ -63,13 +58,13 @@ int action(struct Pion * pion, struct Vector point, struct Player * player, stru
 
 		// Erreur, il y a plusieurs prises
 		if(resultTestPrise == -1){
-			printf(" Erreur prise\n");
+			debug(" Erreur prise\n");
 			
 			return -4; // Plusieurs prises
 		}
 
 		// Déplacement du pion
-		printf(" Deplacement\n");
+		debug(" Deplacement\n");
 		move(pion, point);
 
 		// Pas de prise
@@ -78,12 +73,12 @@ int action(struct Pion * pion, struct Vector point, struct Player * player, stru
 		}
 
 		// On est dans le cas restant, une prise est trouvée
-		printf(" Prise trouvee\n");
+		debug(" Prise trouvee\n");
 
 		board[prise->x][prise->y] = NULL;
 	
 		player->score++;
-		printf(" Prise effectue\n");
+		debug(" Prise effectue\n");
 		return 1; // combo
 
 	}else if(resultTestMove == 2){
@@ -91,44 +86,54 @@ int action(struct Pion * pion, struct Vector point, struct Player * player, stru
 		// avec une augmentation de 1 unite vecteur
 
 		// Incrementation des moveList du pion
-		showPion(*pion);
 		incrementMoveList(pion);
-		showPion(*pion);
+
 		// On test la présence de prises
 		resultTestPrise = testPrise(*pion, point, prise);
 
 		// Plusieurs prise sur le chemin
 		if(resultTestPrise == -1){
-			printf(" Erreur prise\n");
+			debug(" Erreur prise\n");
 			decrementMoveList(pion);
 			return -4; // Action annulée
 		}
 
 		// Aucune prise sur le chemin
 		if(resultTestPrise == 0){
-			printf(" Deplacement impossible\n");
+			debug(" Deplacement impossible\n");
 			decrementMoveList(pion);
 			return -5; // Action annulée
 		}
 
 		// Il y a une seule prise sur le chemin
 		// On déplace le pion et on supprime la prise
-		printf(" Deplacement\n");
+		debug(" Deplacement\n");
 		move(pion, point);
-		printf(" Prise trouvee\n");
+		debug(" Prise trouvee\n");
 
 		board[prise->x][prise->y] = NULL;
 		player->score++;
-		printf(" Prise effectue\n");
+		debug(" Prise effectue\n");
 		decrementMoveList(pion);
 		return 1;
 
 	}else{
 
 		// Déplacement impossible
-		printf(" Le pion ne permet pas ce type de deplacement\n");
+		debug(" Le pion ne permet pas ce type de deplacement\n");
 		return -5;
 	}
+}
+
+/**
+ * Affiche les messages de debug
+ * si debug est à 1
+ */
+void debug(char * message) { 
+	if(DEBUG == 1) 
+	{
+		printf("%s", message);
+	} 
 }
 
 // PROGRAMME PRINCIPALE

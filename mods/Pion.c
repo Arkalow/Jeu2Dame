@@ -148,7 +148,6 @@ int testMove(struct Pion pion, struct Vector c){
 	incrementMoveList(&pion);
 	for(int i = 0; i < pion.nbMove; i++){
 		if(testVector(move, pion.moveList[i]) == 1){
-			printf("qdfqsgqsfgqsfgqsfgqsfgsdfgsdfgsdfgsdfgsdfgsdfgsdfg");
 			return 2; // True 
 		}
 	}
@@ -193,7 +192,6 @@ int testPrise(struct Pion pion, struct Vector end, struct Vector * prise){
 	while(end.x < 0 || end.y < 0){
 		end = subVector(end, unit);
 	}
-	showVector("Target", end);
 	// Parcourt de la trajectoire
 	while(start.x != end.x || start.y != end.y){
 
