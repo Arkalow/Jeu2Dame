@@ -26,14 +26,22 @@ void highlight(struct Vector vector){
  */
 int showSdlBoard(){
 
-    changeColor(black);
 
     SDL_Rect frame = { positionBoard.x, positionBoard.y, caseWidth, caseWidth };
-    
+    int count = 0;
     for(int y = 0; y < WIDTH; y++){
+        count++;
 		for(int x = 0; x < WIDTH; x++){
-
-            SDL_RenderDrawRect(renderer, &frame);
+            count++;
+            if(count %2 == 0)
+            {
+                changeColor(black);
+            }
+            else
+            {
+                changeColor(white);
+            }
+            SDL_RenderFillRect(renderer, &frame);
 			if(board[x][y] != NULL){
                 if(board[x][y]->selected == 1) {
                     changeColor(blue);

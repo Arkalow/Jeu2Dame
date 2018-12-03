@@ -123,7 +123,7 @@ void desactiveRonyMode()
  */
 void updateRonyMode(struct Menu menu)
 {
-    int tauxDeRony = 5; // Nombre de rony sur la fenetre
+    int tauxDeRony = 10; // Nombre de rony sur la fenetre
     int tailleRony = 150; // Taille max de rony 
 
     menu.backgroundColor.r = randomValue(255);
