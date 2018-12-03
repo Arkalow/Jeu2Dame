@@ -231,8 +231,8 @@ int testAllPrise(struct Pion pion){
 	struct Pion * p;
 	for(int i = 0; i < pion.nbMove; i++){
 		if(
-			testPrise(pion, addVector(pion.position, (pion.moveList)[i]), &prise) == 1 && 
-			searchBoard(addVector(pion.moveList[i], unitVector(pion.moveList[i])), &p) == 0
+			testPrise(pion, addVector(pion.position, (pion.moveList)[i]), &prise) == 1 //&& 
+			//searchBoard(addVector(pion.moveList[i], unitVector(pion.moveList[i])), &p) == 0
 		){
 			return 1;
 		}

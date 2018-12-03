@@ -238,9 +238,9 @@ void showSdlPlayer()
     SDL_Point position = { caseWidth, caseWidth };
     // affichage text
     if(currentPlayer->team == player1.team){
-        sdlWrite("Joueur 1", text, position, police, black);
+        sdlWrite("Joueur 1", text, position, police, white);
     }else{
-        sdlWrite("Joueur 2", text, position, police, black);
+        sdlWrite("Joueur 2", text, position, police, white);
     }
 }
 
@@ -447,7 +447,7 @@ int input(SDL_Event event)
                         showSdlPlayer();
                         
                         // Affichage du message d'indication
-                        sdlWrite(infoMessage, text, positionText, police, black);
+                        sdlWrite(infoMessage, text, positionText, police, white);
 
                         // Affichage plateau
                         showSdlBoard();
@@ -483,7 +483,7 @@ int input(SDL_Event event)
                     showSdlPlayer();
 
                     // Affichage du message d'indication
-                    sdlWrite(infoMessage, text, positionText, police, black);
+                    sdlWrite(infoMessage, text, positionText, police, white);
 
                     // Affichage plateau
                     showSdlBoard();
@@ -528,7 +528,7 @@ int game()
 
     showSdlPlayer();
     // Affichage du message d'indication
-    sdlWrite("Selectionnez un pion", text, positionText, police, black);
+    sdlWrite("Selectionnez un pion", text, positionText, police, white);
     
     if(EXIT_FAILURE == showSdlBoard())
     {
@@ -603,7 +603,7 @@ int game()
             showSdlPlayer();
 
             // Affichage du message d'indication
-            sdlWrite(infoMessage, text, positionText, police, black);
+            sdlWrite(infoMessage, text, positionText, police, white);
 
             // Affichage plateau
             showSdlBoard();
@@ -620,6 +620,8 @@ int game()
     }else{
         currentPlayer = &player1;
     }
+    initAudio();
+    playSound("sounds/win.wav", SDL_MIX_MAXVOLUME);
 	printf("Player %d a gagne !\n", currentPlayer->team);
 	freeBoard();
 
@@ -635,8 +637,8 @@ int gui()
     positionBoard.y = caseWidth * 4;
     SDLboard.x = 0; SDLboard.y = 0; 
     SDLboard.h = caseWidth + 9 * caseWidth; SDLboard.w = caseWidth + 9 * caseWidth;
-    orange.r = 255; orange.g = 127; orange.b = 40; orange.a = 255;
-    black.r = 0; black.g = 0; black.b = 0; black.a = 255;
+    orange.r = 63; orange.g = 79; orange.b = 86; orange.a = 255;
+    black.r = 37; black.g = 41; black.b = 47; black.a = 255;
     blue.r = 0; blue.g = 0; blue.b = 255; blue.a = 255;
     white.r = 255; white.g = 255; white.b = 255; white.a = 255;
     SDLboard.x = positionBoard.x; SDLboard.y = positionBoard.y; // On place le plateau au bonne coordonnées
@@ -670,7 +672,6 @@ int gui()
     struct Menu startMenu = loadStartMenu();
     int resultMenu;
     while((resultMenu = showMenu(startMenu)) != 2){
-
         // Mode réseau
         if(resultMenu == 1)
         {
