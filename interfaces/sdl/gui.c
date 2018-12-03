@@ -378,7 +378,9 @@ int clickOnBoard(struct Vector clickPosition)
 
             // Transformation du pion en dame
             if(testTranfo(*pionStart) == 1){
-                debug("Tranformation !!!!\n");
+                // Fin de tour on lance le son
+                initAudio();
+                playSound("sounds/transformation.wav", SDL_MIX_MAXVOLUME);
                 tranfoDame(pionStart);
             }
 
@@ -425,6 +427,13 @@ int input(SDL_Event event)
                     struct Vector clickPosition = convertPositionSdlToVector(mousePosition);
 
                     int resultClickOnBoard = clickOnBoard(clickPosition);
+
+                    // Fin de tour on lance le son
+                    if(resultClickOnBoard == 0 || resultClickOnBoard == 3)
+                    {
+                        initAudio();
+                        playSound("sounds/teleportation.wav", SDL_MIX_MAXVOLUME);
+                    }
 
                     if((resultClickOnBoard == 0 || resultClickOnBoard == 3) && network == 1) // Fin de tour et mode reseau actif
                     {
